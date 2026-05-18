@@ -14,6 +14,5 @@ final class MainController extends AbstractController
         return $this->render('main/index.html.twig', [
             'controller_name' => 'MainController',
         ]);
-        
     }
 }
