@@ -1,0 +1,83 @@
+<header class="main-header">
+
+    <div class="brand">
+        <img
+            class="header-logo"
+            src="{{ asset('images/logo.png') }}"
+            alt="Logo Sortir.com" width="50" height="50">
+        >
+
+        <a href="{{ path('app_main') }}" class="brand-title">
+            Sortir.com
+        </a>
+    </div>
+
+    <nav class="main-nav">
+        <ul>
+
+            <li>
+                <a href="{{ path('app_main') }}">
+                    Accueil
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    Menu 1
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    Menu 2
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    Menu 3
+                </a>
+            </li>
+
+            {% if app.user %}
+
+                <li>
+                    <a href="#">
+                        + Créer
+                    </a>
+                </li>
+
+            {% endif %}
+
+        </ul>
+    </nav>
+
+    <div class="user-actions">
+
+        {% if app.user %}
+
+            <span class="user-badge">
+                👤 {{ app.user.userIdentifier }}
+            </span>
+
+            <a href="{{ path('app_logout') }}"
+               class="btn-user logout">
+                Déconnexion
+            </a>
+
+        {% else %}
+
+
+
+          {#
+          //Cyril pour path login
+        <a href="{{ path('app_login') }}"#}
+{#               class="btn-user">#}
+{#                Connexion#}
+{#            </a>#}
+
+        {% endif %}
+
+    </div>
+
+</header>
