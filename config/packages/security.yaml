@@ -18,8 +18,11 @@ security:
             security: false
         main:
             remember_me:
-                secret: '%kernel.secret%'
-                lifetime: 604800 # 1 week in seconds
+                always_remember_me: true
+                token_provider:
+                    doctrine: true
+#                secret: '%kernel.secret%'
+#                lifetime: 604800 # 1 week in seconds
             lazy: true
             provider: app_user_provider
             form_login:
