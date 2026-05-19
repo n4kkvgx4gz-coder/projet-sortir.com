@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-class TripForm
+class SortieForm
 {
 
 }
