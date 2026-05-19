@@ -12,4 +12,33 @@
             Créer une nouvelle sortie
         </a>
     </div>
+
+    <section class="page">
+        <div class="page-title">
+            <h1>Sorties à la une</h1>
+            <p>Découvrez les prochaines activités proposées.</p>
+        </div>
+
+        <div class="grid">
+            {% for sortie in sorties %}
+                <article class="card activity-card">
+                    {% if sortie.urlPhoto %}
+                        <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
+                    {% endif %}
+
+                    <span class="badge">{{ sortie.lieu }}</span>
+
+                    <h2>{{ sortie.nom }}</h2>
+
+                    <p>{{ sortie.description }}</p>
+
+                    <p>
+                        📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}
+                    </p>
+                </article>
+            {% else %}
+                <p>Aucune sortie disponible pour le moment.</p>
+            {% endfor %}
+        </div>
+    </section>
 {% endblock %}
