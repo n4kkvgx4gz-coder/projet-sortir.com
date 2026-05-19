@@ -112,4 +112,12 @@ final class SortieController extends AbstractController
 
         return $this->redirectToRoute('app_sortie');
     }
+
+    #[Route('/inscription/{id}', name: 'app_inscription', methods: ['GET'])]
+    public function inscriptionPage(Sortie $sortie): Response
+    {
+        return $this->render('inscription/inscription.html.twig', [
+            'sortie' => $sortie,
+        ]);
+    }
 }
