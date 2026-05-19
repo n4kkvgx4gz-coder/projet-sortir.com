@@ -19,7 +19,7 @@ class Sortie
     private ?int $id_sortie = null;
 
     #[ORM\Column(length: 30)]
-    private ?string $no = null;
+    private ?string $nom = null;
 
     #[ORM\Column]
     private ?\DateTime $dateDebut = null;
@@ -42,8 +42,8 @@ class Sortie
     #[ORM\Column]
     private ?int $id_organisateur = null;
 
-    #[ORM\Column]
-    private ?int $id_lieu = null;
+    #[ORM\Column(length: 255)]
+    private ?string $lieu = null;
 
     /**
      * @var Collection<int, Inscription>
@@ -73,14 +73,14 @@ class Sortie
         return $this;
     }
 
-    public function getNo(): ?string
+    public function getNom(): ?string
     {
-        return $this->no;
+        return $this->nom;
     }
 
-    public function setNo(string $no): static
+    public function setNom(string $nom): static
     {
-        $this->no = $no;
+        $this->nom = $nom;
 
         return $this;
     }
@@ -169,14 +169,14 @@ class Sortie
         return $this;
     }
 
-    public function getIdLieu(): ?int
+    public function getLieu(): ?string
     {
-        return $this->id_lieu;
+        return $this->lieu;
     }
 
-    public function setIdLieu(int $id_lieu): static
+    public function setLieu(string $lieu): static
     {
-        $this->id_lieu = $id_lieu;
+        $this->lieu = $lieu;
 
         return $this;
     }
