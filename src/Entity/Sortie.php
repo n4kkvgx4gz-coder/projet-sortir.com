@@ -40,8 +40,8 @@ class Sortie
     #[ORM\Column]
     private ?int $id_organisateur = null;
 
-    #[ORM\Column]
-    private ?int $id_lieu = null;
+    #[ORM\Column(length: 255)]
+    private ?string $lieu = null;
 
     public function getId(): ?int
     {
@@ -156,14 +156,14 @@ class Sortie
         return $this;
     }
 
-    public function getIdLieu(): ?int
+    public function getLieu(): ?string
     {
-        return $this->id_lieu;
+        return $this->lieu;
     }
 
-    public function setIdLieu(int $id_lieu): static
+    public function setLieu(string $lieu): static
     {
-        $this->id_lieu = $id_lieu;
+        $this->lieu = $lieu;
 
         return $this;
     }
