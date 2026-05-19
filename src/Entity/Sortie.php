@@ -8,24 +8,23 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
-#[ORM\Table(name: 'sortie')]
 class Sortie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(name: 'id_sortie')]
-    private ?int $id_sortie = null;
+    #[ORM\Column]
+    private ?int $id = null;
 
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
 
-    #[ORM\Column(name: 'datedebut')]
+    #[ORM\Column]
     private ?\DateTime $dateDebut = null;
 
-    #[ORM\Column(name: 'datecloture')]
+    #[ORM\Column]
     private ?\DateTime $dateCloture = null;
 
-    #[ORM\Column(name: 'nbInscriptionsMax')]
+    #[ORM\Column]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 255)]
@@ -34,17 +33,10 @@ class Sortie
     #[ORM\Column]
     private ?bool $etat = null;
 
-    #[ORM\Column(name: 'urlPhoto', length: 250, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
 
-    #[ORM\Column(name: 'id_organisateur')]
-    private ?int $id_organisateur = null;
 
-    #[ORM\Column(name: 'id_lieu')]
-    private ?int $lieu = null;
-
-    #[ORM\Column(name: 'id_campus')]
-    private ?int $id_campus = null;
 
     /**
      * @var Collection<int, Inscription>
@@ -52,25 +44,29 @@ class Sortie
     #[ORM\OneToMany(targetEntity: Inscription::class, mappedBy: 'sortie')]
     private Collection $inscriptions;
 
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $organisateur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Lieu $lieu = null;
+
     public function __construct()
     {
         $this->inscriptions = new ArrayCollection();
     }
 
-    public function getIdSortie(): ?int
-    {
-        return $this->id_sortie;
-    }
-
-    public function setIdSortie(int $id_sortie): static
-    {
-        $this->id_sortie = $id_sortie;
-        return $this;
-    }
-
     public function getId(): ?int
     {
-        return $this->id_sortie;
+        return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getNom(): ?string
@@ -81,6 +77,7 @@ class Sortie
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -92,6 +89,7 @@ class Sortie
     public function setDateDebut(\DateTime $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
+
         return $this;
     }
 
@@ -103,6 +101,7 @@ class Sortie
     public function setDateCloture(\DateTime $dateCloture): static
     {
         $this->dateCloture = $dateCloture;
+
         return $this;
     }
 
@@ -114,6 +113,7 @@ class Sortie
     public function setNbInscriptionsMax(int $nbInscriptionsMax): static
     {
         $this->nbInscriptionsMax = $nbInscriptionsMax;
+
         return $this;
     }
 
@@ -125,6 +125,7 @@ class Sortie
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -136,6 +137,7 @@ class Sortie
     public function setEtat(bool $etat): static
     {
         $this->etat = $etat;
+
         return $this;
     }
 
@@ -147,6 +149,7 @@ class Sortie
     public function setUrlPhoto(?string $urlPhoto): static
     {
         $this->urlPhoto = $urlPhoto;
+
         return $this;
     }
 
@@ -158,28 +161,19 @@ class Sortie
     public function setIdOrganisateur(int $id_organisateur): static
     {
         $this->id_organisateur = $id_organisateur;
+
         return $this;
     }
 
-    public function getLieu(): ?int
+    public function getLieu(): ?string
     {
         return $this->lieu;
     }
 
-    public function setLieu(int $lieu): static
+    public function setLieu(string $lieu): static
     {
         $this->lieu = $lieu;
-        return $this;
-    }
 
-    public function getIdCampus(): ?int
-    {
-        return $this->id_campus;
-    }
-
-    public function setIdCampus(int $id_campus): static
-    {
-        $this->id_campus = $id_campus;
         return $this;
     }
 
@@ -204,10 +198,23 @@ class Sortie
     public function removeInscription(Inscription $inscription): static
     {
         if ($this->inscriptions->removeElement($inscription)) {
+            // set the owning side to null (unless already changed)
             if ($inscription->getSortie() === $this) {
                 $inscription->setSortie(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Utilisateur
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Utilisateur $organisateur): static
+    {
+        $this->organisateur = $organisateur;
 
         return $this;
     }
