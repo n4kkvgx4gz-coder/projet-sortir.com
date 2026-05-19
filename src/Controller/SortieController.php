@@ -6,7 +6,6 @@ use App\Entity\Inscription;
 use App\Entity\Sortie;
 use App\Entity\User;
 use App\Repository\InscriptionRepository;
-use App\Entity\Sortie;
 use App\Form\SortieType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
