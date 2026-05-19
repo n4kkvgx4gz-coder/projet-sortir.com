@@ -17,6 +17,7 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $utilisateur = null;
 
+
     public function getId(): ?int
     {
         return $this->id;
