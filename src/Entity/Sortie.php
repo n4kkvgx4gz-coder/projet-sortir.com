@@ -15,9 +15,6 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $id_sortie = null;
-
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
 
@@ -39,17 +36,21 @@ class Sortie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
 
-    #[ORM\Column]
-    private ?int $id_organisateur = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $lieu = null;
 
     /**
      * @var Collection<int, Inscription>
      */
     #[ORM\OneToMany(targetEntity: Inscription::class, mappedBy: 'sortie')]
     private Collection $inscriptions;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $organisateur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Lieu $lieu = null;
 
     public function __construct()
     {
@@ -61,14 +62,9 @@ class Sortie
         return $this->id;
     }
 
-    public function getIdSortie(): ?int
+    public function setId(int $id): static
     {
-        return $this->id_sortie;
-    }
-
-    public function setIdSortie(int $id_sortie): static
-    {
-        $this->id_sortie = $id_sortie;
+        $this->id = $id;
 
         return $this;
     }
@@ -207,6 +203,18 @@ class Sortie
                 $inscription->setSortie(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Utilisateur
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Utilisateur $organisateur): static
+    {
+        $this->organisateur = $organisateur;
 
         return $this;
     }
