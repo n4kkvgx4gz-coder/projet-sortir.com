@@ -17,7 +17,7 @@ class Sortie
     private ?int $id_sortie = null;
 
     #[ORM\Column(length: 30)]
-    private ?string $no = null;
+    private ?string $nom = null;
 
     #[ORM\Column]
     private ?\DateTime $dateDebut = null;
@@ -60,14 +60,14 @@ class Sortie
         return $this;
     }
 
-    public function getNo(): ?string
+    public function getNom(): ?string
     {
-        return $this->no;
+        return $this->nom;
     }
 
-    public function setNo(string $no): static
+    public function setNom(string $nom): static
     {
-        $this->no = $no;
+        $this->nom = $nom;
 
         return $this;
     }

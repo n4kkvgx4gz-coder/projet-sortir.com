@@ -1,10 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    Création d'une sortie
-{% endblock %}
+{% block title %}Créer une sortie{% endblock %}
 
 {% block body %}
-    <h1>Création d'une nouvelle sortie</h1>
-    {{ form(wishForm) }}
+
+    <div class="page">
+
+        <div class="form-card card">
+
+            <h1>Créer une sortie</h1>
+
+            {{ form_start(sortieForm) }}
+
+            {{ form_widget(sortieForm) }}
+
+            <button class="btn-primary">
+                Enregistrer
+            </button>
+
+            {{ form_end(sortieForm) }}
+
+        </div>
+
+    </div>
+
 {% endblock %}
