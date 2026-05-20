@@ -198,14 +198,33 @@ textarea {
     gap: 12px;
     margin-top: 24px;
 }
+.button-container {
+    display: flex;
+    gap: 15px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.button-container form {
+    margin: 0;
+    width: auto;
+}
+
+.button-container .btn-primary {
+    width: auto;
+    display: inline-block;
+}
 
 /* FOOTER */
 
 .main-footer {
-    margin-top: 60px;
+    margin-top: auto;
     padding: 24px;
     text-align: center;
     color: var(--muted);
+
 }
 /* GERER PROFIL */
 .profil{
@@ -231,4 +250,5 @@ textarea {
     .grid {
         grid-template-columns: 1fr;
     }
+
 }

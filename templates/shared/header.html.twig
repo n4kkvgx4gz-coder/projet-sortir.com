@@ -4,8 +4,11 @@
         <img
             class="header-logo"
             src="{{ asset('images/logo.png') }}"
-            alt="Logo Sortir.com" width="50" height="50">
+            alt="Logo Sortir.com"
+            width="50"
+            height="50"
         >
+
 
         <a href="{{ path('app_main') }}" class="brand-title">
             Sortir.com
@@ -42,7 +45,7 @@
             {% if app.user %}
 
                 <li>
-                    <a href="#">
+                    <a href="{{ path('sortie_create') }}">
                         + Créer
                     </a>
                 </li>
@@ -69,8 +72,8 @@
 
 
 
-          {#
-{#          //Cyril pour path login#}
+
+
         <a href="{{ path('app_login') }}"
                class="btn-user">
                 Connexion

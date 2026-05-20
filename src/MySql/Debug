@@ -1,0 +1,13 @@
+si tu as une erreur duplicate primary key, fais avant :
+
+DELETE FROM VILLE;
+
+ou :
+
+TRUNCATE TABLE VILLE;
+
+Mais si des clés étrangères bloquent :
+
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE VILLE;
+SET FOREIGN_KEY_CHECKS = 1;

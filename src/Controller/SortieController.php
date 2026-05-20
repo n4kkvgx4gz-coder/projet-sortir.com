@@ -4,21 +4,29 @@ namespace App\Controller;
 
 use App\Entity\Inscription;
 use App\Entity\Sortie;
-use App\Entity\User;
-use App\Repository\InscriptionRepository;
+use App\Entity\Utilisateur;
 use App\Form\SortieType;
+use App\Repository\InscriptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\SortieRepository;
 
 final class SortieController extends AbstractController
 {
     #[Route('/sortie', name: 'app_sortie')]
-    public function index(): Response
+    public function index(SortieRepository $sortieRepository): Response
     {
-        return $this->render('sortie/index.html.twig');
+        $sorties = $sortieRepository->findBy(
+            [],
+            ['dateDebut' => 'ASC']
+        );
+
+        return $this->render('sortie/index.html.twig', [
+            'sorties' => $sorties,
+        ]);
     }
 
     #[Route('/sorties/create', name: 'sortie_create')]
@@ -49,55 +57,51 @@ final class SortieController extends AbstractController
         EntityManagerInterface $entityManager,
         InscriptionRepository $inscriptionRepository
     ): Response {
-
-        /** @var User $user */
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
+
+        if (!$user) {
+            $this->addFlash('danger', 'Vous devez être connecté pour vous inscrire.');
+            return $this->redirectToRoute('app_login');
+        }
 
         if (!$sortie->isEtat()) {
             $this->addFlash('danger', 'Cette sortie n’est pas ouverte aux inscriptions.');
-            return $this->redirectToRoute('app_sortie');
+            return $this->redirectToRoute('app_inscription', [
+                'id' => $sortie->getId(),
+            ]);
         }
 
         if ($sortie->getDateCloture() < new \DateTime()) {
+            $this->addFlash('danger', 'Les inscriptions sont clôturées pour cette sortie.');
 
-            $this->addFlash(
-                'danger',
-                'La date limite d’inscription est dépassée.'
-            );
-
-            return $this->redirectToRoute('app_sortie');
+            return $this->redirectToRoute('app_inscription', [
+                'id' => $sortie->getId(),
+            ]);
         }
 
-        if (
-            $sortie->getInscriptions()->count()
-            >= $sortie->getNbInscriptionsMax()
-        ) {
+        if ($sortie->getInscriptions()->count() >= $sortie->getNbInscriptionsMax()) {
+            $this->addFlash('danger', 'Il n’y a plus de places disponibles.');
 
-            $this->addFlash(
-                'danger',
-                'Il n’y a plus de places disponibles.'
-            );
-
-            return $this->redirectToRoute('app_sortie');
+            return $this->redirectToRoute('app_inscription', [
+                'id' => $sortie->getId(),
+            ]);
         }
 
         $dejaInscrit = $inscriptionRepository->findOneBy([
             'sortie' => $sortie,
-            'participant' => $user
+            'participant' => $user,
         ]);
 
         if ($dejaInscrit) {
+            $this->addFlash('warning', 'Vous êtes déjà inscrit à cette sortie.');
 
-            $this->addFlash(
-                'warning',
-                'Vous êtes déjà inscrit à cette sortie.'
-            );
-
-            return $this->redirectToRoute('app_sortie');
+            return $this->redirectToRoute('app_inscription', [
+                'id' => $sortie->getId(),
+            ]);
         }
 
         $inscription = new Inscription();
-
         $inscription->setSortie($sortie);
         $inscription->setParticipant($user);
         $inscription->setDateInscription(new \DateTime());
@@ -105,11 +109,77 @@ final class SortieController extends AbstractController
         $entityManager->persist($inscription);
         $entityManager->flush();
 
-        $this->addFlash(
-            'success',
-            'Vous êtes bien inscrit à la sortie.'
-        );
+        $this->addFlash('success', 'Vous êtes bien inscrit à la sortie.');
 
-        return $this->redirectToRoute('app_sortie');
+        return $this->redirectToRoute('app_inscription', [
+            'id' => $sortie->getId(),
+        ]);
+    }
+
+    // Route pour l'inscription
+    /**
+     * si la date de début de la sortie est plus ancienne que aujourd’hui - 1 mois, Symfony redirige et empêche la consultation de la sortie.
+     *
+     * Exemple : aujourd’hui 20/05/2026, une sortie du 10/04/2026 ne sera plus consultable.
+     *
+     */
+    #[Route('/inscription/{id}', name: 'app_inscription', methods: ['GET'])]
+    public function inscriptionPage(Sortie $sortie): Response
+    {
+        $dateLimiteConsultation = (new \DateTime())->modify('-1 month');
+
+        if ($sortie->getDateDebut() < $dateLimiteConsultation) {
+            $this->addFlash('danger', 'Cette sortie n’est plus consultable.');
+
+            return $this->redirectToRoute('app_sortie');
+        }
+
+        return $this->render('inscription/inscription.html.twig', [
+            'sortie' => $sortie,
+        ]);
+    }
+
+    // Route pour le désistement
+    #[Route('/sortie/{id}/desistement', name: 'sortie_desistement', methods: ['POST'])]
+    public function desistement(
+        Sortie $sortie,
+        EntityManagerInterface $entityManager,
+        InscriptionRepository $inscriptionRepository
+    ): Response {
+        /** @var Utilisateur|null $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            $this->addFlash('danger', 'Vous devez être connecté.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        if ($sortie->getDateDebut() <= new \DateTime()) {
+            $this->addFlash('danger', 'Vous ne pouvez plus vous désister, la sortie a déjà débuté.');
+            return $this->redirectToRoute('app_inscription', [
+                'id' => $sortie->getId(),
+            ]);
+        }
+
+        $inscription = $inscriptionRepository->findOneBy([
+            'sortie' => $sortie,
+            'participant' => $user,
+        ]);
+
+        if (!$inscription) {
+            $this->addFlash('warning', 'Vous n’êtes pas inscrit à cette sortie.');
+            return $this->redirectToRoute('app_inscription', [
+                'id' => $sortie->getId(),
+            ]);
+        }
+
+        $entityManager->remove($inscription);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
+
+        return $this->redirectToRoute('app_inscription', [
+            'id' => $sortie->getId(),
+        ]);
     }
 }

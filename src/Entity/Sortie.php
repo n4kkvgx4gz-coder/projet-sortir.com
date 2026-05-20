@@ -161,7 +161,7 @@ class Sortie
         return $this->lieu;
     }
 
-    public function setLieu(Lieu $lieu): static
+    public function setLieu(?Lieu $lieu): static
     {
         $this->lieu = $lieu;
 
