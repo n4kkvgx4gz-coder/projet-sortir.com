@@ -32,7 +32,7 @@
                 {{ sortie.description }}
             </p>
 
-            {% if sortie.etat %}
+            {% if sortie.etat and sortie.dateCloture > date() %}
 
                 <div class="button-container">
                     <form method="post"

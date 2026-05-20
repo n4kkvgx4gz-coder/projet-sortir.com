@@ -65,7 +65,7 @@ final class SortieController extends AbstractController
         }
 
         if ($sortie->getDateCloture() < new \DateTime()) {
-            $this->addFlash('danger', 'La date limite d’inscription est dépassée.');
+            $this->addFlash('danger', 'Les inscriptions sont clôturées pour cette sortie.');
 
             return $this->redirectToRoute('app_inscription', [
                 'id' => $sortie->getId(),
