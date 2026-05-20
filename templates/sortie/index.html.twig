@@ -9,13 +9,50 @@
     <section class="activities-section">
 
         <div class="section-header">
-            <h1>🎯 Toutes les sorties</h1>
+            <h1>Toutes les sorties</h1>
 
             <a href="{{ path('sortie_create') }}"
                class="btn-create">
                 + Créer une sortie
             </a>
         </div>
+
+        <form method="get" class="filters-card">
+
+            <input
+                type="text"
+                name="q"
+                placeholder="Rechercher une sortie, une ville, un lieu..."
+                value="{{ q|default('') }}"
+            >
+
+            <input
+                type="date"
+                name="dateMin"
+                value="{{ dateMin|default('') }}"
+            >
+
+            <input
+                type="date"
+                name="dateMax"
+                value="{{ dateMax|default('') }}"
+            >
+
+            <select name="departement">
+                <option value="">Tous les campus</option>
+                <option value="29" {{ departement == '29' ? 'selected' : '' }}>Quimper / Finistère</option>
+                <option value="44" {{ departement == '44' ? 'selected' : '' }}>Nantes / Loire-Atlantique</option>
+                <option value="35" {{ departement == '35' ? 'selected' : '' }}>Rennes / Ille-et-Vilaine</option>
+                <option value="79" {{ departement == '79' ? 'selected' : '' }}>Niort / Deux-Sèvres</option>
+            </select>
+
+            <button class="btn-primary">
+                Filtrer
+            </button>
+
+        </form>
+
+        <br>
 
         <div class="activities-grid">
 
@@ -53,7 +90,7 @@
                             <span>📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}</span>
                         </div>
 
-                        <a href="{{ path('sortie_show', {'id': sortie.id}) }}"
+                        <a href="{{ path('sortie_detail', {'id': sortie.id}) }}"
                            class="btn-detail">
                             Voir détail
                         </a>
