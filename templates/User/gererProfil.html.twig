@@ -6,6 +6,9 @@
 
 {% block body %}
     <h1>Gérer profil</h1>
-    {{ form(GererProfilType) }}
 
+    {{ form_start(GererProfilType) }}
+    {{ form_widget(GererProfilType) }}
+    <button type="submit" class="btn-create"> enregister les modifications </button>
+    {{ form_end(GererProfilType) }}
 {% endblock %}

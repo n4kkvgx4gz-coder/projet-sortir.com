@@ -6,6 +6,7 @@ use App\Entity\Utilisateur;
 use App\Form\GererProfilType;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,13 +25,36 @@ class ProfilController extends AbstractController
             'utilisateur' => $utilisateur
         ]);
     }
-#[Route('/modifier', name: 'modifier', requirements: ['id'=>'\d+'], methods: ['GET', 'POST'])]
+#[Route('/modifier', name: 'modifier', methods: ['GET', 'POST'])]
 #[IsGranted('ROLE_USER')]
-public function gererProfil(Request $request) : Response {
+public function gererProfil(Request $request, EntityManagerInterface $entityManager) : Response {
     $user = $this->getUser();
-    $userId = $user->getId();
-    $profilForm = $this-> createForm(GererProfilType::class, $user);
+    $profilForm = $this-> createForm(GererProfilType::class, $user,['action' => $this->generateUrl('profil_modifier'),'method' => 'POST']);
     $profilForm->handleRequest($request);
-    return $this->redirectToRoute('profil_detail', ['id' => $userId]);
+
+//    return $this->redirectToRoute('profil_detail', ['id' => $userId]);
+    if ($profilForm->isSubmitted() && $profilForm->isValid()) {
+        try {
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', "Le souhait a bien été modifié.");
+
+            return $this->redirectToRoute('profil_detail');
+        } catch (Exception $exception) {
+            $this->addFlash('danger', $exception->getMessage());
+        }
+    }
+    return $this->render('user/gererProfil.html.twig', ["user"=> $user, "GererProfilType"=> $profilForm]);
 }
+
+    #[Route('/supprimer', name: 'supprimer', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function SupprimerProfil(Request $request) : Response {
+        $userId = $this->getUser()->getId();
+
+        return $this->redirectToRoute('profil_detail', ['id' => $userId]);
+    }
+
 }
