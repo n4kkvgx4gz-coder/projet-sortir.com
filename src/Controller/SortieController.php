@@ -182,13 +182,5 @@ final class SortieController extends AbstractController
             'id' => $sortie->getId(),
         ]);
     }
-    #[Route('/sortie/{id}/inscription', name: 'sortie_inscription', methods: ['POST'])]
-    public function inscription(
-        Sortie $sortie
-    ): Response
-    {
-        return $this->render('inscription/inscription.html.twig', [
-            'sortie' => $sortie,
-        ]);
-    }
+
 }
