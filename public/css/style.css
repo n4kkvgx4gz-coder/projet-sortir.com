@@ -207,6 +207,11 @@ textarea {
     text-align: center;
     color: var(--muted);
 }
+/* GERER PROFIL */
+.profil{
+    margin: 24px;
+    text-align: center;
+}
 
 /* RESPONSIVE */
 

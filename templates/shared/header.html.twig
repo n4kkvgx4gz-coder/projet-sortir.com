@@ -22,8 +22,8 @@
             </li>
 
             <li>
-                <a href="#">
-                    Menu 1
+                <a href="{{ path('profil_detail') }}">
+                    Gérer profil
                 </a>
             </li>
 
@@ -75,6 +75,7 @@
                class="btn-user">
                 Connexion
             </a>
+            <a href="{{ path("app_register") }}">Créer un compte</a>
 
         {% endif %}
 
