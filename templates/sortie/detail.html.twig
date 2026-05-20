@@ -42,8 +42,45 @@
             <div class="infos-sortie">
                 <p><strong>Date :</strong> {{ sortie.dateDebut|date('d/m/Y') }}</p>
                 <p><strong>Heure :</strong> {{ sortie.dateDebut|date('H:i') }}</p>
-                <p><strong>Places disponibles :</strong> {{ sortie.nbInscriptionsMax }}</p>
+                <p>
+                    <strong>Places restantes :</strong>
+                    {{ sortie.nbInscriptionsMax - sortie.inscriptions|length }}
+                </p>
                 <p><strong>Clôture :</strong> {{ sortie.dateCloture|date('d/m/Y') }}</p>
+            </div>
+            <div class="participants-section">
+
+                <h2>
+                    Participants inscrits ({{ sortie.inscriptions|length }})
+                </h2>
+
+                {% if sortie.inscriptions|length > 0 %}
+
+                    <ul class="participants-list">
+
+                        {% for inscription in sortie.inscriptions %}
+
+                            <li class="participant-item">
+
+                                <a href="{{ path('profil_detail', {'id': inscription.participant.id}) }}">
+
+                                    {{ inscription.participant.prenom }}
+                                    {{ inscription.participant.nom }}
+
+                                </a>
+
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                {% else %}
+
+                    <p>Aucun participant inscrit pour le moment.</p>
+
+                {% endif %}
+
             </div>
 
             <div class="actions-sortie">
@@ -69,7 +106,6 @@
                 {% endif %}
 
             </div>
-
             <div class="description">
                 <h2>À propos</h2>
                 <p>{{ sortie.description}}</p>
