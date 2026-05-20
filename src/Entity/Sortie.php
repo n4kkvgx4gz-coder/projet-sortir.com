@@ -57,6 +57,8 @@ class Sortie
         $this->inscriptions = new ArrayCollection();
     }
 
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -153,17 +155,6 @@ class Sortie
         return $this;
     }
 
-    public function getIdOrganisateur(): ?int
-    {
-        return $this->id_organisateur;
-    }
-
-    public function setIdOrganisateur(int $id_organisateur): static
-    {
-        $this->id_organisateur = $id_organisateur;
-
-        return $this;
-    }
 
     public function getLieu(): ?Lieu
     {
