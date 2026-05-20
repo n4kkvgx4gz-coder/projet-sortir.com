@@ -1,0 +1,104 @@
+CREATE TABLE UTILISATEUR (
+    id_utilisateur   INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+	pseudo           VARCHAR(30) NOT NULL unique,
+    nom              VARCHAR(30) NOT NULL,
+    prenom           VARCHAR(30) NOT NULL,
+    telephone        VARCHAR(15),
+    mail             VARCHAR(20) NOT NULL,
+	motDePasse	 VARCHAR(255) NOT NULL,
+    administrateur   boolean NOT NULL,
+    actif            boolean NOT NULL,
+	id_campus    INTEGER NOT NULL
+);
+
+CREATE TABLE INSCRIPTION (
+    date_inscription      DATETIME NOT NULL,
+    id_sortie             INTEGER NOT NULL,
+    id_participant   INTEGER NOT NULL
+);
+ALTER TABLE INSCRIPTION ADD constraint inscriptions_pk PRIMARY KEY  (id_sortie, id_participant);
+
+CREATE TABLE SORTIE (
+    id_sortie                     INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nom                           VARCHAR(30) NOT NULL,
+    datedebut                     datetime NOT NULL,
+    datecloture                   datetime NOT NULL,
+    nbInscriptionsMax             INTEGER NOT NULL,
+    description                 VARCHAR(255),
+    etat                    boolean NOT NULL,
+	urlPhoto                      VARCHAR(250),
+    id_organisateur                  INTEGER NOT NULL,
+    id_lieu                 INTEGER NOT NULL,
+    id_campus INTEGER NOT NULL
+);
+
+CREATE TABLE VILLE (
+    id_ville      INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nom_ville     VARCHAR(30) NOT NULL,
+    code_postal   VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE CAMPUS (
+    id_campus      INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nom_campus     VARCHAR(30) NOT NULL,
+    id_ville INTEGER NOT NULL
+);
+
+CREATE TABLE LIEU (
+    id_lieu         INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nom_lieu        VARCHAR(30) NOT NULL,
+    rue             VARCHAR(30),
+    latitude           FLOAT,
+    longitude          FLOAT,
+    id_ville   INTEGER NOT NULL
+);
+
+ALTER TABLE INSCRIPTION
+    ADD CONSTRAINT inscriptions_participants_fk FOREIGN KEY ( id_participant )
+        REFERENCES UTILISATEUR ( id_utilisateur )
+    ON DELETE NO ACTION
+    ON UPDATE no action;
+
+ALTER TABLE INSCRIPTION
+    ADD CONSTRAINT inscriptions_sorties_fk FOREIGN KEY ( id_sortie )
+        REFERENCES SORTIE ( id_sortie )
+    ON DELETE NO ACTION
+    ON UPDATE no action;
+
+ALTER TABLE LIEU
+    ADD CONSTRAINT lieux_villes_fk FOREIGN KEY ( id_ville )
+        REFERENCES ville ( id_ville )
+    ON DELETE NO ACTION
+    ON UPDATE no action;
+
+ALTER TABLE SORTIE
+    ADD CONSTRAINT sorties_lieux_fk FOREIGN KEY ( id_lieu )
+        REFERENCES lieu ( id_lieu )
+    ON DELETE NO ACTION
+    ON UPDATE no action;
+
+ALTER TABLE SORTIE
+    ADD CONSTRAINT sorties_participants_fk FOREIGN KEY ( id_organisateur )
+        REFERENCES UTILISATEUR ( id_utilisateur )
+    ON DELETE NO ACTION
+    ON UPDATE no action;
+
+ALTER TABLE UTILISATEUR
+    ADD CONSTRAINT participants_campus_fk FOREIGN KEY ( id_campus )
+        REFERENCES CAMPUS ( id_campus )
+    ON DELETE NO ACTION
+    ON UPDATE no action;
+
+
+ALTER TABLE CAMPUS
+    ADD CONSTRAINT campus_ville_fk FOREIGN KEY ( id_ville )
+        REFERENCES VILLE ( id_ville )
+    ON DELETE NO ACTION
+    ON UPDATE no action;
+
+ALTER TABLE SORTIE
+    ADD CONSTRAINT campus_sortie_fk FOREIGN KEY ( id_campus )
+        REFERENCES CAMPUS ( id_campus )
+    ON DELETE NO ACTION
+    ON UPDATE no action;
+
