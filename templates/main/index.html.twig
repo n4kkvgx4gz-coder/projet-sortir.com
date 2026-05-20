@@ -26,15 +26,14 @@
                         <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
                     {% endif %}
 
-                    <span class="badge">{{ sortie.lieu }}</span>
+                    <span class="badge">
+        {{ sortie.lieu.nomLieu }}
+    </span>
 
                     <h2>{{ sortie.nom }}</h2>
-
                     <p>{{ sortie.description }}</p>
 
-                    <p>
-                        📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}
-                    </p>
+                    <p>📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}</p>
                 </article>
             {% else %}
                 <p>Aucune sortie disponible pour le moment.</p>
