@@ -7,29 +7,28 @@ use App\Entity\Sortie;
 use App\Entity\Utilisateur;
 use App\Form\SortieType;
 use App\Repository\InscriptionRepository;
+use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\SortieRepository;
 
 final class SortieController extends AbstractController
 {
-    #[Route('/sortie', name: 'app_sortie')]
+    #[Route('/sortie', name: 'app_sortie', methods: ['GET'])]
     public function index(SortieRepository $sortieRepository): Response
     {
-        $sorties = $sortieRepository->findBy(
-            [],
-            ['dateDebut' => 'ASC']
-        );
+        $sorties = $sortieRepository->findBy([], [
+            'dateDebut' => 'ASC',
+        ]);
 
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
         ]);
     }
 
-    #[Route('/sorties/create', name: 'sortie_create')]
+    #[Route('/sorties/create', name: 'sortie_create', methods: ['GET', 'POST'])]
     public function create(
         Request $request,
         EntityManagerInterface $entityManager
@@ -51,7 +50,40 @@ final class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/sortie/{id}/inscription', name: 'sortie_inscription', methods: ['POST'])]
+    // detail de l'inscription
+    /** * si la date de début de la sortie est plus ancienne que aujourd’hui - 1 mois, Symfony redirige et empêche la consultation de la sortie. * * Exemple : aujourd’hui 20/05/2026, une sortie du 10/04/2026 ne sera plus consultable. * */
+    #[Route('/sortie/{id}', name: 'sortie_detail', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function detail(
+        Sortie $sortie,
+        InscriptionRepository $inscriptionRepository
+    ): Response {
+        $dateLimiteConsultation = (new \DateTime())->modify('-1 month');
+
+        if ($sortie->getDateDebut() < $dateLimiteConsultation) {
+            $this->addFlash('danger', 'Cette sortie n’est plus consultable.');
+
+            return $this->redirectToRoute('app_sortie');
+        }
+
+        /** @var Utilisateur|null $user */
+        $user = $this->getUser();
+
+        $dejaInscrit = null;
+
+        if ($user) {
+            $dejaInscrit = $inscriptionRepository->findOneBy([
+                'sortie' => $sortie,
+                'participant' => $user,
+            ]);
+        }
+
+        return $this->render('sortie/detail.html.twig', [
+            'sortie' => $sortie,
+            'dejaInscrit' => $dejaInscrit,
+        ]);
+    }
+
+    #[Route('/sortie/{id}/inscription', name: 'sortie_inscription', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function inscription(
         Sortie $sortie,
         EntityManagerInterface $entityManager,
@@ -182,5 +214,11 @@ final class SortieController extends AbstractController
             'id' => $sortie->getId(),
         ]);
     }
-
+    #[Route('/sortie/{id}', name: 'sortie_show')]
+    public function show(Sortie $sortie): Response
+    {
+        return $this->render('sortie/show.html.twig', [
+            'sortie' => $sortie,
+        ]);
+    }
 }
