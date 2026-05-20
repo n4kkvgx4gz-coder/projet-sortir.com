@@ -32,16 +32,25 @@
                 {{ sortie.description }}
             </p>
 
-            {% if sortie.etat %}
+            {% if sortie.etat and sortie.dateCloture > date() %}
 
-                <form method="post"
+                <div class="button-container">
+                    <form method="post"
                       action="{{ path('sortie_inscription', {'id': sortie.id}) }}">
 
-                    <button type="submit" class="btn-primary">
+                        <button type="submit" class="btn-primary">
                         S'inscrire
-                    </button>
+                         </button>
 
-                </form>
+                     </form>
+
+                    <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
+
+                        <button type="submit" class="btn-primary">
+                        Se désister
+                        </button>
+                    </form>
+                </div>
 
             {% else %}
 
