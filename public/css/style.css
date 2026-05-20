@@ -448,6 +448,40 @@ textarea {
 .btn-user:hover {
     background: #06d6a0;
 }
+.participants-section {
+    margin-top: 35px;
+    padding-top: 20px;
+    border-top: 1px solid #dbe7ef;
+}
+
+.participants-section h2 {
+    margin-bottom: 15px;
+    color: #102a43;
+}
+
+.participants-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.participant-item {
+    padding: 12px 15px;
+    background: #f4f8fb;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: 0.2s;
+}
+
+.participant-item:hover {
+    background: #e6f4f8;
+}
+
+.participant-item a {
+    text-decoration: none;
+    color: #102a43;
+    font-weight: 600;
+}
 /* FOOTER */
 
 .main-footer {
