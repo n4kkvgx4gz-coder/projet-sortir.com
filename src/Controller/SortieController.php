@@ -7,34 +7,22 @@ use App\Entity\Sortie;
 use App\Entity\Utilisateur;
 use App\Form\SortieType;
 use App\Repository\InscriptionRepository;
+use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\SortieRepository;
 
 
 final class SortieController extends AbstractController
 {
-    #[Route('/sortie', name: 'app_sortie')]
-    public function index(
-        Request $request,
-        SortieRepository $sortieRepository
-    ): Response {
-        $q = $request->query->get('q');
-        $dateMin = $request->query->get('dateMin');
-        $dateMax = $request->query->get('dateMax');
-        $departement = $request->query->get('departement');
-        $categorie = $request->query->get('categorie');
-
-        $sorties = $sortieRepository->findWithFilters(
-            $q,
-            $dateMin,
-            $dateMax,
-            $departement,
-            $categorie
-        );
+    #[Route('/sortie', name: 'app_sortie', methods: ['GET'])]
+    public function index(SortieRepository $sortieRepository): Response
+    {
+        $sorties = $sortieRepository->findBy([], [
+            'dateDebut' => 'ASC',
+        ]);
 
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
@@ -46,7 +34,7 @@ final class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/sorties/create', name: 'sortie_create')]
+    #[Route('/sorties/create', name: 'sortie_create', methods: ['GET', 'POST'])]
     public function create(
         Request $request,
         EntityManagerInterface $entityManager
@@ -68,7 +56,40 @@ final class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/sortie/{id}/inscription', name: 'sortie_inscription', methods: ['POST'])]
+    // detail de l'inscription
+    /** * si la date de début de la sortie est plus ancienne que aujourd’hui - 1 mois, Symfony redirige et empêche la consultation de la sortie. * * Exemple : aujourd’hui 20/05/2026, une sortie du 10/04/2026 ne sera plus consultable. * */
+    #[Route('/sortie/{id}', name: 'sortie_detail', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function detail(
+        Sortie $sortie,
+        InscriptionRepository $inscriptionRepository
+    ): Response {
+        $dateLimiteConsultation = (new \DateTime())->modify('-1 month');
+
+        if ($sortie->getDateDebut() < $dateLimiteConsultation) {
+            $this->addFlash('danger', 'Cette sortie n’est plus consultable.');
+
+            return $this->redirectToRoute('app_sortie');
+        }
+
+        /** @var Utilisateur|null $user */
+        $user = $this->getUser();
+
+        $dejaInscrit = null;
+
+        if ($user) {
+            $dejaInscrit = $inscriptionRepository->findOneBy([
+                'sortie' => $sortie,
+                'participant' => $user,
+            ]);
+        }
+
+        return $this->render('sortie/detail.html.twig', [
+            'sortie' => $sortie,
+            'dejaInscrit' => $dejaInscrit,
+        ]);
+    }
+
+    #[Route('/sortie/{id}/inscription', name: 'sortie_inscription', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function inscription(
         Sortie $sortie,
         EntityManagerInterface $entityManager,
@@ -79,12 +100,14 @@ final class SortieController extends AbstractController
 
         if (!$user) {
             $this->addFlash('danger', 'Vous devez être connecté pour vous inscrire.');
+
             return $this->redirectToRoute('app_login');
         }
 
         if (!$sortie->isEtat()) {
             $this->addFlash('danger', 'Cette sortie n’est pas ouverte aux inscriptions.');
-            return $this->redirectToRoute('app_inscription', [
+
+            return $this->redirectToRoute('sortie_detail', [
                 'id' => $sortie->getId(),
             ]);
         }
@@ -92,7 +115,7 @@ final class SortieController extends AbstractController
         if ($sortie->getDateCloture() < new \DateTime()) {
             $this->addFlash('danger', 'Les inscriptions sont clôturées pour cette sortie.');
 
-            return $this->redirectToRoute('app_inscription', [
+            return $this->redirectToRoute('sortie_detail', [
                 'id' => $sortie->getId(),
             ]);
         }
@@ -100,7 +123,7 @@ final class SortieController extends AbstractController
         if ($sortie->getInscriptions()->count() >= $sortie->getNbInscriptionsMax()) {
             $this->addFlash('danger', 'Il n’y a plus de places disponibles.');
 
-            return $this->redirectToRoute('app_inscription', [
+            return $this->redirectToRoute('sortie_detail', [
                 'id' => $sortie->getId(),
             ]);
         }
@@ -113,7 +136,7 @@ final class SortieController extends AbstractController
         if ($dejaInscrit) {
             $this->addFlash('warning', 'Vous êtes déjà inscrit à cette sortie.');
 
-            return $this->redirectToRoute('app_inscription', [
+            return $this->redirectToRoute('sortie_detail', [
                 'id' => $sortie->getId(),
             ]);
         }
@@ -128,36 +151,12 @@ final class SortieController extends AbstractController
 
         $this->addFlash('success', 'Vous êtes bien inscrit à la sortie.');
 
-        return $this->redirectToRoute('app_inscription', [
+        return $this->redirectToRoute('sortie_detail', [
             'id' => $sortie->getId(),
         ]);
     }
 
-    // Route pour l'inscription
-    /**
-     * si la date de début de la sortie est plus ancienne que aujourd’hui - 1 mois, Symfony redirige et empêche la consultation de la sortie.
-     *
-     * Exemple : aujourd’hui 20/05/2026, une sortie du 10/04/2026 ne sera plus consultable.
-     *
-     */
-    #[Route('/inscription/{id}', name: 'app_inscription', methods: ['GET'])]
-    public function inscriptionPage(Sortie $sortie): Response
-    {
-        $dateLimiteConsultation = (new \DateTime())->modify('-1 month');
-
-        if ($sortie->getDateDebut() < $dateLimiteConsultation) {
-            $this->addFlash('danger', 'Cette sortie n’est plus consultable.');
-
-            return $this->redirectToRoute('app_sortie');
-        }
-
-        return $this->render('inscription/inscription.html.twig', [
-            'sortie' => $sortie,
-        ]);
-    }
-
-    // Route pour le désistement
-    #[Route('/sortie/{id}/desistement', name: 'sortie_desistement', methods: ['POST'])]
+    #[Route('/sortie/{id}/desistement', name: 'sortie_desistement', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function desistement(
         Sortie $sortie,
         EntityManagerInterface $entityManager,
@@ -168,12 +167,14 @@ final class SortieController extends AbstractController
 
         if (!$user) {
             $this->addFlash('danger', 'Vous devez être connecté.');
+
             return $this->redirectToRoute('app_login');
         }
 
         if ($sortie->getDateDebut() <= new \DateTime()) {
             $this->addFlash('danger', 'Vous ne pouvez plus vous désister, la sortie a déjà débuté.');
-            return $this->redirectToRoute('app_inscription', [
+
+            return $this->redirectToRoute('sortie_detail', [
                 'id' => $sortie->getId(),
             ]);
         }
@@ -185,7 +186,8 @@ final class SortieController extends AbstractController
 
         if (!$inscription) {
             $this->addFlash('warning', 'Vous n’êtes pas inscrit à cette sortie.');
-            return $this->redirectToRoute('app_inscription', [
+
+            return $this->redirectToRoute('sortie_detail', [
                 'id' => $sortie->getId(),
             ]);
         }
@@ -195,7 +197,7 @@ final class SortieController extends AbstractController
 
         $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
 
-        return $this->redirectToRoute('app_inscription', [
+        return $this->redirectToRoute('sortie_detail', [
             'id' => $sortie->getId(),
         ]);
     }
