@@ -14,62 +14,29 @@ class Inscription
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?\DateTime $date_inscription = null;
+    private ?\DateTime $dateInscription = null;
 
-
-    #[ORM\ManyToOne(inversedBy: 'Inscription')]
+    #[ORM\ManyToOne(inversedBy: 'inscriptions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Sortie $sortie = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Inscription')]
+    #[ORM\ManyToOne(inversedBy: 'inscriptions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur  $participant  = null;
+    private ?Utilisateur $participant = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
     public function getDateInscription(): ?\DateTime
     {
-        return $this->date_inscription;
+        return $this->dateInscription;
     }
 
-    public function setDateInscription(\DateTime $date_inscription): static
+    public function setDateInscription(\DateTime $dateInscription): static
     {
-        $this->date_inscription = $date_inscription;
-
-        return $this;
-    }
-
-    public function getIdSortie(): ?int
-    {
-        return $this->id_sortie;
-    }
-
-    public function setIdSortie(int $id_sortie): static
-    {
-        $this->id_sortie = $id_sortie;
-
-        return $this;
-    }
-
-    public function getIdParticipant(): ?int
-    {
-        return $this->id_participant;
-    }
-
-    public function setIdParticipant(int $id_participant): static
-    {
-        $this->id_participant = $id_participant;
-
+        $this->dateInscription = $dateInscription;
         return $this;
     }
 
@@ -81,19 +48,17 @@ class Inscription
     public function setSortie(?Sortie $sortie): static
     {
         $this->sortie = $sortie;
-
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getParticipant(): ?Utilisateur
     {
-        return $this->User;
+        return $this->participant;
     }
 
-    public function setUser(?User $User): static
+    public function setParticipant(?Utilisateur $participant): static
     {
-        $this->User = $User;
-
+        $this->participant = $participant;
         return $this;
     }
 }
