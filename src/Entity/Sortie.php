@@ -165,12 +165,12 @@ class Sortie
         return $this;
     }
 
-    public function getLieu(): ?string
+    public function getLieu(): ?Lieu
     {
         return $this->lieu;
     }
 
-    public function setLieu(string $lieu): static
+    public function setLieu(?Lieu $lieu): static
     {
         $this->lieu = $lieu;
 
