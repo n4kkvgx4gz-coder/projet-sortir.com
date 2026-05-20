@@ -48,25 +48,24 @@
 
             <div class="actions-sortie">
 
-                {% if dejaInscrit %}
+                {% if sortie.etat and sortie.dateCloture > date() %}
 
-                    <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
-                        <button type="submit" class="btn btn-danger">
-                            Se désister
-                        </button>
-                    </form>
-
-                {% elseif sortie.dateCloture < date() %}
-
-                {% elseif sortie.dateCloture < date() %}
-                    <p class="message-cloture">
-                        Clôture des inscriptions
-                    </p>
+                    {% if dejaInscrit %}
+                        <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
+                            <button type="submit" class="btn-primary">
+                                Se désister
+                            </button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{{ path('sortie_inscription', {'id': sortie.id}) }}">
+                            <button type="submit" class="btn-primary">
+                                S'inscrire
+                            </button>
+                        </form>
+                    {% endif %}
 
                 {% else %}
-                    <a href="{{ path('sortie_inscription', {'id': sortie.id}) }}" class="btn btn-primary">
-                        S'inscrire
-                    </a>
+                    <p>Cette sortie est fermée.</p>
                 {% endif %}
 
             </div>
