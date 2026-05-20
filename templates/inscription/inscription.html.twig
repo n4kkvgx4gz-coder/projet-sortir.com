@@ -1,64 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription à une sortie{% endblock %}
+{% block title %}Détail de la sortie{% endblock %}
 
 {% block body %}
 
-    <div class="page">
+    <div class="page-detail-sortie">
 
-        <div class="card form-card">
+        <div class="detail-card">
 
-            <h1>Inscription à une sortie</h1>
+            <div class="detail-image">
+                <img src="{{ asset('images/sortie-default.jpg') }}" alt="Image de la sortie">
+            </div>
 
-            <h2>{{ sortie.nom }}</h2>
+            <div class="detail-content">
 
-            <p>
-                <strong>Date de début :</strong>
-                {{ sortie.dateDebut|date('d/m/Y H:i') }}
-            </p>
+                <h1>{{ sortie.nom }}</h1>
 
-            <p>
-                <strong>Date limite :</strong>
-                {{ sortie.dateCloture|date('d/m/Y H:i') }}
-            </p>
-
-            <p>
-                <strong>Nombre maximal de places :</strong>
-                {{ sortie.nbInscriptionsMax }}
-            </p>
-
-            <p>
-                <strong>Description :</strong>
-                {{ sortie.description }}
-            </p>
-
-            {% if sortie.etat and sortie.dateCloture > date() %}
-
-                <div class="button-container">
-                    <form method="post"
-                      action="{{ path('sortie_inscription', {'id': sortie.id}) }}">
-
-                        <button type="submit" class="btn-primary">
-                        S'inscrire
-                         </button>
-
-                     </form>
-
-                    <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
-
-                        <button type="submit" class="btn-primary">
-                        Se désister
-                        </button>
-                    </form>
-                </div>
-
-            {% else %}
-
-                <p>
-                    Cette sortie est fermée.
+                <p class="detail-subtitle">
+                    Découvrez les informations de cette sortie
                 </p>
 
-            {% endif %}
+                <div class="detail-info">
+                    <p><strong>Date de début :</strong> {{ sortie.dateDebut|date('d/m/Y H:i') }}</p>
+                    <p><strong>Date limite d'inscription :</strong> {{ sortie.dateCloture|date('d/m/Y H:i') }}</p>
+                    <p><strong>Places disponibles :</strong> {{ sortie.nbInscriptionsMax }}</p>
+                    <p><strong>Description :</strong> {{ sortie.description }}</p>
+                </div>
+
+                <div class="button-container">
+
+                    {% if sortie.etat and sortie.dateCloture > date() %}
+
+                        {% if dejaInscrit %}
+                            <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
+                                <button type="submit" class="btn-primary">
+                                    Se désister
+                                </button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{{ path('sortie_inscription', {'id': sortie.id}) }}">
+                                <button type="submit" class="btn-primary">
+                                    S'inscrire
+                                </button>
+                            </form>
+                        {% endif %}
+
+                    {% else %}
+                        <p class="sortie-fermee">Cette sortie est fermée.</p>
+                    {% endif %}
+
+                </div>
+
+            </div>
 
         </div>
 

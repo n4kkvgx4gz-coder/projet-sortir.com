@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail sortie{% endblock %}
+
+{% block body %}
+
+    <div class="activity-card">
+
+        <div class="card-image">
+            {% if sortie.urlPhoto %}
+                <img
+                    src="{{ asset('images/' ~ sortie.urlPhoto) }}"
+                    alt="{{ sortie.nom }}"
+                >
+            {% else %}
+                <img
+                    src="{{ asset('images/default.jpg') }}"
+                    alt="image par défaut"
+                >
+            {% endif %}
+
+            <span class="badge">
+            {{ sortie.lieu.nomLieu }}
+        </span>
+        </div>
+
+        <div class="sortie-content">
+
+            <h1>{{ sortie.nom }}</h1>
+
+            <p>
+                Du {{ sortie.dateDebut|date('d/m/Y H:i') }}
+            </p>
+
+            <p>
+                Organisateur :
+                <a href="{{ path('profil_detail', {'id': sortie.organisateur.id}) }}">
+                    {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}
+                </a>
+            </p>
+
+            <div class="infos-sortie">
+                <p><strong>Date :</strong> {{ sortie.dateDebut|date('d/m/Y') }}</p>
+                <p><strong>Heure :</strong> {{ sortie.dateDebut|date('H:i') }}</p>
+                <p><strong>Places disponibles :</strong> {{ sortie.nbInscriptionsMax }}</p>
+                <p><strong>Clôture :</strong> {{ sortie.dateCloture|date('d/m/Y') }}</p>
+            </div>
+
+            <div class="actions-sortie">
+
+                {% if dejaInscrit %}
+
+                    <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
+                        <button type="submit" class="btn btn-danger">
+                            Se désister
+                        </button>
+                    </form>
+
+                {% elseif sortie.dateCloture < date() %}
+
+                {% elseif sortie.dateCloture < date() %}
+                    <p class="message-cloture">
+                        Clôture des inscriptions
+                    </p>
+
+                {% else %}
+                    <a href="{{ path('sortie_inscription', {'id': sortie.id}) }}" class="btn btn-primary">
+                        S'inscrire
+                    </a>
+                {% endif %}
+
+            </div>
+
+            <div class="description">
+                <h2>À propos</h2>
+                <p>{{ sortie.description}}</p>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
