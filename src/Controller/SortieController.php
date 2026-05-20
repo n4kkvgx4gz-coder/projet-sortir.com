@@ -117,9 +117,23 @@ final class SortieController extends AbstractController
     }
 
     // Route pour l'inscription
+    /**
+     * si la date de début de la sortie est plus ancienne que aujourd’hui - 1 mois, Symfony redirige et empêche la consultation de la sortie.
+     *
+     * Exemple : aujourd’hui 20/05/2026, une sortie du 10/04/2026 ne sera plus consultable.
+     *
+     */
     #[Route('/inscription/{id}', name: 'app_inscription', methods: ['GET'])]
     public function inscriptionPage(Sortie $sortie): Response
     {
+        $dateLimiteConsultation = (new \DateTime())->modify('-1 month');
+
+        if ($sortie->getDateDebut() < $dateLimiteConsultation) {
+            $this->addFlash('danger', 'Cette sortie n’est plus consultable.');
+
+            return $this->redirectToRoute('app_sortie');
+        }
+
         return $this->render('inscription/inscription.html.twig', [
             'sortie' => $sortie,
         ]);
