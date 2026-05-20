@@ -202,10 +202,11 @@ textarea {
 /* FOOTER */
 
 .main-footer {
-    margin-top: 60px;
+    margin-top: auto;
     padding: 24px;
     text-align: center;
     color: var(--muted);
+
 }
 
 /* RESPONSIVE */

@@ -16,23 +16,25 @@ class Inscription
     #[ORM\Column]
     private ?\DateTime $date_inscription = null;
 
-    #[ORM\Column]
-    private ?int $id_sortie = null;
 
-    #[ORM\Column]
-    private ?int $id_participant = null;
-
-    #[ORM\ManyToOne(inversedBy: 'inscriptions')]
+    #[ORM\ManyToOne(inversedBy: 'Inscription')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Sortie $sortie = null;
 
-    #[ORM\ManyToOne(inversedBy: 'inscriptions')]
+    #[ORM\ManyToOne(inversedBy: 'Inscription')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $User = null;
+    private ?Utilisateur  $participant  = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getDateInscription(): ?\DateTime
