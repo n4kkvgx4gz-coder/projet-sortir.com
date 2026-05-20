@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
 final class SortieController extends AbstractController
 {
     #[Route('/sortie', name: 'app_sortie', methods: ['GET'])]
@@ -25,6 +26,11 @@ final class SortieController extends AbstractController
 
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
+            'q' => $q,
+            'dateMin' => $dateMin,
+            'dateMax' => $dateMax,
+            'departement' => $departement,
+            //'categorie' => $categorie,
         ]);
     }
 
