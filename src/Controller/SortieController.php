@@ -182,10 +182,12 @@ final class SortieController extends AbstractController
             'id' => $sortie->getId(),
         ]);
     }
-    #[Route('/sortie/{id}', name: 'sortie_show')]
-    public function show(Sortie $sortie): Response
+    #[Route('/sortie/{id}/inscription', name: 'sortie_inscription', methods: ['POST'])]
+    public function inscription(
+        Sortie $sortie
+    ): Response
     {
-        return $this->render('sortie/show.html.twig', [
+        return $this->render('inscription/inscription.html.twig', [
             'sortie' => $sortie,
         ]);
     }
