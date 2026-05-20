@@ -21,28 +21,44 @@
 
             {% for sortie in sorties %}
 
-                <article class="card activity-card">
+                <article class="activity-card">
 
-                    {% if sortie.urlPhoto %}
-                        <img
-                            src="{{ asset('images/' ~ sortie.urlPhoto) }}"
-                            alt="{{ sortie.nom }}"
-                        >
-                    {% endif %}
+                    <div class="card-image">
+                        {% if sortie.urlPhoto %}
+                            <img
+                                src="{{ asset('images/' ~ sortie.urlPhoto) }}"
+                                alt="{{ sortie.nom }}"
+                            >
+                        {% else %}
+                            <img
+                                src="{{ asset('images/default.jpg') }}"
+                                alt="image par défaut"
+                            >
+                        {% endif %}
 
-                    <span class="badge">
-                    {{ sortie.lieu.nomLieu }}
-                </span>
+                        <span class="badge">
+            {{ sortie.lieu.nomLieu }}
+        </span>
+                    </div>
 
-                    <h2>{{ sortie.nom }}</h2>
+                    <div class="card-content">
 
-                    <p>
-                        {{ sortie.description }}
-                    </p>
+                        <h2>{{ sortie.nom }}</h2>
 
-                    <p class="date">
-                        📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}
-                    </p>
+                        <p class="description">
+                            {{ sortie.description|length > 90 ? sortie.description|slice(0, 90) ~ '...' : sortie.description }}
+                        </p>
+
+                        <div class="card-meta">
+                            <span>📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}</span>
+                        </div>
+
+                        <a href="{{ path('sortie_show', {'id': sortie.id}) }}"
+                           class="btn-user">
+                            Voir détail
+                        </a>
+
+                    </div>
 
                 </article>
 
