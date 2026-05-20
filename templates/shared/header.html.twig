@@ -27,6 +27,8 @@
             <li>
                 <a href="{{ path('app_sortie') }}">
                     Sorties
+                <a href="{{ path('profil_detail') }}">
+                    Gérer profil
                 </a>
             </li>
 
@@ -72,13 +74,13 @@
 
 
 
-          {#
->>>>>>> fd2d71404080c1e9853419c9aa97f84d4e4115bf
-{#          //Cyril pour path login#}
+
+
         <a href="{{ path('app_login') }}"
                class="btn-user">
                 Connexion
             </a>
+            <a href="{{ path("app_register") }}">Créer un compte</a>
 
         {% endif %}
 
