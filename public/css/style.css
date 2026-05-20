@@ -432,6 +432,11 @@ textarea {
     background: #ffffff;
     border-top: 1px solid var(--border);
 }
+/* GERER PROFIL */
+.profil{
+    margin: 24px;
+    text-align: center;
+}
 
 /* RESPONSIVE */
 
