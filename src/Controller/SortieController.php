@@ -195,4 +195,5 @@ final class SortieController extends AbstractController
             'id' => $sortie->getId(),
         ]);
     }
+
 }
