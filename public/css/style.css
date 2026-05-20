@@ -198,6 +198,24 @@ textarea {
     gap: 12px;
     margin-top: 24px;
 }
+.button-container {
+    display: flex;
+    gap: 15px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.button-container form {
+    margin: 0;
+    width: auto;
+}
+
+.button-container .btn-primary {
+    width: auto;
+    display: inline-block;
+}
 
 /* FOOTER */
 
@@ -227,4 +245,5 @@ textarea {
     .grid {
         grid-template-columns: 1fr;
     }
+
 }
