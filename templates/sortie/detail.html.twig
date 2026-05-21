@@ -8,20 +8,14 @@
 
         <div class="card-image">
             {% if sortie.urlPhoto %}
-                <img
-                    src="{{ asset('images/' ~ sortie.urlPhoto) }}"
-                    alt="{{ sortie.nom }}"
-                >
+                <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
             {% else %}
-                <img
-                    src="{{ asset('images/default.jpg') }}"
-                    alt="image par défaut"
-                >
+                <img src="{{ asset('images/default.jpg') }}" alt="image par défaut">
             {% endif %}
 
             <span class="badge">
-            {{ sortie.lieu.nomLieu }}
-        </span>
+                {{ sortie.lieu.nomLieu }}
+            </span>
         </div>
 
         <div class="sortie-content">
@@ -34,9 +28,13 @@
 
             <p>
                 Organisateur :
-                <a href="{{ path('profil_detail', {'id': sortie.organisateur.id}) }}">
-                    {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}
-                </a>
+                {% if sortie.organisateur %}
+                    <a href="{{ path('profil_detail', {'id': sortie.organisateur.id}) }}">
+                        {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}
+                    </a>
+                {% else %}
+                    <span>Organisateur inconnu</span>
+                {% endif %}
             </p>
 
             <div class="infos-sortie">
@@ -48,6 +46,7 @@
                 </p>
                 <p><strong>Clôture :</strong> {{ sortie.dateCloture|date('d/m/Y') }}</p>
             </div>
+
             <div class="participants-section">
 
                 <h2>
@@ -60,16 +59,14 @@
 
                         {% for inscription in sortie.inscriptions %}
 
-                            <li class="participant-item">
-
-                                <a href="{{ path('profil_detail', {'id': inscription.participant.id}) }}">
-
-                                    {{ inscription.participant.prenom }}
-                                    {{ inscription.participant.nom }}
-
-                                </a>
-
-                            </li>
+                            {% if inscription.participant %}
+                                <li class="participant-item">
+                                    <a href="{{ path('profil_detail', {'id': inscription.participant.id}) }}">
+                                        {{ inscription.participant.prenom }}
+                                        {{ inscription.participant.nom }}
+                                    </a>
+                                </li>
+                            {% endif %}
 
                         {% endfor %}
 
@@ -106,9 +103,10 @@
                 {% endif %}
 
             </div>
+
             <div class="description">
                 <h2>À propos</h2>
-                <p>{{ sortie.description}}</p>
+                <p>{{ sortie.description }}</p>
             </div>
 
         </div>
