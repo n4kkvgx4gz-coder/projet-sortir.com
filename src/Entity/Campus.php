@@ -57,6 +57,11 @@ class Campus
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return $this->nom_campus ?? '';
+    }
+
     public function getVille(): ?Ville
     {
         return $this->ville;
@@ -68,6 +73,7 @@ class Campus
 
         return $this;
     }
+
 
     /**
      * @return Collection<int, Utilisateur>
