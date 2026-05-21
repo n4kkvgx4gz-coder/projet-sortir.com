@@ -151,6 +151,19 @@ class Sortie
         return $this;
     }
 
+
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): static
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Inscription>
      */
@@ -193,20 +206,32 @@ class Sortie
         return $this->lieu;
     }
 
-    public function setLieu(?Lieu $lieu): static
+    public function setLieu(?Lieu $lieu)
     {
         $this->lieu = $lieu;
     }
-        public
-        function getCategorie(): ?Categorie
-        {
-            return $this->categorie;
-        }
-
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
 
     public function setCategorie(?Categorie $categorie): static
     {
         $this->categorie = $categorie;
+
+        return $this;
+    }
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $motifAnnulation = null;
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): static
+    {
+        $this->motifAnnulation = $motifAnnulation;
 
         return $this;
     }

@@ -85,24 +85,49 @@
 
             <div class="actions-sortie">
 
-                {% if sortie.etat and sortie.dateCloture > date() %}
+                {% if sortie.etat == 0 %}
 
-                    {% if dejaInscrit %}
-                        <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
-                            <button type="submit" class="btn-primary">
-                                Se désister
-                            </button>
-                        </form>
-                    {% else %}
-                        <form method="post" action="{{ path('sortie_inscription', {'id': sortie.id}) }}">
-                            <button type="submit" class="btn-primary">
-                                S'inscrire
-                            </button>
-                        </form>
+                    <p>Cette sortie est annulée.</p>
+
+                    {% if sortie.motifAnnulation %}
+                        <p><strong>Motif :</strong> {{ sortie.motifAnnulation }}</p>
                     {% endif %}
 
                 {% else %}
-                    <p>Cette sortie est fermée.</p>
+
+                    {% if app.user
+                        and sortie.organisateur
+                        and app.user.id == sortie.organisateur.id
+                        and sortie.dateDebut > date()
+                        and sortie.etat == 1
+                    %}
+                        <a href="{{ path('sortie_annuler', {'id': sortie.id}) }}" class="btn-danger">
+                            Annuler la sortie
+                        </a>
+                    {% endif %}
+
+                    {% if sortie.dateCloture > date() %}
+
+                        {% if dejaInscrit %}
+                            <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
+                                <button type="submit" class="btn-primary">
+                                    Se désister
+                                </button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{{ path('sortie_inscription', {'id': sortie.id}) }}">
+                                <button type="submit" class="btn-primary">
+                                    S'inscrire
+                                </button>
+                            </form>
+                        {% endif %}
+
+                    {% else %}
+
+                        <p>Clôture des inscriptions.</p>
+
+                    {% endif %}
+
                 {% endif %}
 
             </div>

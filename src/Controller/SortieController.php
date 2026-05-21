@@ -251,5 +251,42 @@ final class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/sortie/{id}/annuler', name: 'sortie_annuler', methods: ['GET', 'POST'])]
+    public function annuler(
+        Sortie $sortie,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $user = $this->getUser();
+
+        if ($sortie->getOrganisateur() !== $user) {
+            throw $this->createAccessDeniedException("Vous ne pouvez pas annuler cette sortie.");
+        }
+
+        if ($sortie->getDateDebut() <= new \DateTime()) {
+            $this->addFlash('danger', "Impossible d'annuler une sortie déjà commencée.");
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+
+        if ($request->isMethod('POST')) {
+            $motif = $request->request->get('motifAnnulation');
+
+            if (empty($motif)) {
+                $this->addFlash('danger', "Le motif d'annulation est obligatoire.");
+            } else {
+                $sortie->setEtat(0);
+                $sortie->setMotifAnnulation($motif);
+
+                $em->flush();
+
+                $this->addFlash('success', "La sortie a bien été annulée.");
+                return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+            }
+        }
+
+        return $this->render('sortie/annuler.html.twig', [
+            'sortie' => $sortie,
+        ]);
+    }
 }
 
