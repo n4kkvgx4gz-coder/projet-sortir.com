@@ -64,6 +64,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $url_photo = null;
+
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
@@ -268,6 +271,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCampus(?Campus $campus): static
     {
         $this->campus = $campus;
+
+        return $this;
+    }
+
+    public function getUrlPhoto(): ?string
+    {
+        return $this->url_photo;
+    }
+
+    public function setUrlPhoto(?string $url_photo): static
+    {
+        $this->url_photo = $url_photo;
 
         return $this;
     }
