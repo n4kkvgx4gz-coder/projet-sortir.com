@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
@@ -39,6 +40,25 @@ class RegistrationController extends AbstractController
             $user->setRoles(['ROLE_USER']);
             $user->setAdministrateur(false);
             $user->setActif(true);
+
+            $directory = 'images/';
+            $file = $form['url_photo']->getData();
+
+            if($file) {
+                $extension = $file->guessExtension();
+
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
+                }
+                try {
+                    $newFileName = rand(1, 99999) . '.' . $extension;
+                    $file->move($directory, $newFileName);
+                    $user->setUrlPhoto($newFileName);
+                } catch (FileException $e) {
+                    dump($e->getMessage());
+                }
+            }
             $entityManager->persist($user);
             $entityManager->flush();
 

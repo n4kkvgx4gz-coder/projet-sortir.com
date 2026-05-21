@@ -4,6 +4,7 @@
     <div class="card profil">
 <h1> Mon profil </h1>
     <p> pseudo : {{ utilisateur.pseudo }}</p>
+        <img src="images/{{ asset(utilisateur.urlPhoto) }}" alt="photo de profil">
     <p> nom : {{ utilisateur.nom }}</p>
     <p> Prenom : {{ utilisateur.prenom }} </p>
     <p> tel : {{ utilisateur.telephone }}</p>

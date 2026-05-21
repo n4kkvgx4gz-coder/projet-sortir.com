@@ -6,6 +6,7 @@ use App\Entity\Inscription;
 use App\Entity\Sortie;
 use App\Entity\Utilisateur;
 use App\Form\SortieType;
+use App\Repository\CategorieRepository;
 use App\Repository\InscriptionRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -57,6 +58,7 @@ final class SortieController extends AbstractController
     ): Response {
         $sortie = new Sortie();
         $sortie->setEtat(true);
+        $sortie->setOrganisateur($this->getUser());
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
@@ -73,15 +75,15 @@ final class SortieController extends AbstractController
                     $extension = 'bin';
                 }
                 try{
-                    $file->move($directory, rand(1, 99999).'.'.$extension);
-
+                    $newFileName = rand(1, 99999).'.'.$extension;
+                    $file->move($directory, $newFileName);
+                    $sortie->setUrlPhoto($newFileName);
                 }catch (FileException $e){
                     dump($e->getMessage());
                 }
-                $sortie->setUrlPhoto($directory.$file->getClientOriginalName());
+
             }
 
-//        $file->move($directory, $file->getClientOriginalName());
 
 
             $entityManager->persist($sortie);
