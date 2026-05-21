@@ -423,3 +423,49 @@ VALUES
 8,
 3
 );
+
+-- =========================
+-- TABLE CATEGORIE
+-- =========================
+
+INSERT INTO categorie (id, nom, couleur)
+VALUES
+(1, 'Culture', '#8338ec'),
+(2, 'Sport & loisirs', '#06d6a0'),
+(3, 'Aventure', '#f77f00'),
+(4, 'Vie sociale', '#ef476f'),
+(5, 'Autres', '#00a8c6');
+
+
+
+-- =========================
+-- ASSOCIATION DES SORTIES
+-- =========================
+
+UPDATE sortie
+SET categorie_id = 2
+WHERE nom LIKE '%Bowling%';
+
+UPDATE sortie
+SET categorie_id = 1
+WHERE nom LIKE '%Cinéma%';
+
+UPDATE sortie
+SET categorie_id = 3
+WHERE nom LIKE '%Aventure%';
+
+UPDATE sortie
+SET categorie_id = 4
+WHERE nom LIKE '%Loisirs%';
+
+UPDATE sortie
+SET categorie_id = 1
+WHERE nom LIKE '%Culture%';
+
+UPDATE sortie
+SET categorie_id = 5
+WHERE nom LIKE '%Laser%';
+
+UPDATE sortie
+SET categorie_id = 5
+WHERE nom LIKE '%Escape%';
