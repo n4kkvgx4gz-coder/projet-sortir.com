@@ -1,6 +1,7 @@
 <header class="main-header">
 
     <div class="brand">
+
         <img
             class="header-logo"
             src="{{ asset('images/logo.png') }}"
@@ -17,7 +18,7 @@
 
     <nav class="main-nav">
         <ul>
-
+            {% if app.user %}
             <li>
                 <a href="{{ path('app_main') }}">
                     Accueil
@@ -36,25 +37,43 @@
             </li>
 
             <li>
-                <a href="#">
-                    Menu 2
+                <a href="{{ path('sortie_create') }}">
+                        + Sortie
                 </a>
-            </li>
+                </li>
 
             <li>
                 <a href="#">
-                    Menu 3
+                        + Lieu
                 </a>
             </li>
 
-            {% if app.user %}
-
                 <li>
-                    <a href="{{ path('sortie_create') }}">
-                        + Créer
+                    <a href="#">
+                        + Ville
                     </a>
                 </li>
 
+            <li>
+                <a href="#">
+                     + groupe privé
+                </a>
+            </li>
+
+            {% endif %}
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <li>
+                    <a href="#">
+                        Gestion Utilisateurs
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        Gestion Sorties
+                    </a>
+                </li>
             {% endif %}
 
         </ul>

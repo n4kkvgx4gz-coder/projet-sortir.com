@@ -193,9 +193,10 @@ class Sortie
         return $this->lieu;
     }
 
-    public function setLieu(?Lieu $lieu): static
+    public function setLieu(?Lieu $lieu)
     {
         $this->lieu = $lieu;
+    }
     public function getCategorie(): ?Categorie
     {
         return $this->categorie;
