@@ -58,9 +58,15 @@ public function gererProfil(Request $request, EntityManagerInterface $entityMana
     }
 
     // Pour récupérer l'utilisateur avec son id pour voir profil participant
-    #[Route('/profil/{id}', name: 'profil_detail', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function detail(Utilisateur $utilisateur): Response
+    #[Route('/{id}', name: 'voir', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function detail(int $id, UtilisateurRepository $utilisateurRepository): Response
     {
+        $utilisateur = $utilisateurRepository->find($id);
+
+        if (!$utilisateur) {
+            throw $this->createNotFoundException('Utilisateur introuvable');
+        }
+
         return $this->render('user/voirProfil.html.twig', [
             'utilisateur' => $utilisateur,
         ]);

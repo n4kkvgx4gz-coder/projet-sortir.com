@@ -29,7 +29,7 @@
             <p>
                 Organisateur :
                 {% if sortie.organisateur %}
-                    <a href="{{ path('profil_detail', {'id': sortie.organisateur.id}) }}">
+                    <a href="{{ path('profil_voir', {'id': sortie.organisateur.id}) }}">
                         {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}
                     </a>
                 {% else %}
@@ -61,7 +61,7 @@
 
                             {% if inscription.participant %}
                                 <li class="participant-item">
-                                    <a href="{{ path('profil_detail', {'id': inscription.participant.id}) }}">
+                                    <a href="{{ path('profil_voir', {'id': inscription.participant.id}) }}">
                                         {{ inscription.participant.prenom }}
                                         {{ inscription.participant.nom }}
                                     </a>
