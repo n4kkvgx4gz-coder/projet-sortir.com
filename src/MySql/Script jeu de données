@@ -1,471 +1,179 @@
--- =========================================
--- SORTIR.COM - DONNEES DE TEST
--- VERSION DOCTRINE / SYMFONY
--- =========================================
-
+DROP DATABASE IF EXISTS sortir;
+CREATE DATABASE sortir CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE sortir;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
-TRUNCATE TABLE inscription;
-TRUNCATE TABLE sortie;
-TRUNCATE TABLE lieu;
-TRUNCATE TABLE utilisateur;
-TRUNCATE TABLE campus;
-TRUNCATE TABLE ville;
+CREATE TABLE ville (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom_ville VARCHAR(30) NOT NULL,
+    code_postal VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE campus (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom_campus VARCHAR(50) NOT NULL,
+    ville_id INT DEFAULT NULL,
+    CONSTRAINT FK_campus_ville FOREIGN KEY (ville_id) REFERENCES ville(id)
+);
+
+CREATE TABLE utilisateur (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(180) NOT NULL UNIQUE,
+    roles JSON NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nom VARCHAR(30) NOT NULL,
+    prenom VARCHAR(30) NOT NULL,
+    telephone VARCHAR(15) DEFAULT NULL,
+    administrateur TINYINT NOT NULL,
+    actif TINYINT NOT NULL,
+    pseudo VARCHAR(30) NOT NULL UNIQUE,
+    url_photo VARCHAR(255) DEFAULT NULL,
+    campus_id INT NOT NULL,
+    CONSTRAINT FK_utilisateur_campus FOREIGN KEY (campus_id) REFERENCES campus(id)
+);
+
+CREATE TABLE categorie (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50) NOT NULL,
+    couleur VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE lieu (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom_lieu VARCHAR(30) NOT NULL,
+    rue VARCHAR(30) DEFAULT NULL,
+    latitude DOUBLE DEFAULT NULL,
+    longitude DOUBLE DEFAULT NULL,
+    ville_id INT NOT NULL,
+    CONSTRAINT FK_lieu_ville FOREIGN KEY (ville_id) REFERENCES ville(id)
+);
+
+CREATE TABLE sortie (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(30) NOT NULL,
+    date_debut DATETIME NOT NULL,
+    date_cloture DATETIME NOT NULL,
+    nb_inscriptions_max INT NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    etat TINYINT NOT NULL,
+    url_photo VARCHAR(255) DEFAULT NULL,
+    organisateur_id INT NOT NULL,
+    lieu_id INT NOT NULL,
+    categorie_id INT DEFAULT NULL,
+    CONSTRAINT FK_sortie_organisateur FOREIGN KEY (organisateur_id) REFERENCES utilisateur(id) ON DELETE CASCADE,
+    CONSTRAINT FK_sortie_lieu FOREIGN KEY (lieu_id) REFERENCES lieu(id),
+    CONSTRAINT FK_sortie_categorie FOREIGN KEY (categorie_id) REFERENCES categorie(id)
+);
+
+CREATE TABLE inscription (
+    date_inscription DATETIME NOT NULL,
+    sortie_id INT NOT NULL,
+    participant_id INT NOT NULL,
+    PRIMARY KEY (sortie_id, participant_id),
+    CONSTRAINT FK_inscription_sortie FOREIGN KEY (sortie_id) REFERENCES sortie(id),
+    CONSTRAINT FK_inscription_participant FOREIGN KEY (participant_id) REFERENCES utilisateur(id)
+);
+
+CREATE TABLE reset_password_request (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    selector VARCHAR(20) NOT NULL,
+    hashed_token VARCHAR(100) NOT NULL,
+    requested_at DATETIME NOT NULL,
+    expires_at DATETIME NOT NULL,
+    user_id INT NOT NULL,
+    INDEX IDX_reset_user (user_id),
+    CONSTRAINT FK_reset_user FOREIGN KEY (user_id) REFERENCES utilisateur(id)
+);
+
+CREATE TABLE rememberme_token (
+    series VARCHAR(88) PRIMARY KEY NOT NULL,
+    value VARCHAR(88) NOT NULL,
+    lastUsed DATETIME NOT NULL,
+    class VARCHAR(100) NOT NULL,
+    username VARCHAR(200) NOT NULL
+);
+
+CREATE TABLE messenger_messages (
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    body LONGTEXT NOT NULL,
+    headers LONGTEXT NOT NULL,
+    queue_name VARCHAR(190) NOT NULL,
+    created_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+    available_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+    delivered_at DATETIME DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)',
+    INDEX IDX_75EA56E0FB7336F0 (queue_name),
+    INDEX IDX_75EA56E0E3BD61CE (available_at),
+    INDEX IDX_75EA56E016BA31DB (delivered_at),
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- =========================================
--- VILLES
--- =========================================
-
-INSERT INTO ville
-(id, nom_ville, code_postal)
-
-VALUES
-
+INSERT INTO ville (id, nom_ville, code_postal) VALUES
 (1, 'Quimper', '29000'),
 (2, 'Concarneau', '29900'),
 (3, 'Bénodet', '29950'),
-
 (4, 'Nantes', '44000'),
 (5, 'Rezé', '44400'),
 (6, 'Saint-Herblain', '44800'),
-
 (7, 'Rennes', '35000'),
 (8, 'Cesson-Sévigné', '35510'),
 (9, 'Bruz', '35170'),
-
 (10, 'Niort', '79000'),
 (11, 'Chauray', '79180'),
 (12, 'Bessines', '79000');
 
--- =========================================
--- CAMPUS
--- =========================================
-
-INSERT INTO campus
-(id, nom_campus, ville_id)
-
-VALUES
-
+INSERT INTO campus (id, nom_campus, ville_id) VALUES
 (1, 'ENI Quimper', 1),
 (2, 'ENI Nantes', 4),
 (3, 'ENI Rennes', 7),
 (4, 'ENI Niort', 10);
 
--- =========================================
--- UTILISATEURS
--- =========================================
-
-INSERT INTO utilisateur
-(
-id,
-email,
-roles,
-password,
-pseudo,
-nom,
-prenom,
-telephone,
-administrateur,
-actif
-)
-
-VALUES
-
-(
-1,
-'yann@sortir.com',
-'["ROLE_ADMIN"]',
-'test123',
-'Nerriec',
-'Yann',
-'0601020304',
-1,
-1
-),
-
-(
-2,
-'camille@sortir.com',
-'["ROLE_USER"]',
-'test123',
-'Martin',
-'Camille',
-'0605060708',
-0,
-1
-),
-
-(
-3,
-'adele@sortir.com',
-'["ROLE_ADMIN"]',
-'test123',
-'Durand',
-'Adèle',
-'0601010101',
-1,
-1
-),
-
-(
-4,
-'chrysantheme@sortir.com',
-'["ROLE_ADMIN"]',
-'test123',
-'Moreau',
-'Chrysanthème',
-'0602020202',
-1,
-1
-),
-
-(
-5,
-'cyril@sortir.com',
-'["ROLE_ADMIN"]',
-'test123',
-'Lemoine',
-'Cyril',
-'0603030303',
-1,
-1
-),
-
-(
-6,
-'leo@sortir.com',
-'["ROLE_USER"]',
-'test123',
-'Petit',
-'Léo',
-'0604040404',
-0,
-1
-);
-
--- =========================================
--- LIEUX
--- =========================================
-
-INSERT INTO lieu
-(
-id,
-nom_lieu,
-rue,
-latitude,
-longitude,
-ville_id
-)
-
-VALUES
-
-(
-1,
-'Bowling Quimper',
-'12 rue du Bowling',
-47.995,
--4.102,
-1
-),
-
-(
-2,
-'Cinéma Quimper',
-'8 avenue du Film',
-47.996,
--4.105,
-1
-),
-
-(
-3,
-'Port de Bénodet',
-'4 quai des Voiles',
-47.875,
--4.112,
-3
-),
-
-(
-4,
-'Laser Game Nantes',
-'15 rue Atlantis',
-47.218,
--1.553,
-4
-),
-
-(
-5,
-'Parc Beaulieu',
-'5 avenue Verte',
-47.205,
--1.535,
-5
-),
-
-(
-6,
-'Salle Culture Rennes',
-'8 rue des Arts',
-48.117,
--1.677,
-7
-),
-
-(
-7,
-'Escape Game Rennes',
-'3 rue Mystère',
-48.105,
--1.720,
-8
-),
-
-(
-8,
-'Laser Game Niort',
-'6 rue du Jeu',
-46.323,
--0.458,
-10
-),
-
-(
-9,
-'Base Aventure Niort',
-'2 chemin des Bois',
-46.300,
--0.480,
-11
-);
-
--- =========================================
--- SORTIES
--- =========================================
-
-INSERT INTO sortie
-(
-id,
-nom,
-date_debut,
-date_cloture,
-nb_inscriptions_max,
-description,
-etat,
-url_photo,
-organisateur_id,
-lieu_id
-)
-
-VALUES
-
-(
-1,
-'Soirée Bowling',
-'2026-06-01 20:00:00',
-'2026-05-30 23:59:00',
-12,
-'Une soirée bowling entre étudiants.',
-1,
-'bowling.jpg',
-1,
-1
-),
-
-(
-2,
-'Soirée Cinéma',
-'2026-06-05 19:30:00',
-'2026-06-03 23:59:00',
-10,
-'Une soirée cinéma conviviale.',
-1,
-'cinema.jpg',
-1,
-2
-),
-
-(
-3,
-'Aventure Nautique',
-'2026-06-12 10:00:00',
-'2026-06-10 23:59:00',
-10,
-'Sortie aventure autour de la mer.',
-1,
-'aventure.jpg',
-1,
-3
-),
-
-(
-4,
-'Laser Game Nantes',
-'2026-06-15 18:30:00',
-'2026-06-13 23:59:00',
-14,
-'Combat laser par équipes.',
-1,
-'laser.jpg',
-3,
-4
-),
-
-(
-5,
-'Après-midi Loisirs',
-'2026-06-18 15:00:00',
-'2026-06-16 23:59:00',
-18,
-'Jeux, détente et bonne humeur.',
-1,
-'loisir.jpg',
-4,
-5
-),
-
-(
-6,
-'Sortie Culture',
-'2026-06-22 14:00:00',
-'2026-06-20 23:59:00',
-20,
-'Découverte culturelle et exposition.',
-1,
-'culture.jpg',
-5,
-6
-),
-
-(
-7,
-'Escape Game Rennes',
-'2026-06-25 17:00:00',
-'2026-06-23 23:59:00',
-6,
-'Résolvez les énigmes avant la fin du chrono.',
-1,
-'escape.jpg',
-5,
-7
-),
-
-(
-8,
-'Laser Game Niort',
-'2026-07-01 19:00:00',
-'2026-06-29 23:59:00',
-12,
-'Sortie laser game dynamique.',
-1,
-'laser2.jpg',
-6,
-8
-),
-
-(
-9,
-'Parcours Aventure',
-'2026-07-05 09:30:00',
-'2026-07-03 23:59:00',
-16,
-'Tyroliennes et activités plein air.',
-1,
-'aventure2.jpg',
-6,
-9
-);
-
--- =========================================
--- INSCRIPTIONS
--- =========================================
-
-INSERT INTO inscription
-(
-date_inscription,
-sortie_id,
-participant_id
-)
-
-VALUES
-
-(
-'2026-05-18 10:00:00',
-1,
-2
-),
-
-(
-'2026-05-18 11:00:00',
-2,
-6
-),
-
-(
-'2026-05-18 12:00:00',
-4,
-1
-),
-
-(
-'2026-05-18 13:00:00',
-5,
-2
-),
-
-(
-'2026-05-18 14:00:00',
-8,
-3
-);
-
--- =========================
--- TABLE CATEGORIE
--- =========================
-
-INSERT INTO categorie (id, nom, couleur)
-VALUES
+INSERT INTO categorie (id, nom, couleur) VALUES
 (1, 'Culture', '#8338ec'),
 (2, 'Sport & loisirs', '#06d6a0'),
 (3, 'Aventure', '#f77f00'),
 (4, 'Vie sociale', '#ef476f'),
 (5, 'Autres', '#00a8c6');
 
+INSERT INTO utilisateur
+(id, email, roles, password, nom, prenom, telephone, administrateur, actif, pseudo, url_photo, campus_id)
+VALUES
+(1, 'yann@sortir.com', '["ROLE_ADMIN"]', '$2y$12$uUyUjJgalrhhhmWItwNeyOvMbo5NJfY8D0SxhlOl7s1O8zJdcbpty', 'Nerriec', 'Yann', '0601020304', 1, 1, 'yncoder', 'profil-yann.jpg', 1),
+(2, 'camille@sortir.com', '["ROLE_USER"]', '$2y$12$uUyUjJgalrhhhmWItwNeyOvMbo5NJfY8D0SxhlOl7s1O8zJdcbpty', 'Martin', 'Camille', '0605060708', 0, 1, 'camille29', 'profil-camille.jpg', 1),
+(3, 'adele@sortir.com', '["ROLE_ADMIN"]', '$2y$12$uUyUjJgalrhhhmWItwNeyOvMbo5NJfY8D0SxhlOl7s1O8zJdcbpty', 'Durand', 'Adèle', '0601010101', 1, 1, 'adele', 'profil-adele.jpg', 2),
+(4, 'chrysantheme@sortir.com', '["ROLE_ADMIN"]', '$2y$12$uUyUjJgalrhhhmWItwNeyOvMbo5NJfY8D0SxhlOl7s1O8zJdcbpty', 'Moreau', 'Chrysanthème', '0602020202', 1, 1, 'chrysantheme', 'profil-chrysantheme.jpg', 3),
+(5, 'cyril@sortir.com', '["ROLE_ADMIN"]', '$2y$12$uUyUjJgalrhhhmWItwNeyOvMbo5NJfY8D0SxhlOl7s1O8zJdcbpty', 'Lemoine', 'Cyril', '0603030303', 1, 1, 'cyril', 'profil-cyril.jpg', 4),
+(6, 'leo@sortir.com', '["ROLE_USER"]', '$2y$12$uUyUjJgalrhhhmWItwNeyOvMbo5NJfY8D0SxhlOl7s1O8zJdcbpty', 'Petit', 'Léo', '0604040404', 0, 1, 'leo', 'profil-leo.jpg', 1);
 
+INSERT INTO lieu (id, nom_lieu, rue, latitude, longitude, ville_id) VALUES
+(1, 'Bowling Quimper', '12 rue du Bowling', 47.995, -4.102, 1),
+(2, 'Cinéma Quimper', '8 avenue du Film', 47.996, -4.105, 1),
+(3, 'Port de Bénodet', '4 quai des Voiles', 47.875, -4.112, 3),
+(4, 'Laser Game Nantes', '15 rue Atlantis', 47.218, -1.553, 4),
+(5, 'Parc Beaulieu', '5 avenue Verte', 47.205, -1.535, 5),
+(6, 'Salle Culture Rennes', '8 rue des Arts', 48.117, -1.677, 7),
+(7, 'Escape Game Rennes', '3 rue Mystère', 48.105, -1.720, 8),
+(8, 'Laser Game Niort', '6 rue du Jeu', 46.323, -0.458, 10),
+(9, 'Base Aventure Niort', '2 chemin des Bois', 46.300, -0.480, 11);
 
--- =========================
--- ASSOCIATION DES SORTIES
--- =========================
+INSERT INTO sortie
+(id, nom, date_debut, date_cloture, nb_inscriptions_max, description, etat, url_photo, organisateur_id, lieu_id, categorie_id)
+VALUES
+(1, 'Soirée Bowling', '2026-06-01 20:00:00', '2026-05-30 23:59:00', 12, 'Une soirée bowling entre étudiants.', 1, 'bowling.jpg', 1, 1, 2),
+(2, 'Soirée Cinéma', '2026-06-05 19:30:00', '2026-06-03 23:59:00', 10, 'Une soirée cinéma conviviale.', 1, 'cinema.jpg', 1, 2, 1),
+(3, 'Aventure Nautique', '2026-06-12 10:00:00', '2026-06-10 23:59:00', 10, 'Sortie aventure autour de la mer.', 1, 'aventure.jpg', 1, 3, 3),
+(4, 'Laser Game Nantes', '2026-06-15 18:30:00', '2026-06-13 23:59:00', 14, 'Combat laser par équipes.', 1, 'laser.jpg', 3, 4, 5),
+(5, 'Après-midi Loisirs', '2026-06-18 15:00:00', '2026-06-16 23:59:00', 18, 'Jeux, détente et bonne humeur.', 1, 'loisir.jpg', 4, 5, 4),
+(6, 'Sortie Culture', '2026-06-22 14:00:00', '2026-06-20 23:59:00', 20, 'Découverte culturelle et exposition.', 1, 'culture.jpg', 5, 6, 1),
+(7, 'Escape Game Rennes', '2026-06-25 17:00:00', '2026-06-23 23:59:00', 6, 'Résolvez les énigmes avant la fin du chrono.', 1, 'escape.jpg', 5, 7, 5),
+(8, 'Laser Game Niort', '2026-07-01 19:00:00', '2026-06-29 23:59:00', 12, 'Sortie laser game dynamique.', 1, 'laser2.jpg', 6, 8, 5),
+(9, 'Parcours Aventure', '2026-07-05 09:30:00', '2026-07-03 23:59:00', 16, 'Tyroliennes et activités plein air.', 1, 'aventure2.jpg', 6, 9, 3);
 
-UPDATE sortie
-SET categorie_id = 2
-WHERE nom LIKE '%Bowling%';
-
-UPDATE sortie
-SET categorie_id = 1
-WHERE nom LIKE '%Cinéma%';
-
-UPDATE sortie
-SET categorie_id = 3
-WHERE nom LIKE '%Aventure%';
-
-UPDATE sortie
-SET categorie_id = 4
-WHERE nom LIKE '%Loisirs%';
-
-UPDATE sortie
-SET categorie_id = 1
-WHERE nom LIKE '%Culture%';
-
-UPDATE sortie
-SET categorie_id = 5
-WHERE nom LIKE '%Laser%';
-
-UPDATE sortie
-SET categorie_id = 5
-WHERE nom LIKE '%Escape%';
+INSERT INTO inscription (date_inscription, sortie_id, participant_id) VALUES
+('2026-05-18 10:00:00', 1, 2),
+('2026-05-18 11:00:00', 2, 6),
+('2026-05-18 12:00:00', 4, 1),
+('2026-05-18 13:00:00', 5, 2),
+('2026-05-18 14:00:00', 8, 3);
