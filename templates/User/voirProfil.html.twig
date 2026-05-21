@@ -1,26 +1,41 @@
 {% extends 'base.html.twig' %}
+
 {% block body %}
 
-    <div class="card profil">
+    <div class="card profil" id="profil">
+        <div id="profilContent">
+            {% if utilisateur.urlPhoto is not null %}
+                <div id="profilImg">
+                    <img src="images{{ asset(utilisateur.urlPhoto) }}" alt="photo de profil">
+                </div>
+            {% endif %}
 
+            <div id=" profiltext">
+                {% if app.request.get('_route') == 'profil_voir' %}
+                    <h1>Profil de {{ utilisateur.prenom }}</h1>
+                {% elseif  app.request.get('_route') == 'profil_detail' %}
+                    <h1>Mon profil</h1>
+                {% endif %}
 
-        <h1> Mon profil </h1>
-        <p> pseudo : {{ utilisateur.pseudo }}</p>
-        <p> nom : {{ utilisateur.nom }}</p>
-        <p> Prenom : {{ utilisateur.prenom }} </p>
-        <p> tel : {{ utilisateur.telephone }}</p>
-        <p>campus : {{ utilisateur.campus }}</p>
-
-
+                <p>Pseudo : {{ utilisateur.pseudo }}</p>
+                <p>Nom : {{ utilisateur.nom }}</p>
+                <p>Prénom : {{ utilisateur.prenom }}</p>
+                <p>Tél : {{ utilisateur.telephone }}</p>
+                <p>Campus : {{ utilisateur.campus.nomCampus }}</p>
+            </div>
+        </div>
         {% if app.user and app.user.id == utilisateur.id %}
-            <a class="btn-user" href="{{ path('profil_modifier') }}">
-                Modifier
-            </a>
+            <div id="profilBtn">
+                <a class="btn-user" href="{{ path('profil_modifier') }}">
+                    Modifier
+                </a>
 
-            <a class="btn-user" href="{{ path('profil_supprimer') }}">
-                Supprimer
-            </a>
+                <a class="btn-user" href="{{ path('profil_supprimer') }}">
+                    Supprimer
+                </a>
+            </div>
         {% endif %}
 
     </div>
+
 {% endblock %}
