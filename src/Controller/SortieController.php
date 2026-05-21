@@ -10,6 +10,7 @@ use App\Repository\InscriptionRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -53,11 +54,34 @@ final class SortieController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response {
         $sortie = new Sortie();
-
+        $sortie->setEtat(true);
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+        $directory = 'images/';
+        $file = $form['image']->getData();
+
+            if($file){
+                $extension = $file->guessExtension();
+
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
+                }
+                try{
+                    $file->move($directory, rand(1, 99999).'.'.$extension);
+
+                }catch (FileException $e){
+                    dump($e->getMessage());
+                }
+                $sortie->setUrlPhoto($directory.$file->getClientOriginalName());
+            }
+
+//        $file->move($directory, $file->getClientOriginalName());
+
+
             $entityManager->persist($sortie);
             $entityManager->flush();
 
