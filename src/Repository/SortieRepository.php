@@ -22,7 +22,7 @@ class SortieRepository extends ServiceEntityRepository
         ?string $dateMin,
         ?string $dateMax,
         ?string $departement = null,
-        //?string $categorie = null
+        ?string $categorieId = null
     ): array {
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.lieu', 'l')
@@ -55,10 +55,10 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('departement', $departement . '%');
         }
 
-        //if (!empty($categorie)) {
-         //   $qb->andWhere('s.categorie = :categorie')
-          //      ->setParameter('categorie', $categorie);
-        //}
+        if (!empty($categorieId)) {
+            $qb->andWhere('s.categorie = :categorie')
+                ->setParameter('categorie', $categorieId);
+        }
 
         return $qb->getQuery()->getResult();
     }

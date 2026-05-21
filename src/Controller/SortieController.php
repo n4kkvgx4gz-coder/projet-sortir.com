@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\SortieRepository;
+use App\Repository\CategorieRepository;
 
 
 final class SortieController extends AbstractController
@@ -20,29 +21,31 @@ final class SortieController extends AbstractController
     #[Route('/sortie', name: 'app_sortie')]
     public function index(
         Request $request,
-        SortieRepository $sortieRepository
+        SortieRepository $sortieRepository,
+        CategorieRepository $categorieRepository
     ): Response {
         $q = $request->query->get('q');
         $dateMin = $request->query->get('dateMin');
         $dateMax = $request->query->get('dateMax');
         $departement = $request->query->get('departement');
-        $categorie = $request->query->get('categorie');
+        $categorieId = $request->query->get('categorie');
 
         $sorties = $sortieRepository->findWithFilters(
             $q,
             $dateMin,
             $dateMax,
             $departement,
-            $categorie
+            $categorieId
         );
 
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
+            'categories' => $categorieRepository->findAll(),
             'q' => $q,
             'dateMin' => $dateMin,
             'dateMax' => $dateMax,
             'departement' => $departement,
-            //'categorie' => $categorie,
+            'categorieId' => $categorieId,
         ]);
     }
 
