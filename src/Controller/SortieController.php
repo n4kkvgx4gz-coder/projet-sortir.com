@@ -6,6 +6,7 @@ use App\Entity\Inscription;
 use App\Entity\Sortie;
 use App\Entity\Utilisateur;
 use App\Form\SortieType;
+use App\Repository\CategorieRepository;
 use App\Repository\InscriptionRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
