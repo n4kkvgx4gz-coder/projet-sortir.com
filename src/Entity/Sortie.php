@@ -219,5 +219,18 @@ class Sortie
 
         return $this;
     }
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $motifAnnulation = null;
 
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): static
+    {
+        $this->motifAnnulation = $motifAnnulation;
+
+        return $this;
+    }
 }
