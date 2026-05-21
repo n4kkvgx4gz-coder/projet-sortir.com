@@ -51,8 +51,10 @@ public function gererProfil(Request $request, EntityManagerInterface $entityMana
 
     #[Route('/supprimer', name: 'supprimer', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function SupprimerProfil(Request $request) : Response {
+    public function SupprimerProfil(UtilisateurRepository $Repository,
+                                    EntityManagerInterface $entityManager) : Response {
         $userId = $this->getUser()->getId();
+
 
         return $this->redirectToRoute('profil_detail', ['id' => $userId]);
     }
