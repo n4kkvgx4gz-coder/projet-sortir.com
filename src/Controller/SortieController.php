@@ -31,6 +31,10 @@ final class SortieController extends AbstractController
         $dateMax = $request->query->get('dateMax');
         $departement = $request->query->get('departement');
         $categorieId = $request->query->get('categorie');
+        $organisateur = $request->query->get('organisateur');
+        $inscrit = $request->query->get('inscrit');
+        $disponible = $request->query->get('disponible');
+        $passees = $request->query->get('passees');
 
         $sorties = $sortieRepository->findWithFilters(
             $q,
@@ -48,6 +52,10 @@ final class SortieController extends AbstractController
             'dateMax' => $dateMax,
             'departement' => $departement,
             'categorieId' => $categorieId,
+            'organisateur' => $organisateur,
+            'inscrit' => $inscrit,
+            'disponible' => $disponible,
+            'passees' => $passees,
         ]);
     }
 
