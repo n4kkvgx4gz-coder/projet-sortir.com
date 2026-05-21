@@ -36,16 +36,16 @@ class Sortie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
 
-
-
-    /**
-     * @var Collection<int, Inscription>
-     */
-    #[ORM\OneToMany(targetEntity: Inscription::class, mappedBy: 'sortie')]
+    #[ORM\OneToMany(
+        targetEntity: Inscription::class,
+        mappedBy: 'sortie',
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
     private Collection $inscriptions;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Utilisateur $organisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
@@ -57,19 +57,12 @@ class Sortie
         $this->inscriptions = new ArrayCollection();
     }
 
-
-
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
+    // Tu peux supprimer setId(), normalement on ne modifie pas un id généré automatiquement.
 
     public function getNom(): ?string
     {
@@ -155,19 +148,6 @@ class Sortie
         return $this;
     }
 
-
-    public function getLieu(): ?Lieu
-    {
-        return $this->lieu;
-    }
-
-    public function setLieu(?Lieu $lieu): static
-    {
-        $this->lieu = $lieu;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Inscription>
      */
@@ -188,12 +168,7 @@ class Sortie
 
     public function removeInscription(Inscription $inscription): static
     {
-        if ($this->inscriptions->removeElement($inscription)) {
-            // set the owning side to null (unless already changed)
-            if ($inscription->getSortie() === $this) {
-                $inscription->setSortie(null);
-            }
-        }
+        $this->inscriptions->removeElement($inscription);
 
         return $this;
     }
@@ -206,6 +181,18 @@ class Sortie
     public function setOrganisateur(?Utilisateur $organisateur): static
     {
         $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): static
+    {
+        $this->lieu = $lieu;
 
         return $this;
     }
