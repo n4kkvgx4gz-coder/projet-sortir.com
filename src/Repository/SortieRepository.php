@@ -16,6 +16,52 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
+    // ex: Campus Quimper → département 29 → sorties dans les villes dont le code postal commence par 29
+    public function findWithFilters(
+        ?string $q,
+        ?string $dateMin,
+        ?string $dateMax,
+        ?string $departement = null,
+        ?string $categorieId = null
+    ): array {
+        $qb = $this->createQueryBuilder('s')
+            ->leftJoin('s.lieu', 'l')
+            ->leftJoin('l.ville', 'v')
+            ->addSelect('l', 'v')
+            ->orderBy('s.dateDebut', 'ASC');
+
+        if (!empty($q)) {
+            $qb->andWhere(
+                's.nom LIKE :q
+            OR s.description LIKE :q
+            OR l.nom_lieu LIKE :q
+            OR v.nom_ville LIKE :q'
+            )
+                ->setParameter('q', '%' . $q . '%');
+        }
+
+        if (!empty($dateMin)) {
+            $qb->andWhere('s.dateDebut >= :dateMin')
+                ->setParameter('dateMin', new \DateTime($dateMin));
+        }
+
+        if (!empty($dateMax)) {
+            $qb->andWhere('s.dateDebut <= :dateMax')
+                ->setParameter('dateMax', new \DateTime($dateMax . ' 23:59:59'));
+        }
+
+        if (!empty($departement)) {
+            $qb->andWhere('v.code_postal LIKE :departement')
+                ->setParameter('departement', $departement . '%');
+        }
+
+        if (!empty($categorieId)) {
+            $qb->andWhere('s.categorie = :categorie')
+                ->setParameter('categorie', $categorieId);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
     //    /**
     //     * @return Sortie[] Returns an array of Sortie objects
     //     */
