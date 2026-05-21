@@ -3,13 +3,13 @@
 
     <div class="card profil">
 
-        <h1>Profil de {{ utilisateur.prenom }}</h1>
-<h1> Mon profil </h1>
-    <p> pseudo : {{ utilisateur.pseudo }}</p>
-    <p> nom : {{ utilisateur.nom }}</p>
-    <p> Prenom : {{ utilisateur.prenom }} </p>
-    <p> tel : {{ utilisateur.telephone }}</p>
-    <p>campus : {{ utilisateur.campus }}</p>
+
+        <h1> Mon profil </h1>
+        <p> pseudo : {{ utilisateur.pseudo }}</p>
+        <p> nom : {{ utilisateur.nom }}</p>
+        <p> Prenom : {{ utilisateur.prenom }} </p>
+        <p> tel : {{ utilisateur.telephone }}</p>
+        <p>campus : {{ utilisateur.campus }}</p>
 
 
         {% if app.user and app.user.id == utilisateur.id %}
