@@ -64,7 +64,47 @@
                 <option value="35" {{ departement == '35' ? 'selected' : '' }}>Rennes / Ille-et-Vilaine</option>
                 <option value="79" {{ departement == '79' ? 'selected' : '' }}>Niort / Deux-Sèvres</option>
             </select>
+            <div class="filters-checks">
+                <label class="filter-check">
+                    <input
+                        type="checkbox"
+                        name="organisateur"
+                        value="1"
+                        {{ organisateur ? 'checked' : '' }}
+                    >
+                    Sorties créées
+                </label>
 
+                <label class="filter-check">
+                    <input
+                        type="checkbox"
+                        name="inscrit"
+                        value="1"
+                        {{ inscrit ? 'checked' : '' }}
+                    >
+                    Mes inscriptions
+                </label>
+
+                <label class="filter-check">
+                    <input
+                        type="checkbox"
+                        name="disponible"
+                        value="1"
+                        {{ disponible ? 'checked' : '' }}
+                    >
+                    Sorties disponibles
+                </label>
+
+                <label class="filter-check">
+                    <input
+                        type="checkbox"
+                        name="passees"
+                        value="1"
+                        {{ passees ? 'checked' : '' }}
+                    >
+                    Sorties passées
+                </label>
+            </div>
             <button class="btn-primary">
                 Filtrer
             </button>
@@ -99,7 +139,7 @@
 
                     <div class="card-content">
 
-    <span class="badge">
+    <span class="login-badge">
         📍 {{ sortie.lieu.nomLieu }}
     </span>
 
