@@ -171,12 +171,7 @@ class Sortie
 
     public function removeInscription(Inscription $inscription): static
     {
-        if ($this->inscriptions->removeElement($inscription)) {
-            // set the owning side to null (unless already changed)
-            if ($inscription->getSortie() === $this) {
-                $inscription->setSortie(null);
-            }
-        }
+        $this->inscriptions->removeElement($inscription);
 
         return $this;
     }
@@ -201,10 +196,6 @@ class Sortie
     public function setLieu(?Lieu $lieu): static
     {
         $this->lieu = $lieu;
-
-        return $this;
-    }
-
     public function getCategorie(): ?Categorie
     {
         return $this->categorie;
