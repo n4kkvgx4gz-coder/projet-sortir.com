@@ -60,369 +60,68 @@ VALUES
 -- =========================================
 
 INSERT INTO utilisateur
-(
-id,
-email,
-roles,
-password,
-pseudo,
-nom,
-prenom,
-telephone,
-administrateur,
-actif
-)
+(id,email,roles,password,nom,prenom,telephone,administrateur,actif,pseudo,campus_id)
 
 VALUES
 
-(
-1,
-'yann@sortir.com',
-'["ROLE_ADMIN"]',
-'test123',
-'Nerriec',
-'Yann',
-'0601020304',
-1,
-1
-),
-
-(
-2,
-'camille@sortir.com',
-'["ROLE_USER"]',
-'test123',
-'Martin',
-'Camille',
-'0605060708',
-0,
-1
-),
-
-(
-3,
-'adele@sortir.com',
-'["ROLE_ADMIN"]',
-'test123',
-'Durand',
-'Adèle',
-'0601010101',
-1,
-1
-),
-
-(
-4,
-'chrysantheme@sortir.com',
-'["ROLE_ADMIN"]',
-'test123',
-'Moreau',
-'Chrysanthème',
-'0602020202',
-1,
-1
-),
-
-(
-5,
-'cyril@sortir.com',
-'["ROLE_ADMIN"]',
-'test123',
-'Lemoine',
-'Cyril',
-'0603030303',
-1,
-1
-),
-
-(
-6,
-'leo@sortir.com',
-'["ROLE_USER"]',
-'test123',
-'Petit',
-'Léo',
-'0604040404',
-0,
-1
-);
+(1,'yann@sortir.com','["ROLE_ADMIN"]','test123','Nerriec','Yann','0601020304',1,1,'Yaya',1),
+(2,'camille@sortir.com','["ROLE_USER"]','test123','Martin','Camille','0605060708',0,1,'caca',2),
+(3,'adele@sortir.com','["ROLE_ADMIN"]','test123','Durand','Adèle','0601010101',1,1,'Dada',3),
+(4,'chrysantheme@sortir.com','["ROLE_ADMIN"]','test123','Moreau','Chrysanthème','0602020202',1,1,'Cricri',4),
+(5,'cyril@sortir.com','["ROLE_ADMIN"]','test123','Lemoine','Cyril','0603030303',1,1,'Cycy',1);
 
 -- =========================================
 -- LIEUX
 -- =========================================
 
 INSERT INTO lieu
-(
-id,
-nom_lieu,
-rue,
-latitude,
-longitude,
-ville_id
-)
+(id,nom_lieu,rue,latitude,longitude,ville_id)
 
 VALUES
 
-(
-1,
-'Bowling Quimper',
-'12 rue du Bowling',
-47.995,
--4.102,
-1
-),
-
-(
-2,
-'Cinéma Quimper',
-'8 avenue du Film',
-47.996,
--4.105,
-1
-),
-
-(
-3,
-'Port de Bénodet',
-'4 quai des Voiles',
-47.875,
--4.112,
-3
-),
-
-(
-4,
-'Laser Game Nantes',
-'15 rue Atlantis',
-47.218,
--1.553,
-4
-),
-
-(
-5,
-'Parc Beaulieu',
-'5 avenue Verte',
-47.205,
--1.535,
-5
-),
-
-(
-6,
-'Salle Culture Rennes',
-'8 rue des Arts',
-48.117,
--1.677,
-7
-),
-
-(
-7,
-'Escape Game Rennes',
-'3 rue Mystère',
-48.105,
--1.720,
-8
-),
-
-(
-8,
-'Laser Game Niort',
-'6 rue du Jeu',
-46.323,
--0.458,
-10
-),
-
-(
-9,
-'Base Aventure Niort',
-'2 chemin des Bois',
-46.300,
--0.480,
-11
-);
+(1,'Bowling Quimper','12 rue du Bowling',47.995,-4.102,1),
+(2,'Cinéma Quimper','8 avenue du Film',47.996,-4.105,1),
+(3,'Port de Bénodet','4 quai des Voiles',47.875,-4.112,3),
+(4,'Laser Game Nantes','15 rue Atlantis',47.218,-1.553,4),
+(5,'Parc Beaulieu','5 avenue Verte',47.205,-1.535,5),
+(6,'Salle Culture Rennes','8 rue des Arts',48.117,-1.677,7),
+(7,'Escape Game Rennes','3 rue Mystère',48.105,-1.720,8),
+(8,'Laser Game Niort','6 rue du Jeu',46.323,-0.458,10),
+(9,'Base Aventure Niort','2 chemin des Bois',46.300,-0.480,11);
 
 -- =========================================
 -- SORTIES
 -- =========================================
 
 INSERT INTO sortie
-(
-id,
-nom,
-date_debut,
-date_cloture,
-nb_inscriptions_max,
-description,
-etat,
-url_photo,
-organisateur_id,
-lieu_id
-)
+(id,nom,date_debut,date_cloture,nb_inscriptions_max,description,etat,url_photo,organisateur_id,lieu_id)
 
 VALUES
 
-(
-1,
-'Soirée Bowling',
-'2026-06-01 20:00:00',
-'2026-05-30 23:59:00',
-12,
-'Une soirée bowling entre étudiants.',
-1,
-'bowling.jpg',
-1,
-1
-),
-
-(
-2,
-'Soirée Cinéma',
-'2026-06-05 19:30:00',
-'2026-06-03 23:59:00',
-10,
-'Une soirée cinéma conviviale.',
-1,
-'cinema.jpg',
-1,
-2
-),
-
-(
-3,
-'Aventure Nautique',
-'2026-06-12 10:00:00',
-'2026-06-10 23:59:00',
-10,
-'Sortie aventure autour de la mer.',
-1,
-'aventure.jpg',
-1,
-3
-),
-
-(
-4,
-'Laser Game Nantes',
-'2026-06-15 18:30:00',
-'2026-06-13 23:59:00',
-14,
-'Combat laser par équipes.',
-1,
-'laser.jpg',
-3,
-4
-),
-
-(
-5,
-'Après-midi Loisirs',
-'2026-06-18 15:00:00',
-'2026-06-16 23:59:00',
-18,
-'Jeux, détente et bonne humeur.',
-1,
-'loisir.jpg',
-4,
-5
-),
-
-(
-6,
-'Sortie Culture',
-'2026-06-22 14:00:00',
-'2026-06-20 23:59:00',
-20,
-'Découverte culturelle et exposition.',
-1,
-'culture.jpg',
-5,
-6
-),
-
-(
-7,
-'Escape Game Rennes',
-'2026-06-25 17:00:00',
-'2026-06-23 23:59:00',
-6,
-'Résolvez les énigmes avant la fin du chrono.',
-1,
-'escape.jpg',
-5,
-7
-),
-
-(
-8,
-'Laser Game Niort',
-'2026-07-01 19:00:00',
-'2026-06-29 23:59:00',
-12,
-'Sortie laser game dynamique.',
-1,
-'laser2.jpg',
-6,
-8
-),
-
-(
-9,
-'Parcours Aventure',
-'2026-07-05 09:30:00',
-'2026-07-03 23:59:00',
-16,
-'Tyroliennes et activités plein air.',
-1,
-'aventure2.jpg',
-6,
-9
-);
+(1,'Soirée Bowling','2026-06-01 20:00:00','2026-05-30 23:59:00',12,'Une soirée bowling entre étudiants.',1,'bowling.jpg',1,1),
+(2,'Soirée Cinéma','2026-06-05 19:30:00','2026-06-03 23:59:00',10,'Une soirée cinéma conviviale.',1,'cinema.jpg',1,2),
+(3,'Aventure Nautique','2026-06-12 10:00:00','2026-06-10 23:59:00',10,'Sortie aventure autour de la mer.',1,'aventure.jpg',1,3),
+(4,'Laser Game Nantes','2026-06-15 18:30:00','2026-06-13 23:59:00',14,'Combat laser par équipes.',1,'laser.jpg',3,4),
+(5,'Après-midi Loisirs','2026-06-18 15:00:00','2026-06-16 23:59:00',18,'Jeux, détente et bonne humeur.',1,'loisir.jpg',4,5),
+(6,'Sortie Culture','2026-06-22 14:00:00','2026-06-20 23:59:00',20,'Découverte culturelle et exposition.',1,'culture.jpg',5,6),
+(7,'Escape Game Rennes','2026-06-25 17:00:00','2026-06-23 23:59:00',6,'Résolvez les énigmes avant la fin du chrono.',1,'escape.jpg',5,7),
+(8,'Laser Game Niort','2026-07-01 19:00:00','2026-06-29 23:59:00',12,'Sortie laser game dynamique.',1,'laser2.jpg',6,8),
+(9,'Parcours Aventure','2026-07-05 09:30:00','2026-07-03 23:59:00',16,'Tyroliennes et activités plein air.',1,'aventure2.jpg',6,9);
 
 -- =========================================
 -- INSCRIPTIONS
 -- =========================================
 
 INSERT INTO inscription
-(
-date_inscription,
-sortie_id,
-participant_id
-)
+(date_inscription,sortie_id,participant_id)
 
 VALUES
 
-(
-'2026-05-18 10:00:00',
-1,
-2
-),
-
-(
-'2026-05-18 11:00:00',
-2,
-6
-),
-
-(
-'2026-05-18 12:00:00',
-4,
-1
-),
-
-(
-'2026-05-18 13:00:00',
-5,
-2
-),
-
-(
-'2026-05-18 14:00:00',
-8,
-3
-);
+('2026-05-18 10:00:00',1,2),
+('2026-05-18 11:00:00',2,6),
+('2026-05-18 12:00:00',4,1),
+('2026-05-18 13:00:00',5,2),
+('2026-05-18 14:00:00',8,3);
 
 -- =========================
 -- TABLE CATEGORIE
