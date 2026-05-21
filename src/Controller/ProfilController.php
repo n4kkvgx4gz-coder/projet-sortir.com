@@ -57,4 +57,13 @@ public function gererProfil(Request $request, EntityManagerInterface $entityMana
         return $this->redirectToRoute('profil_detail', ['id' => $userId]);
     }
 
+    // Pour récupérer l'utilisateur avec son id pour voir profil participant
+    #[Route('/profil/{id}', name: 'profil_detail', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function detail(Utilisateur $utilisateur): Response
+    {
+        return $this->render('user/voirProfil.html.twig', [
+            'utilisateur' => $utilisateur,
+        ]);
+    }
+
 }
