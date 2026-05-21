@@ -259,8 +259,13 @@ final class SortieController extends AbstractController
     ): Response {
         $user = $this->getUser();
 
-        if ($sortie->getOrganisateur() !== $user) {
-            throw $this->createAccessDeniedException("Vous ne pouvez pas annuler cette sortie.");
+        if (
+            $sortie->getOrganisateur() !== $user
+            && !$user->isAdministrateur()
+        ) {
+            throw $this->createAccessDeniedException(
+                "Vous ne pouvez pas annuler cette sortie."
+            );
         }
 
         if ($sortie->getDateDebut() <= new \DateTime()) {

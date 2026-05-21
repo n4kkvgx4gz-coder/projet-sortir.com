@@ -61,16 +61,15 @@
                     <ul class="participants-list">
 
                         {% for inscription in sortie.inscriptions %}
+                            {% set participant = inscription.participant %}
 
-                            {% if inscription.participant %}
+                            {% if participant is not null %}
                                 <li class="participant-item">
-                                    <a href="{{ path('profil_voir', {'id': inscription.participant.id}) }}">
-                                        {{ inscription.participant.prenom }}
-                                        {{ inscription.participant.nom }}
+                                    <a href="{{ path('profil_voir', {'id': participant.id}) }}">
+                                        {{ participant.prenom }} {{ participant.nom }}
                                     </a>
                                 </li>
                             {% endif %}
-
                         {% endfor %}
 
                     </ul>
@@ -96,10 +95,12 @@
                 {% else %}
 
                     {% if app.user
-                        and sortie.organisateur
-                        and app.user.id == sortie.organisateur.id
                         and sortie.dateDebut > date()
                         and sortie.etat == 1
+                        and (
+                        app.user.id == sortie.organisateur.id
+                        or app.user.administrateur
+                        )
                     %}
                         <a href="{{ path('sortie_annuler', {'id': sortie.id}) }}" class="btn-danger">
                             Annuler la sortie
