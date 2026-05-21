@@ -589,6 +589,33 @@ body {
     font-weight: 900;
     box-shadow: 0 10px 22px rgba(0, 168, 198, 0.25);
 }
+/* GERER PROFIL */
+#profil{
+    display: flex;
+    flex-direction: column;
+}
+#profiltext{
+    display: flex;
+    flex-direction: row;
+
+}
+#profilContent{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-evenly;
+}
+#profilImg img {
+    width: 10em;
+    height: 10em;
+    border-radius: 90px;
+    align-self: end;
+}
+
+#profilBtn {
+    justify-content: space-evenly;
+    display: flex;
+}
+
 
 /* RESPONSIVE */
 

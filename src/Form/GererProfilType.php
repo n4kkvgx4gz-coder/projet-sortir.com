@@ -6,6 +6,7 @@ use App\Entity\Campus;
 use App\Entity\Utilisateur;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,6 +25,10 @@ class GererProfilType extends AbstractType
                 'choice_label' => 'nom_campus',
                 'label' => 'Campus de rattachement',
                 'required' => true
+            ])
+            ->add('url_photo', FileType::class, [
+                'required' => false,
+                'mapped' => false
             ])
         ;
     }

@@ -60,8 +60,6 @@ class Sortie
         $this->inscriptions = new ArrayCollection();
     }
 
-
-
     public function getId(): ?int
     {
         return $this->id;
@@ -153,19 +151,6 @@ class Sortie
         return $this;
     }
 
-
-    public function getLieu(): ?Lieu
-    {
-        return $this->lieu;
-    }
-
-    public function setLieu(?Lieu $lieu): static
-    {
-        $this->lieu = $lieu;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Inscription>
      */
@@ -208,6 +193,14 @@ class Sortie
         return $this;
     }
 
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): static
+    {
+        $this->lieu = $lieu;
     public function getCategorie(): ?Categorie
     {
         return $this->categorie;
@@ -219,5 +212,4 @@ class Sortie
 
         return $this;
     }
-
 }
