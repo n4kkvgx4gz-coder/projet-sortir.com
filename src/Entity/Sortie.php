@@ -52,6 +52,9 @@ class Sortie
     #[ORM\JoinColumn(nullable: false)]
     private ?Lieu $lieu = null;
 
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    private ?Categorie $categorie = null;
+
     public function __construct()
     {
         $this->inscriptions = new ArrayCollection();
@@ -206,6 +209,18 @@ class Sortie
     public function setOrganisateur(?Utilisateur $organisateur): static
     {
         $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?Categorie $categorie): static
+    {
+        $this->categorie = $categorie;
 
         return $this;
     }
