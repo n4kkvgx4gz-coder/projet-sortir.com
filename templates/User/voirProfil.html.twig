@@ -1,17 +1,27 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 
-    <div class="card profil">
-<h1> Mon profil </h1>
-    <p> pseudo : {{ utilisateur.pseudo }}</p>
-        <img src="images/{{ asset(utilisateur.urlPhoto) }}" alt="photo de profil">
-    <p> nom : {{ utilisateur.nom }}</p>
-    <p> Prenom : {{ utilisateur.prenom }} </p>
-    <p> tel : {{ utilisateur.telephone }}</p>
-    <p> campus : {{ utilisateur.campus.getNomCampus() }}</p>
+    <div class="form-card" id="profil">
+        <div id="profilContent">
+            {% if utilisateur.urlphoto is not null %}
+            <div id="profilImg">
+                <img src="images/{{ asset(utilisateur.urlPhoto) }}" alt="photo de profil">
+            </div>
+            {% endif %}
+            <div id=" profiltext">
+                <h1> Mon profil </h1>
+                <p> pseudo : {{ utilisateur.pseudo }}</p>
+                <p> nom : {{ utilisateur.nom }}</p>
+                <p> Prenom : {{ utilisateur.prenom }} </p>
+                <p> tel : {{ utilisateur.telephone }}</p>
+                <p> campus : {{ utilisateur.campus.getNomCampus() }}</p>
+            </div>
+        </div>
 
-
+<div id="profilBtn">
 <a class="btn-user" href="{{ path('profil_modifier') }}">Modifier</a>
 <a class="btn-user" href="{{ path('profil_supprimer') }}">Supprimer</a>
+</div>
     </div>
+
 {% endblock %}

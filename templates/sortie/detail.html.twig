@@ -8,7 +8,10 @@
 
         <div class="card-image">
             {% if sortie.urlPhoto %}
-                <img src="{{ asset(sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
+                <img
+                    src="{{ asset('images/' ~ sortie.urlPhoto) }}"
+                    alt="{{ sortie.nom }}"
+                >
             {% else %}
                 <img src="{{ asset('images/default.jpg') }}" alt="image par défaut">
             {% endif %}
