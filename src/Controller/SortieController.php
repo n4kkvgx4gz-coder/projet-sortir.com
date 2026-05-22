@@ -20,8 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-
-
 final class SortieController extends AbstractController
 {
     #[Route('/sortie', name: 'app_sortie')]
@@ -165,6 +163,7 @@ final class SortieController extends AbstractController
             }
 
             $entityManager->persist($sortie);
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_sortie');
@@ -182,7 +181,9 @@ final class SortieController extends AbstractController
         Sortie $sortie,
         InscriptionRepository $inscriptionRepository
     ): Response {
-        $dateLimiteConsultation = (new \DateTime())->modify('-1 month');
+
+        $dateLimiteConsultation =
+            (new \DateTime())->modify('-1 month');
 
         if ($sortie->getDateDebut() < $dateLimiteConsultation) {
             $this->addFlash('danger', 'Cette sortie n’est plus consultable.');
@@ -219,7 +220,11 @@ final class SortieController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-            $this->addFlash('danger', 'Vous devez être connecté pour vous inscrire.');
+
+            $this->addFlash(
+                'danger',
+                'Vous devez être connecté.'
+            );
 
             return $this->redirectToRoute('app_login');
         }
@@ -295,23 +300,35 @@ final class SortieController extends AbstractController
         Sortie $sortie,
         EntityManagerInterface $entityManager,
         InscriptionRepository $inscriptionRepository
-    ): Response
-    {
+    ): Response {
+
         /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         if (!$user) {
-            $this->addFlash('danger', 'Vous devez être connecté.');
+
+            $this->addFlash(
+                'danger',
+                'Vous devez être connecté.'
+            );
 
             return $this->redirectToRoute('app_login');
         }
 
-        if ($sortie->getDateDebut() <= new \DateTime()) {
-            $this->addFlash('danger', 'Vous ne pouvez plus vous désister, la sortie a déjà débuté.');
+        if (
+            $sortie->getDateDebut()
+            <= new \DateTime()
+        ) {
 
-            return $this->redirectToRoute('sortie_detail', [
-                'id' => $sortie->getId(),
-            ]);
+            $this->addFlash(
+                'danger',
+                'La sortie a déjà débuté.'
+            );
+
+            return $this->redirectToRoute(
+                'sortie_detail',
+                ['id' => $sortie->getId()]
+            );
         }
 
         $inscription = $inscriptionRepository->findOneBy([
@@ -322,9 +339,15 @@ final class SortieController extends AbstractController
         if (!$inscription) {
             $this->addFlash('warning', 'Vous n’êtes pas inscrit à cette sortie.');
 
-            return $this->redirectToRoute('sortie_detail', [
-                'id' => $sortie->getId(),
-            ]);
+            $this->addFlash(
+                'warning',
+                'Vous n’êtes pas inscrit.'
+            );
+
+            return $this->redirectToRoute(
+                'sortie_detail',
+                ['id' => $sortie->getId()]
+            );
         }
 
         $entityManager->remove($inscription);
