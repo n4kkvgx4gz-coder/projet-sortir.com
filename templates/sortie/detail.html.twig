@@ -95,16 +95,23 @@
                 {% else %}
 
                     {% if app.user
-                        and sortie.dateDebut > date()
-                        and sortie.etat == 1
-                        and (
-                        app.user.id == sortie.organisateur.id
-                        or app.user.administrateur
-                        )
+                        and sortie.organisateur
+                        and app.user.id == sortie.organisateur.id
                     %}
-                        <a href="{{ path('sortie_annuler', {'id': sortie.id}) }}" class="btn-danger">
-                            Annuler la sortie
-                        </a>
+
+                        <form method="post" action="{{ path('sortie_annuler', {'id': sortie.id}) }}">
+                            <input
+                                type="text"
+                                name="motif"
+                                placeholder="Motif d’annulation"
+                                required
+                            >
+
+                            <button type="submit" class="btn-danger">
+                                Annuler la sortie
+                            </button>
+                        </form>
+
                     {% endif %}
 
                     {% if sortie.dateCloture > date() %}

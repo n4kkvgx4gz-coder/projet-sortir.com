@@ -378,6 +378,42 @@ body {
 }
 
 /* BOUTONS */
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 800;
+    color: white;
+    background: linear-gradient(135deg, #ef476f, #d62839);
+    box-shadow: 0 10px 24px rgba(239, 71, 111, 0.25);
+    transition: 0.2s ease;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+}
+
+.cancel-form textarea {
+    min-height: 140px;
+}
+
+.cancel-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.cancel-subtitle {
+    color: var(--muted);
+    margin-bottom: 24px;
+}
+
 
 .btn-user,
 .btn-primary,

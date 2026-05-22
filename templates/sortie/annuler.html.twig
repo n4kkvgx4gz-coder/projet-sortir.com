@@ -1,20 +1,55 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Annuler la sortie{% endblock %}
+{% block title %}
+    Annuler la sortie
+{% endblock %}
 
 {% block body %}
-    <h1>Annuler la sortie : {{ sortie.nom }}</h1>
 
-    <form method="post">
-        <label for="motifAnnulation">Motif d'annulation</label>
+    <section class="form-card">
 
-        <textarea
-            name="motifAnnulation"
-            id="motifAnnulation"
-            required
-        ></textarea>
+        <h1>
+            Annuler la sortie
+        </h1>
 
-        <button type="submit">Confirmer l'annulation</button>
-        <a href="{{ path('sortie_detail', {id: sortie.id}) }}">Retour</a>
-    </form>
+        <p class="cancel-subtitle">
+            Vous êtes sur le point d’annuler :
+            <strong>{{ sortie.nom }}</strong>
+        </p>
+
+        <form method="post" class="cancel-form">
+
+            <label for="motif">
+                Motif d’annulation
+            </label>
+
+            <textarea
+                name="motif"
+                id="motif"
+                required
+                placeholder="Expliquez brièvement la raison de l’annulation..."
+            ></textarea>
+
+            <div class="cancel-actions">
+
+                <button
+                    type="submit"
+                    class="btn-danger"
+                >
+                    Confirmer l’annulation
+                </button>
+
+                <a
+                    href="{{ path('sortie_detail', {id: sortie.id}) }}"
+                    class="btn-user"
+                >
+                    Retour
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
 {% endblock %}
