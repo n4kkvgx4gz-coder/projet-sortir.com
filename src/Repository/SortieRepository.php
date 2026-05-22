@@ -27,7 +27,8 @@ class SortieRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.lieu', 'l')
             ->leftJoin('l.ville', 'v')
-            ->addSelect('l', 'v')
+            ->leftJoin('s.categorie', 'c')
+            ->addSelect('l', 'v', 'c')
             ->orderBy('s.dateDebut', 'ASC');
 
         if (!empty($q)) {
@@ -56,8 +57,8 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         if (!empty($categorieId)) {
-            $qb->andWhere('s.categorie = :categorie')
-                ->setParameter('categorie', $categorieId);
+            $qb->andWhere('c.id = :categorieId')
+                ->setParameter('categorieId', $categorieId);
         }
 
         return $qb->getQuery()->getResult();
