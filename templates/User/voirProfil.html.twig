@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
 
     <div class="card profil" id="profil">
@@ -9,7 +8,6 @@
                     <img src="images{{ asset(utilisateur.urlPhoto) }}" alt="photo de profil">
                 </div>
             {% endif %}
-
             <div id=" profiltext">
                 {% if app.request.get('_route') == 'profil_voir' %}
                     <h1>Profil de {{ utilisateur.prenom }}</h1>
@@ -37,5 +35,4 @@
         {% endif %}
 
     </div>
-
 {% endblock %}
