@@ -99,6 +99,7 @@ public function gererProfil(Request $request, EntityManagerInterface $entityMana
     {
         $utilisateurs = $utilisateurRepository->findAll();
 
+
         return $this->render('user/gestionUtilisateur.html.twig', [
             'utilisateurs' => $utilisateurs
         ]);

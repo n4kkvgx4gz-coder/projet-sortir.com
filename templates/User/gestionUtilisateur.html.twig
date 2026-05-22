@@ -6,8 +6,8 @@
 
 {% block body %}
     <h1>Gestion des utilisateurs</h1>
-    <a href="#">ajouter un utilisateur manuellement </a>
-    <a href="#"> ajouter une liste d'utilisateur via fichier </a>
+    <a href="#" class="btn-create">ajouter un utilisateur manuellement </a>
+    <a href="#" class="btn-create"> ajouter une liste d'utilisateur via fichier </a>
     <h3> Liste des utilisateurs </h3>
 
 <table>
@@ -32,15 +32,16 @@
             <td>{{ user.nom }}</td>
             <td>{{ user.prenom }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ user.roles }}</td>
+            <td>{{ user.roles|join(', ')}}</td>
             <td>{{ user.password }}</td>
             <td>{{ user.telephone }}</td>
-            <td>{{ user.campus.nom_campus }}</td>
-            <td>{{ user.url_photo }}</td>
+            <td>{{ user.getCampus().getNomCampus() }}</td>
+            <td>{{ user.getUrlPhoto }}</td>
             <td>{{ user.actif }}</td>
             <td>
-                <a>supprimer</a>
-                <a>modifier</a>
+                <a href="#" class="btn-create">supprimer</a>
+                <a href="#" class="btn-create">modifier</a>
+                <a href="#" class="btn-create">désactiver</a>
             </td>
         </tr>
     {% endfor %}
