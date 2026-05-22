@@ -60,8 +60,6 @@ class Sortie
         $this->inscriptions = new ArrayCollection();
     }
 
-
-
     public function getId(): ?int
     {
         return $this->id;
@@ -186,12 +184,7 @@ class Sortie
 
     public function removeInscription(Inscription $inscription): static
     {
-        if ($this->inscriptions->removeElement($inscription)) {
-            // set the owning side to null (unless already changed)
-            if ($inscription->getSortie() === $this) {
-                $inscription->setSortie(null);
-            }
-        }
+       $this->inscriptions->removeElement($inscription);
 
         return $this;
     }
