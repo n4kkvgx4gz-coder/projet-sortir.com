@@ -622,6 +622,23 @@ body {
     display: flex;
 }
 
+/* TABLE */
+
+
+table{
+    border: solid 1px var(--border);
+    border-radius: 20px;
+    background: var(--card);
+    margin: 2em 2em;
+    overflow: hidden;
+}
+
+tr{
+    padding: 0.5em;
+}
+
+th{background-color: var(--blue)}
+td{}
 
 /* RESPONSIVE */
 
