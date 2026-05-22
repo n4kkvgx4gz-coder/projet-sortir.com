@@ -1,3 +1,133 @@
+{#<header class="main-header">#}
+
+{#    <div class="brand">#}
+
+{#        <img#}
+{#            class="header-logo"#}
+{#            src="{{ asset('images/logo.png') }}"#}
+{#            alt="Logo Sortir.com"#}
+{#            width="90"#}
+{#            height="90"#}
+{#        >#}
+
+
+{#        <a href="{{ path('app_main') }}" class="brand-title">#}
+{#            Sortir.com#}
+{#        </a>#}
+{#    </div>#}
+
+{#    <button id="burger-btn" class="burger-btn" aria-label="Ouvrir le menu">#}
+{#        <span></span>#}
+{#        <span></span>#}
+{#        <span></span>#}
+{#    </button>#}
+
+{#    <nav class="main-nav" id="nav-links">#}
+{#        <ul>#}
+{#            {% if app.user %}#}
+{#            <li>#}
+{#                <a href="{{ path('app_main') }}">#}
+{#                    Accueil#}
+{#                </a>#}
+{#            </li>#}
+
+{#            <li>#}
+{#                <a href="{{ path('app_sortie') }}">#}
+{#                    Sorties#}
+{#                </a>#}
+{#            </li>#}
+
+{#            <li>#}
+{#                <a href="{{ path('profil_detail') }}">#}
+{#                    Gérer profil#}
+{#                </a>#}
+{#            </li>#}
+
+{#            <li>#}
+{#                <a href="{{ path('sortie_create') }}">#}
+{#                        + Sortie#}
+{#                </a>#}
+{#                </li>#}
+
+{#            <li>#}
+{#                <a href="#">#}
+{#                        + Lieu#}
+{#                </a>#}
+{#            </li>#}
+
+{#                <li>#}
+{#                    <a href="#">#}
+{#                        + Ville#}
+{#                    </a>#}
+{#                </li>#}
+
+{#            <li>#}
+{#                <a href="#">#}
+{#                     + groupe privé#}
+{#                </a>#}
+{#            </li>#}
+
+{#            {% endif %}#}
+
+{#            {% if is_granted('ROLE_ADMIN') %}#}
+{#                <li>#}
+{#                    <a href="#">#}
+{#                        Gestion Utilisateurs#}
+{#                    </a>#}
+{#                </li>#}
+
+{#                <li>#}
+{#                    <a href="#">#}
+{#                        Gestion Sorties#}
+{#                    </a>#}
+{#                </li>#}
+{#            {% endif %}#}
+
+{#        </ul>#}
+{#    </nav>#}
+
+{#    <script>#}
+
+{#        const burgerBtn = document.getElementById('burger-btn');#}
+{#        const navLinks = document.getElementById('nav-links');#}
+
+{#        burgerBtn.addEventListener('click', () => {#}
+{#            navLinks.classList.toggle('active');#}
+{#            burgerBtn.classList.toggle('open');#}
+{#        });#}
+
+{#    </script>#}
+
+{#    <div class="user-actions">#}
+
+{#        {% if app.user %}#}
+
+{#            <span class="user-badge">#}
+{#                👤 {{ app.user.userIdentifier }}#}
+{#            </span>#}
+
+{#            <a href="{{ path('app_logout') }}"#}
+{#               class="btn-user logout">#}
+{#                Déconnexion#}
+{#            </a>#}
+
+{#        {% else %}#}
+
+
+
+
+
+{#        <a href="{{ path('app_login') }}"#}
+{#               class="btn-user">#}
+{#                Connexion#}
+{#            </a>#}
+{#            <a class="btn-user" href="{{ path("app_register") }}">Créer un compte</a>#}
+
+{#        {% endif %}#}
+
+{#    </div>#}
+
+{#</header>#}
 <header class="main-header">
 
     <div class="brand">
@@ -10,93 +140,21 @@
             height="90"
         >
 
-
         <a href="{{ path('app_main') }}" class="brand-title">
             Sortir.com
         </a>
     </div>
 
-    <button id="burger-btn" class="burger-btn" aria-label="Ouvrir le menu">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-
     <nav class="main-nav" id="nav-links">
         <ul>
             {% if app.user %}
-            <li>
-                <a href="{{ path('app_main') }}">
-                    Accueil
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ path('app_sortie') }}">
-                    Sorties
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ path('profil_detail') }}">
-                    Gérer profil
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ path('sortie_create') }}">
-                        + Sortie
-                </a>
-                </li>
-
-            <li>
-                <a href="#">
-                        + Lieu
-                </a>
-            </li>
-
-                <li>
-                    <a href="#">
-                        + Ville
-                    </a>
-                </li>
-
-            <li>
-                <a href="#">
-                     + groupe privé
-                </a>
-            </li>
-
+                <li><a href="{{ path('app_main') }}">Accueil</a></li>
+                <li><a href="{{ path('app_sortie') }}">Sorties</a></li>
+                <li><a href="{{ path('profil_detail') }}">Gérer profil</a></li>
+                <li><a href="{{ path('sortie_create') }}">+ Sortie</a></li>
             {% endif %}
-
-            {% if is_granted('ROLE_ADMIN') %}
-                <li>
-                    <a href="#">
-                        Gestion Utilisateurs
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        Gestion Sorties
-                    </a>
-                </li>
-            {% endif %}
-
         </ul>
     </nav>
-
-    <script>
-
-        const burgerBtn = document.getElementById('burger-btn');
-        const navLinks = document.getElementById('nav-links');
-
-        burgerBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            burgerBtn.classList.toggle('open');
-        });
-
-    </script>
 
     <div class="user-actions">
 
@@ -113,18 +171,26 @@
 
         {% else %}
 
-
-
-
-
-        <a href="{{ path('app_login') }}"
+            <a href="{{ path('app_login') }}"
                class="btn-user">
                 Connexion
             </a>
-            <a class="btn-user" href="{{ path("app_register") }}">Créer un compte</a>
+
+            <a class="btn-user"
+               href="{{ path("app_register") }}">
+                Créer un compte
+            </a>
 
         {% endif %}
 
     </div>
+
+    <button id="burger-btn"
+            class="burger-btn"
+            aria-label="Ouvrir le menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 
 </header>

@@ -21,6 +21,22 @@
         {% endif %}
     </head>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const burgerBtn = document.getElementById('burger-btn');
+            const navLinks = document.getElementById('nav-links');
+
+            if (burgerBtn && navLinks) {
+
+                burgerBtn.addEventListener('click', () => {
+
+                    navLinks.classList.toggle('active');
+                    burgerBtn.classList.toggle('open');
+                });
+            }
+        });
+    </script>
     <body>
         {% include 'shared/header.html.twig' %}
 
