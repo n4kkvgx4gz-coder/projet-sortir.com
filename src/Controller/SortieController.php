@@ -28,7 +28,6 @@ final class SortieController extends AbstractController
         SortieRepository $sortieRepository,
         CategorieRepository $categorieRepository
     ): Response {
-
         $q = $request->query->get('q');
         $dateMin = $request->query->get('dateMin');
         $dateMax = $request->query->get('dateMax');
@@ -51,21 +50,17 @@ final class SortieController extends AbstractController
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
             'categories' => $categorieRepository->findAll(),
-
             'q' => $q,
             'dateMin' => $dateMin,
             'dateMax' => $dateMax,
             'departement' => $departement,
             'categorieId' => $categorieId,
-
             'organisateur' => $organisateur,
             'inscrit' => $inscrit,
             'disponible' => $disponible,
             'passees' => $passees,
         ]);
     }
-
-
 
     #[IsGranted('ROLE_USER')]
     #[Route('/sorties/create', name: 'sortie_create', methods: ['GET', 'POST'])]
@@ -74,15 +69,14 @@ final class SortieController extends AbstractController
         EntityManagerInterface $entityManager,
         VilleRepository $villeRepository
     ): Response {
-
         $sortie = new Sortie();
-
         $sortie->setEtat(true);
+
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         if (!$user) {
             $this->addFlash('danger', 'Vous devez être connecté pour créer une sortie.');
-
             return $this->redirectToRoute('app_login');
         }
 
@@ -92,11 +86,9 @@ final class SortieController extends AbstractController
         $sortie->setEtat(true);
         $sortie->setOrganisateur($this->getUser());
         $form = $this->createForm(SortieType::class, $sortie);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $nomVille = $form->get('ville')->getData();
             $codePostal = $form->get('codePostal')->getData();
 
@@ -106,12 +98,9 @@ final class SortieController extends AbstractController
             ]);
 
             if (!$ville) {
-
                 $ville = new Ville();
-
                 $ville->setNomVille($nomVille);
                 $ville->setCodePostal($codePostal);
-
                 $entityManager->persist($ville);
             }
 
@@ -128,21 +117,13 @@ final class SortieController extends AbstractController
             $lieu->setVille($ville);
 
             $entityManager->persist($lieu);
-
             $sortie->setLieu($lieu);
 
             $file = $form->get('image')->getData();
 
             if ($file) {
-
-                $extension = $file->guessExtension();
-
-                if (!$extension) {
-                    $extension = 'bin';
-                }
-
-                $newFileName =
-                    rand(1, 99999) . '.' . $extension;
+                $extension = $file->guessExtension() ?: 'bin';
+                $newFileName = rand(1, 99999) . '.' . $extension;
 
                 try {
 
@@ -197,10 +178,12 @@ final class SortieController extends AbstractController
         $dejaInscrit = null;
 
         if ($user) {
-            $dejaInscrit = $inscriptionRepository->findOneBy([
-                'sortie' => $sortie,
-                'participant' => $user,
-            ]);
+
+            $dejaInscrit =
+                $inscriptionRepository->findOneBy([
+                    'sortie' => $sortie,
+                    'participant' => $user,
+                ]);
         }
 
         return $this->render('sortie/detail.html.twig', [
@@ -230,16 +213,14 @@ final class SortieController extends AbstractController
         }
 
         if (!$sortie->isEtat()) {
-            $this->addFlash('danger', 'Cette sortie n’est pas ouverte aux inscriptions.');
-
+            $this->addFlash('danger', 'Cette sortie n’est pas ouverte.');
             return $this->redirectToRoute('sortie_detail', [
                 'id' => $sortie->getId(),
             ]);
         }
 
         if ($sortie->getDateCloture() < new \DateTime()) {
-            $this->addFlash('danger', 'Les inscriptions sont clôturées pour cette sortie.');
-
+            $this->addFlash('danger', 'Les inscriptions sont clôturées.');
             return $this->redirectToRoute('sortie_detail', [
                 'id' => $sortie->getId(),
             ]);
@@ -286,6 +267,7 @@ final class SortieController extends AbstractController
         $inscription->setDateInscription(new \DateTime());
 
         $entityManager->persist($inscription);
+
         $entityManager->flush();
 
         $this->addFlash('success', 'Vous êtes bien inscrit à la sortie.');
@@ -306,29 +288,15 @@ final class SortieController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-
-            $this->addFlash(
-                'danger',
-                'Vous devez être connecté.'
-            );
-
+            $this->addFlash('danger', 'Vous devez être connecté.');
             return $this->redirectToRoute('app_login');
         }
 
-        if (
-            $sortie->getDateDebut()
-            <= new \DateTime()
-        ) {
-
-            $this->addFlash(
-                'danger',
-                'La sortie a déjà débuté.'
-            );
-
-            return $this->redirectToRoute(
-                'sortie_detail',
-                ['id' => $sortie->getId()]
-            );
+        if ($sortie->getDateDebut() <= new \DateTime()) {
+            $this->addFlash('danger', 'La sortie a déjà débuté.');
+            return $this->redirectToRoute('sortie_detail', [
+                'id' => $sortie->getId(),
+            ]);
         }
 
         $inscription = $inscriptionRepository->findOneBy([
@@ -337,66 +305,74 @@ final class SortieController extends AbstractController
         ]);
 
         if (!$inscription) {
-            $this->addFlash('warning', 'Vous n’êtes pas inscrit à cette sortie.');
-
-            $this->addFlash(
-                'warning',
-                'Vous n’êtes pas inscrit.'
-            );
-
-            return $this->redirectToRoute(
-                'sortie_detail',
-                ['id' => $sortie->getId()]
-            );
+            $this->addFlash('warning', 'Vous n’êtes pas inscrit.');
+            return $this->redirectToRoute('sortie_detail', [
+                'id' => $sortie->getId(),
+            ]);
         }
 
         $entityManager->remove($inscription);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
+        $this->addFlash('success', 'Désistement pris en compte.');
 
         return $this->redirectToRoute('sortie_detail', [
             'id' => $sortie->getId(),
         ]);
     }
 
-    #[Route('/sortie/{id}/annuler', name: 'sortie_annuler', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    #[Route('/sortie/{id}/annuler', name: 'sortie_annuler', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function annuler(
-        Sortie                 $sortie,
-        Request                $request,
-        EntityManagerInterface $em
-    ): Response
-    {
+        Sortie $sortie,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
+        // seul le créateur peut annuler
         if (
-            $sortie->getOrganisateur() !== $user
-            && !$user->isAdministrateur()
+            !$user
+            || !$sortie->getOrganisateur()
+            || $sortie->getOrganisateur()->getId() !== $user->getId()
         ) {
-            throw $this->createAccessDeniedException(
-                "Vous ne pouvez pas annuler cette sortie."
+
+            $this->addFlash(
+                'danger',
+                'Seul le créateur peut annuler cette sortie.'
+            );
+
+            return $this->redirectToRoute(
+                'sortie_detail',
+                [
+                    'id' => $sortie->getId(),
+                ]
             );
         }
 
-        if ($sortie->getDateDebut() <= new \DateTime()) {
-            $this->addFlash('danger', "Impossible d'annuler une sortie déjà commencée.");
-            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
-        }
-
+        // validation du formulaire
         if ($request->isMethod('POST')) {
-            $motif = $request->request->get('motifAnnulation');
 
-            if (empty($motif)) {
-                $this->addFlash('danger', "Le motif d'annulation est obligatoire.");
-            } else {
-                $sortie->setEtat(0);
-                $sortie->setMotifAnnulation($motif);
+            $motif = $request->request->get('motif');
 
-                $em->flush();
+            $sortie->setEtat(false);
+            $sortie->setMotifAnnulation($motif);
 
-                $this->addFlash('success', "La sortie a bien été annulée.");
-                return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
-            }
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'La sortie a bien été annulée.'
+            );
+
+            return $this->redirectToRoute(
+                'sortie_detail',
+                [
+                    'id' => $sortie->getId(),
+                ]
+            );
         }
 
         return $this->render('sortie/annuler.html.twig', [
