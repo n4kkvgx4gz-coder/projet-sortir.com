@@ -20,8 +20,8 @@ class Inscription
     #[ORM\JoinColumn(nullable: false)]
     private ?Sortie $sortie = null;
 
-    #[ORM\ManyToOne(inversedBy: 'inscriptions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'inscriptions')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Utilisateur $participant = null;
 
     public function getId(): ?int
