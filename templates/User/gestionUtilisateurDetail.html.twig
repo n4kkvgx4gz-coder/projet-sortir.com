@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Gérer le profil d'un utilisateur
+{% endblock %}
+
+{% block body %}
+    <h1>Gérer le profil de {{ utilisateur.pseudo }}</h1>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit" class="btn-create"> enregister les modifications </button>
+    {{ form_end(form) }}
+{% endblock %}
