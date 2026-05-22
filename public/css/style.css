@@ -670,7 +670,12 @@ textarea {
 #profil {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    padding: 2em;
+    margin: 7em auto;
+    background-color: white;
+    width: 80%;
+    border-radius: 25px;
+    box-shadow: 4px 3px 8px 1px rgb(0 0 0 / 20%);
 }
 
 #profilContent {

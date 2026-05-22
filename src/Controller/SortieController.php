@@ -11,7 +11,6 @@ use App\Form\SortieType;
 use App\Repository\CategorieRepository;
 use App\Repository\InscriptionRepository;
 use App\Repository\SortieRepository;
-use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
