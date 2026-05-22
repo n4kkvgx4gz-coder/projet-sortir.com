@@ -201,15 +201,6 @@ class Sortie
         return $this;
     }
 
-    public function getLieu(): ?Lieu
-    {
-        return $this->lieu;
-    }
-
-    public function setLieu(?Lieu $lieu)
-    {
-        $this->lieu = $lieu;
-    }
     public function getCategorie(): ?Categorie
     {
         return $this->categorie;
