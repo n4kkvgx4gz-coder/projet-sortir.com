@@ -2,24 +2,58 @@
 
 {% block body %}
 
-    <div class="card profil">
+    <div class="form-card" id="profil">
 
-        <h1>Profil de {{ utilisateur.prenom }}</h1>
+        {% if utilisateur %}
 
-        <p>Pseudo : {{ utilisateur.pseudo }}</p>
-        <p>Nom : {{ utilisateur.nom }}</p>
-        <p>Prénom : {{ utilisateur.prenom }}</p>
-        <p>Tél : {{ utilisateur.telephone }}</p>
-        <p>Campus : {{ utilisateur.campus.nomCampus }}</p>
+            <div id="profilContent">
 
-        {% if app.user and app.user.id == utilisateur.id %}
-            <a class="btn-user" href="{{ path('profil_modifier') }}">
-                Modifier
-            </a>
+                {% if utilisateur.urlPhoto is not null %}
 
-            <a class="btn-user" href="{{ path('profil_supprimer') }}">
-                Supprimer
-            </a>
+                    <div id="profilImg">
+                        <img
+                            src="{{ asset('images/' ~ utilisateur.urlPhoto) }}"
+                            alt="photo de profil"
+                        >
+                    </div>
+
+                {% endif %}
+
+                <div id="profilText">
+
+                    <p>
+                        pseudo : {{ utilisateur.pseudo }}
+                    </p>
+
+                    <p>
+                        nom : {{ utilisateur.nom }}
+                    </p>
+
+                    <p>
+                        prénom : {{ utilisateur.prenom }}
+                    </p>
+
+                    <p>
+                        téléphone : {{ utilisateur.telephone }}
+                    </p>
+
+                    <p>
+                        campus :
+                        {{ utilisateur.campus
+                        ? utilisateur.campus.nomCampus
+                        : 'Non renseigné' }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <p>
+                Aucun utilisateur connecté.
+            </p>
+
         {% endif %}
 
     </div>
