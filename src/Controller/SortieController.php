@@ -295,7 +295,8 @@ final class SortieController extends AbstractController
         Sortie $sortie,
         EntityManagerInterface $entityManager,
         InscriptionRepository $inscriptionRepository
-    ): Response {
+    ): Response
+    {
         /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
@@ -338,10 +339,11 @@ final class SortieController extends AbstractController
 
     #[Route('/sortie/{id}/annuler', name: 'sortie_annuler', methods: ['GET', 'POST'])]
     public function annuler(
-        Sortie $sortie,
-        Request $request,
+        Sortie                 $sortie,
+        Request                $request,
         EntityManagerInterface $em
-    ): Response {
+    ): Response
+    {
         $user = $this->getUser();
 
         if (
