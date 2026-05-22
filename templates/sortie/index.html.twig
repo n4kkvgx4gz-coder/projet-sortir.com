@@ -121,40 +121,30 @@
 
                     <div class="card-image">
                         {% if sortie.urlPhoto %}
-                            <img
-                                src="{{ asset('images/' ~ sortie.urlPhoto) }}"
-                                alt="{{ sortie.nom }}"
-                            >
+                            <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
                         {% else %}
-                            <img
-                                src="{{ asset('images/default.jpg') }}"
-                                alt="image par défaut"
-                            >
+                            <img src="{{ asset('images/default.jpg') }}" alt="image par défaut">
                         {% endif %}
-
-                        <span class="badge">
-            {{ sortie.lieu.nomLieu }}
-        </span>
                     </div>
 
                     <div class="card-content">
 
-    <span class="login-badge">
-        📍 {{ sortie.lieu.nomLieu }}
-    </span>
+                        <div class="card-tags">
+                    <span class="location-badge">
+                        {{ sortie.lieu.nomLieu }}
+                    </span>
 
-                        {% if sortie.categorie %}
-                            <span
-                                class="category-badge"
-                                style="--category-color: {{ sortie.categorie.couleur }}"
-                            >
-            {{ sortie.categorie.nom }}
-        </span>
-                        {% endif %}
+                            {% if sortie.categorie %}
+                                <span
+                                    class="category-badge"
+                                    style="--category-color: {{ sortie.categorie.couleur }}"
+                                >
+                            {{ sortie.categorie.nom }}
+                        </span>
+                            {% endif %}
+                        </div>
 
-                        <h2>
-                            {{ sortie.nom }} à {{ sortie.lieu.ville.nomVille }}
-                        </h2>
+                        <h2>{{ sortie.nom }} à {{ sortie.lieu.ville.nomVille }}</h2>
 
                         <p class="description">
                             {{ sortie.description|length > 90
@@ -164,13 +154,10 @@
                         </p>
 
                         <div class="card-meta">
-        <span>
-            📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}
-        </span>
+                            📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}
                         </div>
 
-                        <a href="{{ path('sortie_detail', {'id': sortie.id}) }}"
-                           class="btn-detail">
+                        <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn-detail">
                             Voir détail
                         </a>
 
@@ -179,11 +166,7 @@
                 </article>
 
             {% else %}
-
-                <p>
-                    Aucune sortie disponible.
-                </p>
-
+                <p>Aucune sortie disponible.</p>
             {% endfor %}
 
         </div>
