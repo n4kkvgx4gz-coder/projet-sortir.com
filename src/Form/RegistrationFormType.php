@@ -57,7 +57,11 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Campus de rattachement',
                 'required' => true
             ])
-            ->add('url_photo', FileType::class, [])
+            ->add('url_photo', FileType::class, [
+                'required' => false,
+                'mapped' => false
+            ],
+            )
         ;
     }
 
