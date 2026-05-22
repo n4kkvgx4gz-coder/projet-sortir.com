@@ -290,6 +290,34 @@ body {
 /* =======================================================
    VERSION MOBILE
 ======================================================= */
+@media (max-width: 768px) {
+
+    .main-header {
+        justify-content: space-between;
+        flex-wrap: nowrap;
+    }
+
+}
+@media screen and (max-width: 768px) {
+
+    .main-nav {
+        display: none;
+    }
+
+    .main-nav.active {
+        display: block;
+    }
+
+}
+@media (max-width: 700px) {
+
+    .user-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+}
+
 
 @media screen and (max-width: 768px) {
 
@@ -362,6 +390,11 @@ body {
         transform: translateX(5px);
     }
 }
+
+.activities-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
 .user-actions {
     display: flex;
     align-items: center;
