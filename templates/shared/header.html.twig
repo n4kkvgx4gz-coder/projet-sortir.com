@@ -16,7 +16,58 @@
         </a>
     </div>
 
-    <nav class="main-nav">
+{#    <nav class="main-nav">#}
+{#        <ul>#}
+
+{#            <li>#}
+{#                <a href="{{ path('app_main') }}">#}
+{#                    Accueil#}
+{#                </a>#}
+{#            </li>#}
+
+{#            <li>#}
+{#                <a href="{{ path('app_sortie') }}">#}
+{#                    Sorties#}
+{#                </a>#}
+{#            </li>#}
+{#            <li>#}
+{#                <a href="{{ path('profil_detail') }}">#}
+{#                    Gérer profil#}
+{#                </a>#}
+{#            </li>#}
+
+{#            <li>#}
+{#                <a href="#">#}
+{#                    Menu 2#}
+{#                </a>#}
+{#            </li>#}
+
+{#            <li>#}
+{#                <a href="#">#}
+{#                    Menu 3#}
+{#                </a>#}
+{#            </li>#}
+
+{#            {% if app.user %}#}
+
+{#                <li>#}
+{#                    <a href="{{ path('sortie_create') }}">#}
+{#                        + Créer#}
+{#                    </a>#}
+{#                </li>#}
+
+{#            {% endif %}#}
+
+{#        </ul>#}
+{#    </nav>#}
+    <!-- Bouton burger -->
+    <button id="burger-btn" class="burger-btn" aria-label="Ouvrir le menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav class="main-nav" id="nav-links">
         <ul>
             {% if app.user %}
             <li>
@@ -30,6 +81,7 @@
                     Sorties
                 </a>
             </li>
+
             <li>
                 <a href="{{ path('profil_detail') }}">
                     Gérer profil
@@ -78,6 +130,18 @@
 
         </ul>
     </nav>
+
+    <script>
+
+        const burgerBtn = document.getElementById('burger-btn');
+        const navLinks = document.getElementById('nav-links');
+
+        burgerBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            burgerBtn.classList.toggle('open');
+        });
+
+    </script>
 
     <div class="user-actions">
 
