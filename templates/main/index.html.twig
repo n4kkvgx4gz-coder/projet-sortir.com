@@ -1,41 +1,121 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Sorties{% endblock %}
+{% block title %}
+    Accueil
+{% endblock %}
 
 {% block body %}
-    <div class="page">
-        <h1>Liste des sorties</h1>
 
-        <a href="{{ path('sortie_create') }}" class="btn-primary">
-            Créer une nouvelle sortie
-        </a>
-    </div>
+    <section class="hero">
 
-    <section class="page">
-        <div class="page-title">
-            <h1>Sorties à la une</h1>
-            <p>Découvrez les prochaines activités proposées.</p>
+        <div class="hero-content">
+            <p class="hero-kicker">SORTIR.COM</p>
+
+            <h1>
+                Trouvez des activités,
+                partagez des sorties,
+                rencontrez du monde.
+            </h1>
+
+            <p class="hero-text">
+                Bowling, cinéma, aventures, soirées étudiantes,
+                loisirs et découvertes près de chez vous.
+            </p>
+
+            <div class="hero-actions">
+                <a href="{{ path('app_sortie') }}" class="btn-primary">
+                    Découvrir les sorties
+                </a>
+
+                <a href="{{ path('sortie_create') }}" class="btn-create">
+                    Créer une sortie
+                </a>
+            </div>
         </div>
 
-        <div class="grid">
-            {% for sortie in sorties %}
-                <article class="card activity-card">
-                    {% if sortie.urlPhoto %}
-                        <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
-                    {% endif %}
-
-                    <span class="badge">
-        {{ sortie.lieu.nomLieu }}
-    </span>
-
-                    <h2>{{ sortie.nom }}</h2>
-                    <p>{{ sortie.description }}</p>
-
-                    <p>📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}</p>
-                </article>
-            {% else %}
-                <p>Aucune sortie disponible pour le moment.</p>
-            {% endfor %}
-        </div>
     </section>
+
+    <section class="activities-section">
+
+        <div class="section-header">
+            <div>
+                <h1>Sorties à la une</h1>
+                <p class="section-subtitle">
+                    Les prochaines activités populaires.
+                </p>
+            </div>
+        </div>
+
+        <div class="activities-grid home-grid">
+
+            {% for sortie in sorties %}
+
+                <article class="activity-card">
+
+                    <div class="card-image">
+
+                        {% if sortie.urlPhoto %}
+                            <img
+                                src="{{ asset('images/' ~ sortie.urlPhoto) }}"
+                                alt="{{ sortie.nom }}"
+                            >
+                        {% else %}
+                            <img
+                                src="{{ asset('images/default.jpg') }}"
+                                alt="Image par défaut"
+                            >
+                        {% endif %}
+
+                    </div>
+
+                    <div class="card-content">
+
+                        <div class="card-tags">
+
+                        <span class="location-badge">
+                            {{ sortie.lieu.nomLieu }}
+                        </span>
+
+                            {% if sortie.categorie %}
+                                <span
+                                    class="category-badge"
+                                    style="--category-color: {{ sortie.categorie.couleur }}"
+                                >
+                                {{ sortie.categorie.nom }}
+                            </span>
+                            {% endif %}
+
+                        </div>
+
+                        <h2>
+                            {{ sortie.nom }}
+                        </h2>
+
+                        <p class="description">
+                            {{ sortie.description|length > 100
+                            ? sortie.description|slice(0, 100) ~ '...'
+                            : sortie.description }}
+                        </p>
+
+                        <div class="card-meta">
+                            📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}
+                        </div>
+
+                        <a
+                            href="{{ path('sortie_detail', {'id': sortie.id}) }}"
+                            class="btn-detail"
+                        >
+                            Voir détail
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
 {% endblock %}

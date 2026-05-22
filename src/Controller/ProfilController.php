@@ -93,4 +93,15 @@ public function gererProfil(Request $request, EntityManagerInterface $entityMana
         ]);
     }
 
+    #[Route('/gestion-utilisateur', name: 'gestion-utilisateur', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function allUSer(UtilisateurRepository $utilisateurRepository): Response
+    {
+        $utilisateurs = $utilisateurRepository->findAll();
+
+        return $this->render('user/gestionUtilisateur.html.twig', [
+            'utilisateurs' => $utilisateurs
+        ]);
+    }
+
 }
