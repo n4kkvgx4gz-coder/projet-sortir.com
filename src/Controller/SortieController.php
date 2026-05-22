@@ -3,18 +3,23 @@
 namespace App\Controller;
 
 use App\Entity\Inscription;
+use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\Utilisateur;
+use App\Entity\Ville;
 use App\Form\SortieType;
 use App\Repository\CategorieRepository;
 use App\Repository\InscriptionRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 
 final class SortieController extends AbstractController
@@ -25,11 +30,13 @@ final class SortieController extends AbstractController
         SortieRepository $sortieRepository,
         CategorieRepository $categorieRepository
     ): Response {
+
         $q = $request->query->get('q');
         $dateMin = $request->query->get('dateMin');
         $dateMax = $request->query->get('dateMax');
         $departement = $request->query->get('departement');
         $categorieId = $request->query->get('categorie');
+
         $organisateur = $request->query->get('organisateur');
         $inscrit = $request->query->get('inscrit');
         $disponible = $request->query->get('disponible');
@@ -46,11 +53,13 @@ final class SortieController extends AbstractController
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
             'categories' => $categorieRepository->findAll(),
+
             'q' => $q,
             'dateMin' => $dateMin,
             'dateMax' => $dateMax,
             'departement' => $departement,
             'categorieId' => $categorieId,
+
             'organisateur' => $organisateur,
             'inscrit' => $inscrit,
             'disponible' => $disponible,
@@ -58,40 +67,102 @@ final class SortieController extends AbstractController
         ]);
     }
 
+
+
+    #[IsGranted('ROLE_USER')]
     #[Route('/sorties/create', name: 'sortie_create', methods: ['GET', 'POST'])]
     public function create(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        VilleRepository $villeRepository
     ): Response {
+
+        $sortie = new Sortie();
+
+        $sortie->setEtat(true);
+        $user = $this->getUser();
+
+        if (!$user) {
+            $this->addFlash('danger', 'Vous devez être connecté pour créer une sortie.');
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        $sortie->setOrganisateur($user);
+
         $sortie = new Sortie();
         $sortie->setEtat(true);
         $sortie->setOrganisateur($this->getUser());
         $form = $this->createForm(SortieType::class, $sortie);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $directory = 'images/';
-            $file = $form['image']->getData();
+            $nomVille = $form->get('ville')->getData();
+            $codePostal = $form->get('codePostal')->getData();
 
-            if($file){
+            $ville = $villeRepository->findOneBy([
+                'nom_ville' => $nomVille,
+                'code_postal' => $codePostal,
+            ]);
+
+            if (!$ville) {
+
+                $ville = new Ville();
+
+                $ville->setNomVille($nomVille);
+                $ville->setCodePostal($codePostal);
+
+                $entityManager->persist($ville);
+            }
+
+            $lieu = new Lieu();
+
+            $lieu->setNomLieu(
+                $form->get('nomLieu')->getData()
+            );
+
+            $lieu->setRue(
+                $form->get('rue')->getData()
+            );
+
+            $lieu->setVille($ville);
+
+            $entityManager->persist($lieu);
+
+            $sortie->setLieu($lieu);
+
+            $file = $form->get('image')->getData();
+
+            if ($file) {
+
                 $extension = $file->guessExtension();
 
                 if (!$extension) {
-                    // extension cannot be guessed
                     $extension = 'bin';
                 }
-                try{
-                    $newFileName = rand(1, 99999).'.'.$extension;
-                    $file->move($directory, $newFileName);
+
+                $newFileName =
+                    rand(1, 99999) . '.' . $extension;
+
+                try {
+
+                    $file->move(
+                        'images/',
+                        $newFileName
+                    );
+
                     $sortie->setUrlPhoto($newFileName);
-                }catch (FileException $e){
-                    dump($e->getMessage());
+
+                } catch (FileException $e) {
+
+                    $this->addFlash(
+                        'danger',
+                        $e->getMessage()
+                    );
                 }
-
             }
-
-
 
             $entityManager->persist($sortie);
             $entityManager->flush();
@@ -143,6 +214,7 @@ final class SortieController extends AbstractController
         EntityManagerInterface $entityManager,
         InscriptionRepository $inscriptionRepository
     ): Response {
+
         /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
@@ -168,12 +240,20 @@ final class SortieController extends AbstractController
             ]);
         }
 
-        if ($sortie->getInscriptions()->count() >= $sortie->getNbInscriptionsMax()) {
-            $this->addFlash('danger', 'Il n’y a plus de places disponibles.');
+        if (
+            $sortie->getInscriptions()->count()
+            >= $sortie->getNbInscriptionsMax()
+        ) {
 
-            return $this->redirectToRoute('sortie_detail', [
-                'id' => $sortie->getId(),
-            ]);
+            $this->addFlash(
+                'danger',
+                'Il n’y a plus de places.'
+            );
+
+            return $this->redirectToRoute(
+                'sortie_detail',
+                ['id' => $sortie->getId()]
+            );
         }
 
         $dejaInscrit = $inscriptionRepository->findOneBy([
@@ -184,9 +264,15 @@ final class SortieController extends AbstractController
         if ($dejaInscrit) {
             $this->addFlash('warning', 'Vous êtes déjà inscrit à cette sortie.');
 
-            return $this->redirectToRoute('sortie_detail', [
-                'id' => $sortie->getId(),
-            ]);
+            $this->addFlash(
+                'warning',
+                'Vous êtes déjà inscrit.'
+            );
+
+            return $this->redirectToRoute(
+                'sortie_detail',
+                ['id' => $sortie->getId()]
+            );
         }
 
         $inscription = new Inscription();
