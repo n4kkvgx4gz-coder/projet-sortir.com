@@ -10,6 +10,7 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -30,6 +31,7 @@ class AdminController extends AbstractController
         ]);
     }
 
+    // Ajouter un utilisateur manuellement
     #[Route('/gestion-utilisateur/creerUtilisateur', name: 'creer_utilisateur', methods: ['GET', 'POST'])]
     public function creerUtilisateur(
         Request $request,
@@ -102,6 +104,8 @@ class AdminController extends AbstractController
             'campusList' => $campusList,
         ]);
     }
+
+    // Modifier un utilisateur par un administrateur
     #[Route('/gestion-utilisateur/modifier/{id}', name: 'gestion-utilisateur-modifier', methods: ['GET', 'POST'])]
     public function modifierUSer(
         int $id,
@@ -116,15 +120,47 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin_gestion-utilisateur');
         }
 
+        $anciennePhoto = $utilisateur->getUrlPhoto();
+
         $form = $this->createForm(GestionUtilisateurType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            try {
+                $file = $form->get('url_photo')->getData();
 
-            $this->addFlash('success', "L'utilisateur a bien été modifié.");
+                if ($file) {
+                    $extension = $file->guessExtension() ?: 'bin';
+                    $newFileName = uniqid('profil_', true) . '.' . $extension;
 
-            return $this->redirectToRoute('admin_gestion-utilisateur');
+                    try {
+                        $file->move('images/', $newFileName);
+                        $utilisateur->setUrlPhoto($newFileName);
+                    } catch (FileException $e) {
+                        $this->addFlash('danger', "Erreur lors de l'envoi de l'image.");
+                        return $this->redirectToRoute('admin_gestion-utilisateur-modifier', [
+                            'id' => $utilisateur->getId(),
+                        ]);
+                    }
+                } else {
+                    $utilisateur->setUrlPhoto($anciennePhoto);
+                }
+
+                if ($form->has('roles')) {
+                    $role = $form->get('roles')->getData();
+
+                    $utilisateur->setRoles([$role]);
+                    $utilisateur->setAdministrateur($role === 'ROLE_ADMIN');
+                }
+
+                $entityManager->flush();
+
+                $this->addFlash('success', "L'utilisateur a bien été modifié.");
+
+                return $this->redirectToRoute('admin_gestion-utilisateur');
+            } catch (Exception $exception) {
+                $this->addFlash('danger', $exception->getMessage());
+            }
         }
 
         return $this->render('user/modifierUtilisateur.html.twig', [
@@ -133,7 +169,8 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/gestion-utilisateur/supprimer/{id}', name: 'gestion-utilisateur-supprimer', methods: ['GET'])]
+    // Supprimer un utilisateur par un administrateur
+    #[Route('/gestion-utilisateur/supprimer/{id}', name: 'gestion-utilisateur-supprimer', methods: ['POST'])]
     public function supprimerUSer(
         int $id,
         UtilisateurRepository $utilisateurRepository,
@@ -157,6 +194,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_gestion-utilisateur');
     }
 
+    //Désactiver un utilisateur
     #[Route('/gestion-utilisateur/desactiver/{id}', name: 'gestion-utilisateur-desactiver', methods: ['GET'])]
     public function desactiverUSer(
         int $id,
@@ -186,6 +224,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_gestion-utilisateur');
     }
 
+    // Gestion de sortie par l'administrateur
     #[Route('/gestion-sortie', name: 'gestion-sortie', methods: ['GET'])]
     public function allSorties(SortieRepository $sortieRepository): Response
     {
