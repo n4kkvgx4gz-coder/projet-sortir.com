@@ -10,7 +10,7 @@
             <h1>Créer une sortie</h1>
 
             {{ form_start(sortieForm) }}
-
+            {{ form_errors(sortieForm) }}
             {{ form_row(sortieForm.nom) }}
             {{ form_row(sortieForm.dateDebut) }}
             {{ form_row(sortieForm.dateCloture) }}
@@ -37,7 +37,10 @@
 
             {{ form_row(sortieForm.image) }}
 
-            <button class="btn-primary">
+            <button
+                type="submit"
+                class="btn-primary"
+            >
                 Enregistrer
             </button>
 
@@ -108,7 +111,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('load', () => {
             const lieuModal = document.getElementById('lieuModal');
             const villeModal = document.getElementById('villeModal');
 
@@ -247,4 +250,25 @@
         });
     </script>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        window.addEventListener('load', () => {
+            const lieuSelect = document.querySelector('[name="sortie[lieu]"]');
+
+            if (lieuSelect && typeof TomSelect !== 'undefined' && !lieuSelect.tomselect) {
+                new TomSelect(lieuSelect, {
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    },
+                    placeholder: 'Rechercher un lieu...'
+                });
+            }
+        });
+    </script>
 {% endblock %}
