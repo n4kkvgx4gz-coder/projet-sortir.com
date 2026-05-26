@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes groupes privés{% endblock %}
+
+{% block body %}
+    <h1>Mes groupes privés</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    <a href="{{ path('groupe_prive_creer') }}">Créer un groupe privé</a>
+
+    {% if groupes is empty %}
+        <p>Vous n'avez créé aucun groupe privé.</p>
+    {% else %}
+        <ul>
+            {% for groupe in groupes %}
+                <li>
+                    <a href="{{ path('groupe_prive_detail', {'id': groupe.id}) }}">
+                        {{ groupe.nom }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
