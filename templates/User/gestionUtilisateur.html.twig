@@ -11,7 +11,7 @@
     <h3> Liste des utilisateurs </h3>
 
 <table>
-
+    <thead>
         <tr>
             <th>Pseudo</th>
             <th>Nom</th>
@@ -25,6 +25,8 @@
             <th>profil actif</th>
             <th>action</th>
         </tr>
+    </thead>
+    <tbody>
     {% for user in utilisateurs %}
 
         <tr>
@@ -37,14 +39,26 @@
             <td>{{ user.telephone }}</td>
             <td>{{ user.getCampus().getNomCampus() }}</td>
             <td>{{ user.getUrlPhoto }}</td>
-            <td>{{ user.actif }}</td>
             <td>
-                <a href="#" class="btn-create">supprimer</a>
-                <a href="#" class="btn-create">modifier</a>
-                <a href="#" class="btn-create">désactiver</a>
+                {% if  user.actif  == 1  %}
+                 oui
+                {% else %}
+                    non
+                {% endif %}
+
+            </td>
+            <td>
+                <a href="{{ path('admin_gestion-utilisateur-supprimer', {'id': user.id}) }}" class="btn-create tableaubtn ">supprimer</a>
+                <a href="{{ path('admin_gestion-utilisateur-modifier', {'id': user.id}) }}" class="btn-create tableaubtn">modifier</a>
+                {% if user.actif === true %}
+                    <a href="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}" class="btn-create tableaubtn">désactiver</a>
+                {% else %}
+                    <a href="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}" class="btn-create tableaubtn">activer</a>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}

@@ -3,15 +3,248 @@
 {% block title %}Créer une sortie{% endblock %}
 
 {% block body %}
+
     <div class="page">
         <div class="card form-card">
+
             <h1>Créer une sortie</h1>
 
             {{ form_start(sortieForm) }}
-            {{ form_widget(sortieForm) }}
 
-            <button class="btn-primary">Enregistrer</button>
+            {{ form_row(sortieForm.nom) }}
+            {{ form_row(sortieForm.dateDebut) }}
+            {{ form_row(sortieForm.dateCloture) }}
+            {{ form_row(sortieForm.nbInscriptionsMax) }}
+            {{ form_row(sortieForm.description) }}
+            {{ form_row(sortieForm.categorie) }}
+            {{ form_row(sortieForm.campus) }}
+
+            <div class="lieu-row">
+
+                <div class="lieu-select">
+                    {{ form_row(sortieForm.lieu) }}
+                </div>
+
+                <button
+                    type="button"
+                    id="openLieuModal"
+                    class="btn-add-lieu"
+                >
+                    +
+                </button>
+
+            </div>
+
+            {{ form_row(sortieForm.image) }}
+
+            <button class="btn-primary">
+                Enregistrer
+            </button>
+
             {{ form_end(sortieForm) }}
+
         </div>
     </div>
+
+    <div id="lieuModal" class="custom-modal hidden">
+        <div class="custom-modal-content">
+
+            <h2>Ajouter un lieu</h2>
+
+            <input
+                type="text"
+                id="nomLieu"
+                placeholder="Ex : Mairie annexe de Kerfeunteun, Restaurant Burger King"
+            >
+            <small class="form-help">
+                Indiquez le type + le nom du lieu pour faciliter la recherche.
+            </small>
+            <input type="text" id="rueLieu" placeholder="Adresse">
+
+            <select id="villeSelect">
+                {% for ville in villes %}
+                    <option value="{{ ville.id }}">
+                        {{ ville.nomVille }} - {{ ville.codePostal }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="button" id="openVilleModal" class="btn-user">
+                + Ajouter une ville
+            </button>
+
+            <div class="modal-actions">
+                <button type="button" id="saveLieu" class="btn-primary">
+                    Enregistrer le lieu
+                </button>
+
+                <button type="button" id="closeLieuModal" class="btn-danger">
+                    Fermer
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="villeModal" class="custom-modal hidden">
+        <div class="custom-modal-content">
+
+            <h2>Ajouter une ville</h2>
+
+            <input type="text" id="nomVille" placeholder="Nom de la ville">
+            <input type="text" id="codePostal" placeholder="Code postal">
+
+            <div class="modal-actions">
+                <button type="button" id="saveVille" class="btn-primary">
+                    Ajouter la ville
+                </button>
+
+                <button type="button" id="closeVilleModal" class="btn-danger">
+                    Fermer
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lieuModal = document.getElementById('lieuModal');
+            const villeModal = document.getElementById('villeModal');
+
+            const openLieuModal = document.getElementById('openLieuModal');
+            const closeLieuModal = document.getElementById('closeLieuModal');
+            const openVilleModal = document.getElementById('openVilleModal');
+            const closeVilleModal = document.getElementById('closeVilleModal');
+
+            const saveVille = document.getElementById('saveVille');
+            const saveLieu = document.getElementById('saveLieu');
+
+            const villeSelect = document.getElementById('villeSelect');
+            const lieuSelect = document.querySelector('[name="sortie[lieu]"]');
+
+            let tomLieu = null;
+
+            if (typeof TomSelect !== 'undefined' && lieuSelect) {
+                tomLieu = new TomSelect(lieuSelect, {
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    },
+                    placeholder: 'Rechercher un lieu...'
+                });
+            }
+
+            openLieuModal.addEventListener('click', () => {
+                lieuModal.classList.remove('hidden');
+            });
+
+            closeLieuModal.addEventListener('click', () => {
+                lieuModal.classList.add('hidden');
+            });
+
+            openVilleModal.addEventListener('click', () => {
+                villeModal.classList.remove('hidden');
+            });
+
+            closeVilleModal.addEventListener('click', () => {
+                villeModal.classList.add('hidden');
+            });
+
+            saveVille.addEventListener('click', async () => {
+                const nomVille = document.getElementById('nomVille').value.trim();
+                const codePostal = document.getElementById('codePostal').value.trim();
+
+                if (!nomVille || !codePostal) {
+                    alert('Merci de renseigner la ville et le code postal.');
+                    return;
+                }
+
+                const response = await fetch('{{ path('ville_ajax_create') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        nomVille: nomVille,
+                        codePostal: codePostal
+                    })
+                });
+
+                if (!response.ok) {
+                    alert('Erreur lors de la création de la ville.');
+                    return;
+                }
+
+                const ville = await response.json();
+
+                const option = new Option(
+                    ville.nom + ' - ' + ville.codePostal,
+                    ville.id,
+                    true,
+                    true
+                );
+
+                villeSelect.add(option);
+                villeSelect.value = ville.id;
+
+                document.getElementById('nomVille').value = '';
+                document.getElementById('codePostal').value = '';
+
+                villeModal.classList.add('hidden');
+            });
+
+            saveLieu.addEventListener('click', async () => {
+                const nomLieu = document.getElementById('nomLieu').value.trim();
+                const rue = document.getElementById('rueLieu').value.trim();
+                const villeId = villeSelect.value;
+
+                if (!nomLieu || !villeId) {
+                    alert('Merci de renseigner le nom du lieu et la ville.');
+                    return;
+                }
+
+                const response = await fetch('{{ path('lieu_ajax_create') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        nomLieu: nomLieu,
+                        rue: rue,
+                        villeId: villeId
+                    })
+                });
+
+                if (!response.ok) {
+                    alert('Erreur lors de la création du lieu.');
+                    return;
+                }
+
+                const lieu = await response.json();
+
+                const label = lieu.nom + ' - ' + lieu.ville + ' - ' + lieu.departement;
+
+                if (tomLieu) {
+                    tomLieu.addOption({
+                        value: lieu.id,
+                        text: label
+                    });
+                    tomLieu.addItem(lieu.id);
+                    tomLieu.setValue(lieu.id);
+                } else {
+                    const option = new Option(label, lieu.id, true, true);
+                    lieuSelect.add(option);
+                    lieuSelect.value = lieu.id;
+                }
+
+                document.getElementById('nomLieu').value = '';
+                document.getElementById('rueLieu').value = '';
+
+                lieuModal.classList.add('hidden');
+            });
+        });
+    </script>
+
 {% endblock %}
