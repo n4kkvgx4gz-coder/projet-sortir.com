@@ -331,6 +331,34 @@ body {
 /* =======================================================
    VERSION MOBILE
 ======================================================= */
+@media (max-width: 768px) {
+
+    .main-header {
+        justify-content: space-between;
+        flex-wrap: nowrap;
+    }
+
+}
+@media screen and (max-width: 768px) {
+
+    .main-nav {
+        display: none;
+    }
+
+    .main-nav.active {
+        display: block;
+    }
+
+}
+@media (max-width: 700px) {
+
+    .user-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+}
+
 
 @media screen and (max-width: 768px) {
 
@@ -403,6 +431,11 @@ body {
         transform: translateX(5px);
     }
 }
+
+.activities-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
 .user-actions {
     display: flex;
     align-items: center;
@@ -750,7 +783,7 @@ textarea {
     padding: 2em;
     margin: 7em auto;
     background-color: white;
-    width: 80%;
+    width: fit-content;
     border-radius: 25px;
     box-shadow: 4px 3px 8px 1px rgb(0 0 0 / 20%);
 }
@@ -779,6 +812,7 @@ textarea {
     display: flex;
     gap: 14px;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 /* PARTICIPANTS */
@@ -922,3 +956,42 @@ textarea {
     }
 }
 
+table {
+    width: 95%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    margin: 2em auto;
+}
+
+/* Header */
+table thead {
+    background-color: var(--blue);
+    color: white;
+}
+
+table thead th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+/* Cellules */
+table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--card);
+}
+
+/* Ligne hover */
+table tbody tr:hover {
+    background-color: rgba(0, 168, 198, 0.08);
+    transition: 0.3s;
+}
+
+.tableaubtn{
+    margin: 3px;
+    padding: 3px 10px;
+}

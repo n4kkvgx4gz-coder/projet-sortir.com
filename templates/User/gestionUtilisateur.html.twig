@@ -6,12 +6,12 @@
 
 {% block body %}
     <h1>Gestion des utilisateurs</h1>
-    <a href="#">ajouter un utilisateur manuellement </a>
-    <a href="#"> ajouter une liste d'utilisateur via fichier </a>
+    <a href="#" class="btn-create">ajouter un utilisateur manuellement </a>
+    <a href="#" class="btn-create"> ajouter une liste d'utilisateur via fichier </a>
     <h3> Liste des utilisateurs </h3>
 
 <table>
-
+    <thead>
         <tr>
             <th>Pseudo</th>
             <th>Nom</th>
@@ -25,6 +25,8 @@
             <th>profil actif</th>
             <th>action</th>
         </tr>
+    </thead>
+    <tbody>
     {% for user in utilisateurs %}
 
         <tr>
@@ -32,18 +34,31 @@
             <td>{{ user.nom }}</td>
             <td>{{ user.prenom }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ user.roles }}</td>
+            <td>{{ user.roles|join(', ')}}</td>
             <td>{{ user.password }}</td>
             <td>{{ user.telephone }}</td>
-            <td>{{ user.campus.nom_campus }}</td>
-            <td>{{ user.url_photo }}</td>
-            <td>{{ user.actif }}</td>
+            <td>{{ user.getCampus().getNomCampus() }}</td>
+            <td>{{ user.getUrlPhoto }}</td>
             <td>
-                <a>supprimer</a>
-                <a>modifier</a>
+                {% if  user.actif  == 1  %}
+                 oui
+                {% else %}
+                    non
+                {% endif %}
+
+            </td>
+            <td>
+                <a href="{{ path('admin_gestion-utilisateur-supprimer', {'id': user.id}) }}" class="btn-create tableaubtn ">supprimer</a>
+                <a href="{{ path('admin_gestion-utilisateur-modifier', {'id': user.id}) }}" class="btn-create tableaubtn">modifier</a>
+                {% if user.actif === true %}
+                    <a href="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}" class="btn-create tableaubtn">désactiver</a>
+                {% else %}
+                    <a href="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}" class="btn-create tableaubtn">activer</a>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
