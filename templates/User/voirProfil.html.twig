@@ -5,7 +5,8 @@
         <div id="profilContent">
             {% if utilisateur.urlPhoto is not null %}
                 <div id="profilImg">
-                    <img src="images{{ asset(utilisateur.urlPhoto) }}" alt="photo de profil">
+                    <!-- Petite modif pour que toutes les photos de profils s'affichent correctement-->
+                    <img src="{{ asset('images/' ~ utilisateur.urlPhoto) }}" alt="photo de profil">
                 </div>
             {% endif %}
             <div id=" profiltext">

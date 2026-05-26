@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un groupe privé{% endblock %}
+
+{% block body %}
+    <h1>Créer un groupe privé</h1>
+
+    <form method="post" action="{{ path('groupe_prive_creer') }}">
+
+        <div>
+            <label for="nom">Nom du groupe</label>
+            <input type="text" id="nom" name="nom" required>
+        </div>
+
+        <h2>Participants</h2>
+
+        {% for utilisateur in utilisateurs %}
+            {% if utilisateur.id != app.user.id %}
+                <div>
+                    <label>
+                        <input type="checkbox" name="participants[]" value="{{ utilisateur.id }}">
+                        {{ utilisateur.prenom }} {{ utilisateur.nom }} - {{ utilisateur.pseudo }}
+                    </label>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <button type="submit">Créer le groupe</button>
+    </form>
+
+    <a href="{{ path('groupe_prive_liste') }}">Retour</a>
+{% endblock %}
