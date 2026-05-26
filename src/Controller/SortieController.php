@@ -384,6 +384,8 @@ final class SortieController extends AbstractController
         return $this->json([
             'id' => $lieu->getId(),
             'nom' => $lieu->getNomLieu(),
+            'ville' => $ville->getNomVille(),
+            'departement' => substr($ville->getCodePostal(), 0, 2),
         ]);
     }
 

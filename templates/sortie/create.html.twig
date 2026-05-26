@@ -19,15 +19,20 @@
             {{ form_row(sortieForm.categorie) }}
             {{ form_row(sortieForm.campus) }}
 
-            <div class="form-group">
-                <label for="lieuSearch">Rechercher un lieu</label>
-                <input type="text" id="lieuSearch" placeholder="Tapez un mot-clé...">
+            <div class="lieu-row">
 
-                {{ form_row(sortieForm.lieu) }}
+                <div class="lieu-select">
+                    {{ form_row(sortieForm.lieu) }}
+                </div>
 
-                <button type="button" id="openLieuModal" class="btn-user">
-                    + Ajouter un lieu
+                <button
+                    type="button"
+                    id="openLieuModal"
+                    class="btn-add-lieu"
+                >
+                    +
                 </button>
+
             </div>
 
             {{ form_row(sortieForm.image) }}
@@ -46,7 +51,14 @@
 
             <h2>Ajouter un lieu</h2>
 
-            <input type="text" id="nomLieu" placeholder="Nom du lieu">
+            <input
+                type="text"
+                id="nomLieu"
+                placeholder="Ex : Mairie annexe de Kerfeunteun, Restaurant Burger King"
+            >
+            <small class="form-help">
+                Indiquez le type + le nom du lieu pour faciliter la recherche.
+            </small>
             <input type="text" id="rueLieu" placeholder="Adresse">
 
             <select id="villeSelect">
@@ -110,7 +122,19 @@
 
             const villeSelect = document.getElementById('villeSelect');
             const lieuSelect = document.querySelector('[name="sortie[lieu]"]');
-            const lieuSearch = document.getElementById('lieuSearch');
+
+            let tomLieu = null;
+
+            if (typeof TomSelect !== 'undefined' && lieuSelect) {
+                tomLieu = new TomSelect(lieuSelect, {
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    },
+                    placeholder: 'Rechercher un lieu...'
+                });
+            }
 
             openLieuModal.addEventListener('click', () => {
                 lieuModal.classList.remove('hidden');
@@ -126,14 +150,6 @@
 
             closeVilleModal.addEventListener('click', () => {
                 villeModal.classList.add('hidden');
-            });
-
-            lieuSearch.addEventListener('input', () => {
-                const search = lieuSearch.value.toLowerCase();
-
-                Array.from(lieuSelect.options).forEach(option => {
-                    option.hidden = !option.text.toLowerCase().includes(search);
-                });
             });
 
             saveVille.addEventListener('click', async () => {
@@ -208,15 +224,20 @@
 
                 const lieu = await response.json();
 
-                const option = new Option(
-                    lieu.nom,
-                    lieu.id,
-                    true,
-                    true
-                );
+                const label = lieu.nom + ' - ' + lieu.ville + ' - ' + lieu.departement;
 
-                lieuSelect.add(option);
-                lieuSelect.value = lieu.id;
+                if (tomLieu) {
+                    tomLieu.addOption({
+                        value: lieu.id,
+                        text: label
+                    });
+                    tomLieu.addItem(lieu.id);
+                    tomLieu.setValue(lieu.id);
+                } else {
+                    const option = new Option(label, lieu.id, true, true);
+                    lieuSelect.add(option);
+                    lieuSelect.value = lieu.id;
+                }
 
                 document.getElementById('nomLieu').value = '';
                 document.getElementById('rueLieu').value = '';

@@ -32,12 +32,19 @@ class SortieType extends AbstractType
                 'label' => 'Nombre de places',
             ])
             ->add('description')
+
             ->add('lieu', EntityType::class, [
                 'class' => Lieu::class,
-                'choice_label' => 'nomLieu',
-                'placeholder' => 'Choisir un lieu',
+                'choice_label' => function (Lieu $lieu) {
+                    return $lieu->getNomLieu()
+                        . ' — '
+                        . $lieu->getVille()->getNomVille()
+                        . ' — '
+                        . substr($lieu->getVille()->getCodePostal(), 0, 2);
+                },
+                'placeholder' => 'Rechercher un lieu',
                 'attr' => [
-                    'class' => 'searchable-select',
+                    'class' => 'tom-select-lieu',
                 ],
             ])
             ->add('categorie', EntityType::class, [
