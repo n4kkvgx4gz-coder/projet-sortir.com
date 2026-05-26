@@ -50,7 +50,11 @@
             <td>
                 <a href="{{ path('admin_gestion-utilisateur-supprimer', {'id': user.id}) }}" class="btn-create tableaubtn ">supprimer</a>
                 <a href="{{ path('admin_gestion-utilisateur-modifier', {'id': user.id}) }}" class="btn-create tableaubtn">modifier</a>
-                <a href="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}" class="btn-create tableaubtn">désactiver</a>
+                {% if user.actif === true %}
+                    <a href="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}" class="btn-create tableaubtn">désactiver</a>
+                {% else %}
+                    <a href="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}" class="btn-create tableaubtn">activer</a>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}

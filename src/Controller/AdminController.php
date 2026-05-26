@@ -87,11 +87,17 @@ class AdminController extends AbstractController
             $utilisateur = $utilisateurRepository->find($id);
 
             if (!(null === $utilisateur)) {
-                $utilisateur->setActif(false);
-                $entityManager->flush();
-                $this->addFlash('success', "L'utilisateur a bien été désactivé.");
+                if($utilisateur->isActif()){
+                    $utilisateur->setActif(false);
+                    $entityManager->flush();
+                    $this->addFlash('success', "L'utilisateur a bien été désactivé.");
+                }else{
+                    $utilisateur->setActif(true);
+                    $entityManager->flush();
+                    $this->addFlash('success', "L'utilisateur a bien été activé.");
+                }
             } else {
-                $this->addFlash('danger', "Le l'utilisateur n'a pas été désactivé.");
+                $this->addFlash('danger', "Le l'utilisateur n'a pas changé de status.");
             }
         } catch (Exception $exception) {
             $this->addFlash('danger', $exception->getMessage());
