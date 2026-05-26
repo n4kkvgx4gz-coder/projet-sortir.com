@@ -7,8 +7,16 @@
 {% block body %}
     <h1>Gérer profil</h1>
 
-    {{ form_start(GererProfilType) }}
-    {{ form_widget(GererProfilType) }}
+    {{ form_start(form) }}
+
+    {{ form_row(form.pseudo) }}
+    {{ form_row(form.prenom) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.telephone) }}
+    {{ form_row(form.campus) }}
+    {{ form_row(form.url_photo) }}
+
     <button type="submit" class="btn-create"> enregister les modifications </button>
-    {{ form_end(GererProfilType) }}
+    {{ form_end(form) }}
 {% endblock %}
