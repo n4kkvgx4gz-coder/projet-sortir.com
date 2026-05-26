@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du groupe{% endblock %}
+
+{% block body %}
+    <h1>{{ groupe.nom }}</h1>
+
+    <h2>Participants du groupe</h2>
+
+    {% if groupe.participants is empty %}
+        <p>Aucun participant dans ce groupe.</p>
+    {% else %}
+        <ul>
+            {% for participant in groupe.participants %}
+                <li>
+                    <a href="{{ path('profil_voir', {'id': participant.id}) }}">
+                        {{ participant.prenom }} {{ participant.nom }} - {{ participant.pseudo }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post" action="{{ path('groupe_prive_supprimer', {'id': groupe.id}) }}">
+        <button type="submit" onclick="return confirm('Supprimer ce groupe ?')">
+            Supprimer le groupe
+        </button>
+    </form>
+
+    <a href="{{ path('groupe_prive_liste') }}">Retour à mes groupes</a>
+{% endblock %}

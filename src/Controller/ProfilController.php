@@ -58,7 +58,7 @@ public function gererProfil(Request $request, EntityManagerInterface $entityMana
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('success', "Le souhait a bien été modifié.");
+            $this->addFlash('success', "Le profil a bien été modifié.");
 
             return $this->redirectToRoute('profil_detail');
         } catch (Exception $exception) {
@@ -98,6 +98,7 @@ public function gererProfil(Request $request, EntityManagerInterface $entityMana
     public function allUSer(UtilisateurRepository $utilisateurRepository): Response
     {
         $utilisateurs = $utilisateurRepository->findAll();
+
 
         return $this->render('user/gestionUtilisateur.html.twig', [
             'utilisateurs' => $utilisateurs
