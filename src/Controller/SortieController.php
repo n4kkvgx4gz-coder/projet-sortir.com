@@ -82,6 +82,9 @@ final class SortieController extends AbstractController
 
         $sortie->setOrganisateur($user);
 
+        $sortie = new Sortie();
+        $sortie->setEtat(true);
+        $sortie->setOrganisateur($this->getUser());
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
@@ -102,8 +105,15 @@ final class SortieController extends AbstractController
             }
 
             $lieu = new Lieu();
-            $lieu->setNomLieu($form->get('nomLieu')->getData());
-            $lieu->setRue($form->get('rue')->getData());
+
+            $lieu->setNomLieu(
+                $form->get('nomLieu')->getData()
+            );
+
+            $lieu->setRue(
+                $form->get('rue')->getData()
+            );
+
             $lieu->setVille($ville);
 
             $entityManager->persist($lieu);
@@ -116,14 +126,25 @@ final class SortieController extends AbstractController
                 $newFileName = rand(1, 99999) . '.' . $extension;
 
                 try {
-                    $file->move('images/', $newFileName);
+
+                    $file->move(
+                        'images/',
+                        $newFileName
+                    );
+
                     $sortie->setUrlPhoto($newFileName);
+
                 } catch (FileException $e) {
-                    $this->addFlash('danger', $e->getMessage());
+
+                    $this->addFlash(
+                        'danger',
+                        $e->getMessage()
+                    );
                 }
             }
 
             $entityManager->persist($sortie);
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_sortie');
@@ -135,15 +156,20 @@ final class SortieController extends AbstractController
         ]);
     }
 
+    // detail de l'inscription
+    /** * si la date de début de la sortie est plus ancienne que aujourd’hui - 1 mois, Symfony redirige et empêche la consultation de la sortie. * * Exemple : aujourd’hui 20/05/2026, une sortie du 10/04/2026 ne sera plus consultable. * */
     #[Route('/sortie/{id}', name: 'sortie_detail', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function detail(
         Sortie $sortie,
         InscriptionRepository $inscriptionRepository
     ): Response {
-        $dateLimiteConsultation = (new \DateTime())->modify('-1 month');
+
+        $dateLimiteConsultation =
+            (new \DateTime())->modify('-1 month');
 
         if ($sortie->getDateDebut() < $dateLimiteConsultation) {
             $this->addFlash('danger', 'Cette sortie n’est plus consultable.');
+
             return $this->redirectToRoute('app_sortie');
         }
 
@@ -153,10 +179,12 @@ final class SortieController extends AbstractController
         $dejaInscrit = null;
 
         if ($user) {
-            $dejaInscrit = $inscriptionRepository->findOneBy([
-                'sortie' => $sortie,
-                'participant' => $user,
-            ]);
+
+            $dejaInscrit =
+                $inscriptionRepository->findOneBy([
+                    'sortie' => $sortie,
+                    'participant' => $user,
+                ]);
         }
 
         return $this->render('sortie/detail.html.twig', [
@@ -171,11 +199,17 @@ final class SortieController extends AbstractController
         EntityManagerInterface $entityManager,
         InscriptionRepository $inscriptionRepository
     ): Response {
+
         /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         if (!$user) {
-            $this->addFlash('danger', 'Vous devez être connecté.');
+
+            $this->addFlash(
+                'danger',
+                'Vous devez être connecté.'
+            );
+
             return $this->redirectToRoute('app_login');
         }
 
@@ -193,11 +227,20 @@ final class SortieController extends AbstractController
             ]);
         }
 
-        if ($sortie->getInscriptions()->count() >= $sortie->getNbInscriptionsMax()) {
-            $this->addFlash('danger', 'Il n’y a plus de places.');
-            return $this->redirectToRoute('sortie_detail', [
-                'id' => $sortie->getId(),
-            ]);
+        if (
+            $sortie->getInscriptions()->count()
+            >= $sortie->getNbInscriptionsMax()
+        ) {
+
+            $this->addFlash(
+                'danger',
+                'Il n’y a plus de places.'
+            );
+
+            return $this->redirectToRoute(
+                'sortie_detail',
+                ['id' => $sortie->getId()]
+            );
         }
 
         $dejaInscrit = $inscriptionRepository->findOneBy([
@@ -206,10 +249,17 @@ final class SortieController extends AbstractController
         ]);
 
         if ($dejaInscrit) {
-            $this->addFlash('warning', 'Vous êtes déjà inscrit.');
-            return $this->redirectToRoute('sortie_detail', [
-                'id' => $sortie->getId(),
-            ]);
+            $this->addFlash('warning', 'Vous êtes déjà inscrit à cette sortie.');
+
+            $this->addFlash(
+                'warning',
+                'Vous êtes déjà inscrit.'
+            );
+
+            return $this->redirectToRoute(
+                'sortie_detail',
+                ['id' => $sortie->getId()]
+            );
         }
 
         $inscription = new Inscription();
@@ -218,9 +268,10 @@ final class SortieController extends AbstractController
         $inscription->setDateInscription(new \DateTime());
 
         $entityManager->persist($inscription);
+
         $entityManager->flush();
 
-        $this->addFlash('success', 'Vous êtes inscrit.');
+        $this->addFlash('success', 'Vous êtes bien inscrit à la sortie.');
 
         return $this->redirectToRoute('sortie_detail', [
             'id' => $sortie->getId(),
@@ -233,6 +284,7 @@ final class SortieController extends AbstractController
         EntityManagerInterface $entityManager,
         InscriptionRepository $inscriptionRepository
     ): Response {
+
         /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
@@ -390,3 +442,4 @@ final class SortieController extends AbstractController
     }
 
 }
+
