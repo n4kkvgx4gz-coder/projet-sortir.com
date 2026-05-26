@@ -106,38 +106,37 @@ body {
 
 .main-nav li:nth-child(1) a {
     background: rgba(0,168,198,0.14);
-    color: var(--blue-dark);
+    color: #006D77;
 }
 
 .main-nav li:nth-child(2) a {
     background: rgba(6,214,160,0.15);
-    color: #047857;
+    color: #2D6A4F;
 }
 
 .main-nav li:nth-child(3) a {
-    background: rgba(255,209,102,0.40);
-    color: #8a6100;
+    background: rgba(144,190,109,0.18);
+    color: #588157;
 }
 
 .main-nav li:nth-child(4) a {
-    background: rgba(239,71,111,0.15);
-    color: #b5173f;
+    background: rgba(255,209,102,0.28);
+    color: #B08900;
 }
 
 .main-nav li:nth-child(5) a {
-    background: rgba(131,56,236,0.16);
-    color: var(--purple);
+    background: rgba(244,162,97,0.20);
+    color: #BC6C25;
 }
 
-.main-nav li:nth-child(6) a,
+.main-nav li:nth-child(6) a {
+    background: rgba(231,111,81,0.18);
+    color: #C44536;
+}
+
 .main-nav li:nth-child(7) a {
-    background: transparent;
-    color: var(--text);
-}
-
-.main-nav a:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 22px rgba(16,42,67,0.12);
+    background: rgba(231,111,81,0.18);
+    color: #C44536;
 }
 
 .user-actions {
