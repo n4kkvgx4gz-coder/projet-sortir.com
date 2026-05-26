@@ -131,6 +131,7 @@ final class SortieController extends AbstractController
 
         return $this->render('sortie/create.html.twig', [
             'sortieForm' => $form,
+            'villes' => $villeRepository->findAll(),
         ]);
     }
 
@@ -326,5 +327,66 @@ final class SortieController extends AbstractController
         return $this->render('sortie/annuler.html.twig', [
             'sortie' => $sortie,
         ]);
+
     }
+//routes ajax pour ajout ville et lieu en pop-up
+    #[Route('/ville/ajax/create', name: 'ville_ajax_create', methods: ['POST'])]
+    public function createVilleAjax(
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+
+        $nomVille = $request->request->get('nomVille');
+        $codePostal = $request->request->get('codePostal');
+
+        $ville = new Ville();
+
+        $ville->setNomVille($nomVille);
+        $ville->setCodePostal($codePostal);
+
+        $entityManager->persist($ville);
+        $entityManager->flush();
+
+        return $this->json([
+            'id' => $ville->getId(),
+            'nom' => $ville->getNomVille(),
+        ]);
+    }
+
+    #[Route('/lieu/ajax/create', name: 'lieu_ajax_create', methods: ['POST'])]
+    public function createLieuAjax(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        VilleRepository $villeRepository
+    ): Response {
+
+        $nomLieu = $request->request->get('nomLieu');
+        $rue = $request->request->get('rue');
+        $villeId = $request->request->get('villeId');
+
+        $ville = $villeRepository->find($villeId);
+
+        if (!$ville) {
+            return $this->json([
+                'error' => 'Ville introuvable'
+            ], 404);
+        }
+
+        $lieu = new Lieu();
+
+        $lieu->setNomLieu($nomLieu);
+        $lieu->setRue($rue);
+        $lieu->setVille($ville);
+
+        $entityManager->persist($lieu);
+        $entityManager->flush();
+
+        return $this->json([
+            'id' => $lieu->getId(),
+            'nom' => $lieu->getNomLieu(),
+            'ville' => $ville->getNomVille(),
+            'departement' => substr($ville->getCodePostal(), 0, 2),
+        ]);
+    }
+
 }

@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Categorie;
 use App\Entity\Sortie;
 use App\Entity\Campus;
+use App\Entity\Lieu;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -18,45 +19,45 @@ class SortieType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', TextType::class, [
+            ->add('nom', null, [
                 'label' => 'Titre',
             ])
+            ->add('dateDebut', null, [
+                'label' => 'Début',
+            ])
+            ->add('dateCloture', null, [
+                'label' => 'Fin',
+            ])
+            ->add('nbInscriptionsMax', null, [
+                'label' => 'Nombre de places',
+            ])
+            ->add('description')
 
+            ->add('lieu', EntityType::class, [
+                'class' => Lieu::class,
+                'choice_label' => function (Lieu $lieu) {
+                    return $lieu->getNomLieu()
+                        . ' — '
+                        . $lieu->getVille()->getNomVille()
+                        . ' — '
+                        . substr($lieu->getVille()->getCodePostal(), 0, 2);
+                },
+                'placeholder' => 'Rechercher un lieu',
+                'attr' => [
+                    'class' => 'tom-select-lieu',
+                ],
+            ])
             ->add('categorie', EntityType::class, [
                 'class' => Categorie::class,
                 'choice_label' => 'nom',
                 'placeholder' => 'Choisir une catégorie',
             ])
-            ->add('dateDebut')
-            ->add('dateCloture')
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'nomCampus',
-                'placeholder' => 'Choisir une campus',
+                'placeholder' => 'Choisir un campus',
                 'mapped' => false,
             ])
-            ->add('nbInscriptionsMax')
-            ->add('description')
-
-            ->add('nomLieu', TextType::class, [
-                'mapped' => false,
-                'label' => 'Nom du lieu',
-            ])
-            ->add('rue', TextType::class, [
-                'mapped' => false,
-                'label' => 'Adresse',
-            ])
-            ->add('ville', TextType::class, [
-                'mapped' => false,
-                'label' => 'Ville',
-                'required' => true,
-            ])
-            ->add('codePostal', TextType::class, [
-                'mapped' => false,
-                'label' => 'Code postal',
-                'required' => true,
-            ])
-
             ->add('image', FileType::class, [
                 'label' => 'Image',
                 'mapped' => false,
