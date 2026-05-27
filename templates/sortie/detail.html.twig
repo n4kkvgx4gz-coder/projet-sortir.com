@@ -4,149 +4,140 @@
 
 {% block body %}
 
-    <div class="activity-card">
+    <div class="detail-sortie-page">
 
-        <div class="card-image">
-            {% if sortie.urlPhoto %}
-                <img
-                    src="{{ asset('images/' ~ sortie.urlPhoto) }}"
-                    alt="{{ sortie.nom }}"
-                >
-            {% else %}
-                <img src="{{ asset('images/default.jpg') }}" alt="image par défaut">
-            {% endif %}
+        <div class="detail-card">
 
-            <span class="badge">
+            <div class="detail-image">
+                {% if sortie.urlPhoto %}
+                    <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
+                {% else %}
+                    <img src="{{ asset('images/default.jpg') }}" alt="image par défaut">
+                {% endif %}
+
+                <span class="badge">
                 {{ sortie.lieu.nomLieu }}
-            </span>
-        </div>
+                </span>
+            </div>
 
-        <div class="sortie-content">
+            <div class="detail-content sortie-content">
 
-            <h1>{{ sortie.nom }}</h1>
+                <h1>{{ sortie.nom }}</h1>
 
-            <p>
-                Du {{ sortie.dateDebut|date('d/m/Y H:i') }}
-            </p>
-
-                {# petite modif pour eviter les erreurs d'id "organisateur" lorsqu'on supprime un utilisateur dans la BDD #}
-            <p>
-                Organisateur :
-
-                {% if organisateur %}
-                    <a href="{{ path('profil_voir', {'id': organisateur.id}) }}">
-                        {{ organisateur.prenom }} {{ organisateur.nom }}
-                    </a>
-                {% else %}
-                    <span>Organisateur inconnu</span>
-                {% endif %}
-            </p>
-
-            <div class="infos-sortie">
-                <p><strong>Date :</strong> {{ sortie.dateDebut|date('d/m/Y') }}</p>
-                <p><strong>Heure :</strong> {{ sortie.dateDebut|date('H:i') }}</p>
-                <p>
-                    <strong>Places restantes :</strong>
-                    {{ sortie.nbInscriptionsMax - sortie.inscriptions|length }}
+                <p class="detail-description">
+                    Du {{ sortie.dateDebut|date('d/m/Y H:i') }}
                 </p>
-                <p><strong>Clôture :</strong> {{ sortie.dateCloture|date('d/m/Y') }}</p>
-            </div>
 
-            <div class="participants-section">
+                <p>
+                    <strong>Organisateur :</strong>
 
-                <h2>
-                    Participants inscrits ({{ sortie.inscriptions|length }})
-                </h2>
+                    {% if organisateur %}
+                        <a href="{{ path('profil_voir', {'id': organisateur.id}) }}">
+                            {{ organisateur.prenom }} {{ organisateur.nom }}
+                        </a>
+                    {% else %}
+                        <span>Organisateur inconnu</span>
+                    {% endif %}
+                </p>
+                <h2>Detail de la sortie : </h2>
+                <h3>On vous attend le : </h3>
 
-                {% if sortie.inscriptions|length > 0 %}
+                <div class="detail-infos infos-sortie">
+                    <p><strong>Date:</strong> {{ sortie.dateDebut|date('d/m/Y') }}</p>
+                    <p><strong>Heure :</strong> {{ sortie.dateDebut|date('H:i') }}</p>
+                </div>
 
-                    <ul class="participants-list">
+                <h3>Pensez à reserver:  </h3>
 
-                        {% for inscription in sortie.inscriptions %}
-                            {% set participant = inscription.participant %}
+                <div class="detail-infos infos-sortie">
+                    <p><strong>Places disponibles :</strong> {{ sortie.nbInscriptionsMax - sortie.inscriptions|length }}</p>
+                    <p><strong>Clôture des inscriptions :</strong> {{ sortie.dateCloture|date('d/m/Y') }}</p>
+                </div>
 
-                            {% if participant is not null %}
-                                <li class="participant-item">
-                                    <a href="{{ path('profil_voir', {'id': participant.id}) }}">
-                                        {{ participant.prenom }} {{ participant.nom }}
-                                    </a>
-                                </li>
+                <div class="participants-section">
+                    <h2>Participants inscrits ({{ sortie.inscriptions|length }})</h2>
+
+                    {% if sortie.inscriptions|length > 0 %}
+                        <ul class="participants-list">
+                            {% for inscription in sortie.inscriptions %}
+                                {% set participant = inscription.participant %}
+
+                                {% if participant is not null %}
+                                    <li class="participant-item">
+                                        <a href="{{ path('profil_voir', {'id': participant.id}) }}">
+                                            {{ participant.prenom }} {{ participant.nom }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Aucun participant inscrit pour le moment.</p>
+                    {% endif %}
+                </div>
+
+                <div class="actions-sortie">
+
+                    {% if sortie.etat == 0 %}
+
+                        <div class="annule-box">
+                            <p><strong>Cette sortie est annulée.</strong></p>
+
+                            {% if sortie.motifAnnulation %}
+                                <p><strong>Motif :</strong> {{ sortie.motifAnnulation }}</p>
                             {% endif %}
-                        {% endfor %}
+                        </div>
 
-                    </ul>
+                    {% else %}
 
-                {% else %}
+                        {% if app.user
+                            and organisateur
+                            and app.user.id == organisateur.id
+                        %}
+                            <form method="post" action="{{ path('sortie_annuler', {'id': sortie.id}) }}">
+                                <input
+                                    type="text"
+                                    name="motif"
+                                    placeholder="Motif d’annulation"
+                                    required
+                                >
 
-                    <p>Aucun participant inscrit pour le moment.</p>
-
-                {% endif %}
-
-            </div>
-
-            <div class="actions-sortie">
-
-                {% if sortie.etat == 0 %}
-
-                    <p>Cette sortie est annulée.</p>
-
-                    {% if sortie.motifAnnulation %}
-                        <p><strong>Motif :</strong> {{ sortie.motifAnnulation }}</p>
-                    {% endif %}
-
-                {% else %}
-
-                    {% if app.user
-                        and sortie.organisateur
-                        and app.user.id == sortie.organisateur.id
-                    %}
-
-                        <form method="post" action="{{ path('sortie_annuler', {'id': sortie.id}) }}">
-                            <input
-                                type="text"
-                                name="motif"
-                                placeholder="Motif d’annulation"
-                                required
-                            >
-
-                            <button type="submit" class="btn-danger">
-                                Annuler la sortie
-                            </button>
-                        </form>
-
-                    {% endif %}
-
-                    {% if sortie.dateCloture > date() %}
-
-                        {% if dejaInscrit %}
-                            <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
-                                <button type="submit" class="btn-primary">
-                                    Se désister
-                                </button>
-                            </form>
-                        {% else %}
-                            <form method="post" action="{{ path('sortie_inscription', {'id': sortie.id}) }}">
-                                <button type="submit" class="btn-primary">
-                                    S'inscrire
+                                <button type="submit" class="btn-danger">
+                                    Annuler la sortie
                                 </button>
                             </form>
                         {% endif %}
 
-                    {% else %}
+                        {% if sortie.dateCloture > date() %}
 
-                        <p>Clôture des inscriptions.</p>
+                            {% if dejaInscrit %}
+                                <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
+                                    <button type="submit" class="btn-primary">
+                                        Se désister
+                                    </button>
+                                </form>
+                            {% else %}
+                                <form method="post" action="{{ path('sortie_inscription', {'id': sortie.id}) }}">
+                                    <button type="submit" class="btn-primary">
+                                        S'inscrire
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                        {% else %}
+                            <p>Clôture des inscriptions.</p>
+                        {% endif %}
 
                     {% endif %}
 
-                {% endif %}
+                </div>
+
+                <div class="description">
+                    <h2>À propos</h2>
+                    <p>{{ sortie.description }}</p>
+                </div>
 
             </div>
-
-            <div class="description">
-                <h2>À propos</h2>
-                <p>{{ sortie.description }}</p>
-            </div>
-
         </div>
     </div>
 
