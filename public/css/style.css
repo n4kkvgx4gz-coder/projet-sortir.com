@@ -442,6 +442,17 @@ input[type="checkbox"] {
 .btn-primary,
 .btn-create,
 .btn-detail,
+.btn-login {
+    border-radius: 999px;
+    padding: 12px 22px;
+}
+
+.btn-add-lieu {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    font-size: 1.6rem;}
+
 .btn-login,
 .btn-add-lieu {
     display: inline-flex;
@@ -843,7 +854,7 @@ table {
 }
 
 thead {
-    background: var(--blue);
+    background: linear-gradient(135deg, var(--blue), var(--green));
     color: white;
 }
 
@@ -860,6 +871,7 @@ tbody tr:hover {
 .tableaubtn {
     margin: 3px;
     padding: 3px 10px;
+    font-size: 15px;
 }
 
 /* LOGIN */
