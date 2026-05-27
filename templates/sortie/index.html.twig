@@ -25,16 +25,18 @@
                 placeholder="Rechercher une sortie, une ville, un lieu..."
                 value="{{ q|default('') }}"
             >
-
+            <label for="dateMin">Date minimum</label>
             <input
                 type="date"
                 name="dateMin"
+                id="dateMin"
                 value="{{ dateMin|default('') }}"
             >
-
+            <label for="dateMax">Date maximum</label>
             <input
                 type="date"
                 name="dateMax"
+                id="dateMax"
                 value="{{ dateMax|default('') }}"
             >
 

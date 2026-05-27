@@ -230,7 +230,7 @@ class AdminController extends AbstractController
     {
         $sorties = $sortieRepository->findAll();
 
-        return $this->render('admin/gestionSortie.html.twig', [
+        return $this->render('sortie/gestionSortie.html.twig', [
             'sorties' => $sorties,
         ]);
     }
