@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier utilisateur{% endblock %}
+
+{% block body %}
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+
+    <h1>Modifier le profil de : {{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+
+    {{ form_errors(form) }}
+
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+    {{ form_row(form.pseudo) }}
+    {{ form_row(form.prenom) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.telephone) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.campus) }}
+    {{ form_row(form.roles) }}
+    {{ form_row(form.actif) }}
+    {{ form_row(form.administrateur) }}
+    {{ form_row(form.url_photo) }}
+
+    {% if form.agreeTerms is defined %}
+        <div class="form-group">
+            <label for="{{ form.agreeTerms.vars.id }}">
+                J’accepte les conditions d’utilisation
+            </label>
+            {{ form_widget(form.agreeTerms) }}
+            {{ form_errors(form.agreeTerms) }}
+        </div>
+    {% endif %}
+
+    <button type="submit" class="btn-create">Modifier</button>
+
+    {{ form_end(form) }}
+
+    <a href="{{ path('admin_gestion-utilisateur') }}">Retour</a>
+{% endblock %}

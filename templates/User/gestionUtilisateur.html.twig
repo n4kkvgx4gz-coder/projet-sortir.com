@@ -48,7 +48,15 @@
 
             </td>
             <td>
-                <a href="{{ path('admin_gestion-utilisateur-supprimer', {'id': user.id}) }}" class="btn-create tableaubtn ">supprimer</a>
+
+                <form method="post"
+                      action="{{ path('admin_gestion-utilisateur-supprimer', {'id': user.id}) }}"
+                      style="display:inline;"
+                      onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
+                    <button type="submit" class="btn-create tableaubtn">
+                        Supprimer
+                    </button>
+                </form>
                 <a href="{{ path('admin_gestion-utilisateur-modifier', {'id': user.id}) }}" class="btn-create tableaubtn">modifier</a>
                 {% if user.actif === true %}
                     <a href="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}" class="btn-create tableaubtn">désactiver</a>
