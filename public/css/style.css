@@ -49,7 +49,7 @@ body {
     align-items: center;
     gap: 24px;
 
-    background: rgba(255,255,255,0.92);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
 }
@@ -69,7 +69,7 @@ body {
     border-radius: 18px;
     transform: translateY(8px);
     background: white;
-    box-shadow: 0 12px 26px rgba(0,168,198,0.28);
+    box-shadow: 0 12px 26px rgba(0, 168, 198, 0.28);
 }
 
 .brand-title {
@@ -110,33 +110,33 @@ body {
 
 /* Couleurs menu */
 .main-nav li:nth-child(1) a {
-    background: rgba(0,168,198,0.14);
+    background: rgba(0, 168, 198, 0.14);
     color: #006D77;
 }
 
 .main-nav li:nth-child(2) a {
-    background: rgba(6,214,160,0.15);
+    background: rgba(6, 214, 160, 0.15);
     color: #2D6A4F;
 }
 
 .main-nav li:nth-child(3) a {
-    background: rgba(144,190,109,0.18);
+    background: rgba(144, 190, 109, 0.18);
     color: #588157;
 }
 
 .main-nav li:nth-child(4) a {
-    background: rgba(255,209,102,0.28);
+    background: rgba(255, 209, 102, 0.28);
     color: #B08900;
 }
 
 .main-nav li:nth-child(5) a {
-    background: rgba(244,162,97,0.20);
+    background: rgba(244, 162, 97, 0.20);
     color: #BC6C25;
 }
 
 .main-nav li:nth-child(6) a,
 .main-nav li:nth-child(7) a {
-    background: rgba(231,111,81,0.18);
+    background: rgba(231, 111, 81, 0.18);
     color: #C44536;
 }
 
@@ -194,7 +194,7 @@ body {
         top: 84px;
         right: 18px;
         width: 270px;
-        background: rgba(255,255,255,0.96);
+        background: rgba(255, 255, 255, 0.96);
         border: 1px solid var(--border);
         border-radius: 20px;
         box-shadow: var(--shadow);
@@ -273,6 +273,7 @@ input[type="checkbox"] {
         width: 100%;
     }
 }
+
 /* =========================
    RESPONSIVE HEADER
 ========================= */
@@ -313,7 +314,7 @@ input[type="checkbox"] {
         top: 78px;
         right: 18px;
         width: 270px;
-        background: rgba(255,255,255,0.96);
+        background: rgba(255, 255, 255, 0.96);
         border: 1px solid var(--border);
         border-radius: 20px;
         box-shadow: var(--shadow);
@@ -410,7 +411,7 @@ input[type="checkbox"] {
     display: inline-flex;
     padding: 10px 16px;
     border-radius: 999px;
-    background: rgba(0,168,198,0.12);
+    background: rgba(0, 168, 198, 0.12);
     color: var(--blue-dark);
     font-weight: 900;
 }
@@ -442,6 +443,18 @@ input[type="checkbox"] {
 .btn-primary,
 .btn-create,
 .btn-detail,
+.btn-login {
+    border-radius: 999px;
+    padding: 12px 22px;
+}
+
+.btn-add-lieu {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    font-size: 1.6rem;
+}
+
 .btn-login,
 .btn-add-lieu {
     display: inline-flex;
@@ -453,7 +466,7 @@ input[type="checkbox"] {
     font-weight: 900;
     color: white;
     background: linear-gradient(135deg, var(--blue), var(--green));
-    box-shadow: 0 10px 22px rgba(0,168,198,0.25);
+    box-shadow: 0 10px 22px rgba(0, 168, 198, 0.25);
     transition: 0.2s ease;
 }
 
@@ -480,7 +493,7 @@ input[type="checkbox"] {
 .btn-login:hover,
 .btn-add-lieu:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 28px rgba(0,168,198,0.35);
+    box-shadow: 0 14px 28px rgba(0, 168, 198, 0.35);
 }
 
 .btn-danger,
@@ -496,7 +509,7 @@ input[type="checkbox"] {
     font-weight: 900;
     color: white;
     background: linear-gradient(135deg, var(--pink), var(--orange));
-    box-shadow: 0 10px 24px rgba(239,71,111,0.25);
+    box-shadow: 0 10px 24px rgba(239, 71, 111, 0.25);
 }
 
 /* FORMULAIRES */
@@ -505,7 +518,7 @@ input[type="checkbox"] {
     max-width: 760px;
     margin: 48px auto;
     padding: 34px;
-    background: rgba(255,255,255,0.96);
+    background: rgba(255, 255, 255, 0.96);
     border: 1px solid var(--border);
     border-radius: 28px;
     box-shadow: var(--shadow);
@@ -545,7 +558,7 @@ textarea,
 input:focus,
 select:focus,
 textarea:focus {
-    outline: 3px solid rgba(0,168,198,0.18);
+    outline: 3px solid rgba(0, 168, 198, 0.18);
     border-color: var(--blue);
 }
 
@@ -610,7 +623,7 @@ input[type="file"] {
 }
 
 .ts-dropdown .active {
-    background: rgba(0,168,198,0.12);
+    background: rgba(0, 168, 198, 0.12);
     color: var(--blue-dark);
 }
 
@@ -619,7 +632,7 @@ input[type="file"] {
 .custom-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.45);
+    background: rgba(0, 0, 0, 0.45);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -638,7 +651,7 @@ input[type="file"] {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
 }
 
 .modal-actions,
@@ -658,7 +671,7 @@ input[type="file"] {
     align-items: center;
     margin-bottom: 34px;
     padding: 22px;
-    background: rgba(255,255,255,0.92);
+    background: rgba(255, 255, 255, 0.92);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -713,7 +726,7 @@ input[type="file"] {
 
 .activity-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 24px 55px rgba(16,42,67,0.18);
+    box-shadow: 0 24px 55px rgba(16, 42, 67, 0.18);
 }
 
 .card-image {
@@ -756,7 +769,7 @@ input[type="file"] {
 
 .location-badge,
 .badge {
-    background: rgba(0,168,198,0.12);
+    background: rgba(0, 168, 198, 0.12);
     color: var(--blue-dark);
 }
 
@@ -819,7 +832,7 @@ input[type="file"] {
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 6px solid rgba(0,168,198,0.18);
+    border: 6px solid rgba(0, 168, 198, 0.18);
 }
 
 #profilBtn {
@@ -843,7 +856,7 @@ table {
 }
 
 thead {
-    background: var(--blue);
+    background: linear-gradient(135deg, var(--blue), var(--green));
     color: white;
 }
 
@@ -854,12 +867,13 @@ td {
 }
 
 tbody tr:hover {
-    background: rgba(0,168,198,0.08);
+    background: rgba(0, 168, 198, 0.08);
 }
 
 .tableaubtn {
     margin: 3px;
     padding: 3px 10px;
+    font-size: 15px;
 }
 
 /* LOGIN */
@@ -876,7 +890,7 @@ tbody tr:hover {
     width: 460px;
     max-width: 100%;
     padding: 36px;
-    background: rgba(255,255,255,0.96);
+    background: rgba(255, 255, 255, 0.96);
     border: 1px solid var(--border);
     border-radius: 28px;
     box-shadow: var(--shadow);
@@ -895,7 +909,7 @@ tbody tr:hover {
     padding: 30px 20px;
     text-align: center;
     color: var(--muted);
-    background: rgba(255,255,255,0.8);
+    background: rgba(255, 255, 255, 0.8);
     border-top: 1px solid var(--border);
 }
 
@@ -929,7 +943,7 @@ tbody tr:hover {
         top: 75px;
         right: 20px;
         width: 270px;
-        background: rgba(255,255,255,0.95);
+        background: rgba(255, 255, 255, 0.95);
         border: 1px solid var(--border);
         border-radius: 20px;
         box-shadow: var(--shadow);
