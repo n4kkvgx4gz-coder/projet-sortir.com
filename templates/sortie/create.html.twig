@@ -79,19 +79,27 @@
             <h2>
                 Ajouter un lieu
             </h2>
-
+<section>
+    <label for="Nom du lieu">Nom du lieu</label>
             <input
                 type="text"
                 id="nomLieu"
-                placeholder="Ex : Bowling Master Quimper"
+                placeholder=""
             >
+</section>
 
+<section>
+    <label for="adresse">Adresse du lieu</label>
             <input
                 type="text"
                 id="rueLieu"
-                placeholder="Adresse"
+                placeholder=""
             >
+</section>
 
+<section>
+
+    <label for="ville">Ville du lieu</label>
             <select id="villeSelect">
 
                 {% for ville in villes %}
@@ -103,6 +111,7 @@
                 {% endfor %}
 
             </select>
+</section>
 
             <button
                 type="button"
@@ -116,19 +125,21 @@
 
                 <button
                     type="button"
+                    id="closeLieuModal"
+                    class="btn-danger"
+                >
+                    Fermer
+                </button>
+
+                <button
+                    type="button"
                     id="saveLieu"
                     class="btn-primary"
                 >
                     Enregistrer le lieu
                 </button>
 
-                <button
-                    type="button"
-                    id="closeLieuModal"
-                    class="btn-danger"
-                >
-                    Fermer
-                </button>
+
 
             </div>
 
@@ -164,18 +175,18 @@
 
                 <button
                     type="button"
-                    id="saveVille"
-                    class="btn-primary"
-                >
-                    Ajouter la ville
-                </button>
-
-                <button
-                    type="button"
                     id="closeVilleModal"
                     class="btn-danger"
                 >
                     Fermer
+                </button>
+
+                <button
+                    type="button"
+                    id="saveVille"
+                    class="btn-primary"
+                >
+                    Ajouter la ville
                 </button>
 
             </div>
