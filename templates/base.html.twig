@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <title>{% block title %}Sortir.com{% endblock %}</title>
 
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=10">
     <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+
 
     {% block stylesheets %}{% endblock %}
 </head>
@@ -17,7 +20,7 @@
 
 {% include 'shared/footer.html.twig' %}
 
-<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js?v=2"></script>
 {{ importmap('app') }}
 
 {% block javascripts %}{% endblock %}
