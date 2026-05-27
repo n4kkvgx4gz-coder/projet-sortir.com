@@ -22,7 +22,12 @@ class SortieRepository extends ServiceEntityRepository
         ?string $dateMin,
         ?string $dateMax,
         ?string $departement = null,
-        ?string $categorieId = null
+        ?string $categorieId = null,
+        $user = null,
+        $organisateur = null,
+        $inscrit = null,
+        $disponible = null,
+        $passees = null
     ): array {
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.lieu', 'l')
@@ -59,6 +64,28 @@ class SortieRepository extends ServiceEntityRepository
         if (!empty($categorieId)) {
             $qb->andWhere('c.id = :categorieId')
                 ->setParameter('categorieId', $categorieId);
+        }
+
+        if ($organisateur && $user) {
+            $qb->andWhere('s.organisateur = :user')
+                ->setParameter('user', $user);
+        }
+
+        if ($inscrit && $user) {
+            $qb->leftJoin('s.inscriptions', 'i')
+                ->andWhere('i.participant = :userInscrit')
+                ->setParameter('userInscrit', $user);
+        }
+
+        if ($disponible) {
+            $qb->andWhere('s.dateCloture >= :today')
+                ->andWhere('s.etat = true')
+                ->setParameter('today', new \DateTime());
+        }
+
+        if ($passees) {
+            $qb->andWhere('s.dateDebut < :now')
+                ->setParameter('now', new \DateTime());
         }
 
         return $qb->getQuery()->getResult();
