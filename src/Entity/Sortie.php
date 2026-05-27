@@ -6,6 +6,7 @@ use App\Repository\SortieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -16,18 +17,27 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\NotBlank(message: "La sortie doit avoir un titre")]
+    #[Assert\Length(max: 30 ,maxMessage: "Le titre ne doit pas dépasser les 30 caractères" )]
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La sortie doit avoir une date de début")]
+    #[Assert\GreaterThanOrEqual('today',message: "la date de début ne peut pas être programmé dans le passé")]
     private ?\DateTime $dateDebut = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La sortie doit avoir une date de fin")]
+    #[Assert\GreaterThanOrEqual(propertyPath : 'dateDebut', message: "la date de fin doit être programmé après la date de début")]
     private ?\DateTime $dateCloture = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La sortie doit avoir un nombre d'inscription maximum")]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La sortie doit avoir une description")]
+    #[Assert\Length(max: 255,maxMessage: "La description peut contenir 255 caractères au maximum")]
     private ?string $description = null;
 
     #[ORM\Column]
@@ -50,6 +60,7 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(message: "La sortie doit avoir un lieu")]
     private ?Lieu $lieu = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]

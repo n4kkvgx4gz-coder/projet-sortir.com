@@ -7,6 +7,7 @@ use App\Entity\Utilisateur;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -33,10 +34,27 @@ class GestionUtilisateurType extends AbstractType
                 'No' => 0,
             ],])
             ->add('pseudo')
-            ->add('url_photo')
+            ->add('url_photo', FileType::class, [
+                'label' => 'Photo de profil',
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('roles', ChoiceType::class, [
+                'label' => 'Rôle',
+                'choices' => [
+                    'Administrateur' => 'ROLE_ADMIN',
+                    'Utilisateur' => 'ROLE_USER',
+                ],
+                'mapped' => false,
+                'data' => in_array('ROLE_ADMIN', $builder->getData()->getRoles())
+                    ? 'ROLE_ADMIN'
+                    : 'ROLE_USER',
+            ])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom_campus',
+                'label' => 'Campus de rattachement',
+                'required' => true
             ])
         ;
     }
