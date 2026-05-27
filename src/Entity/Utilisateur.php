@@ -34,7 +34,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+      @var string The hashed password
      */
     #[ORM\Column(length: 255)]
     private ?string $password = null;

@@ -6,6 +6,7 @@ use App\Entity\Utilisateur;
 use App\Form\GestionUtilisateurType;
 use App\Repository\CampusRepository;
 use App\Repository\SortieRepository;
+use App\Repository\InscriptionRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -179,22 +180,39 @@ class AdminController extends AbstractController
     public function supprimerUSer(
         int $id,
         UtilisateurRepository $utilisateurRepository,
+        SortieRepository $sortieRepository,
+        InscriptionRepository $inscriptionRepository,
         EntityManagerInterface $entityManager
     ): Response {
-        try {
-            $utilisateur = $utilisateurRepository->find($id);
+        $utilisateur = $utilisateurRepository->find($id);
 
-            if ($utilisateur !== null) {
-                $entityManager->remove($utilisateur);
-                $entityManager->flush();
-
-                $this->addFlash('success', "L'utilisateur a bien été supprimé.");
-            } else {
-                $this->addFlash('danger', "L'utilisateur n'existe pas.");
-            }
-        } catch (Exception $exception) {
-            $this->addFlash('danger', $exception->getMessage());
+        if (!$utilisateur) {
+            $this->addFlash('danger', "L'utilisateur n'existe pas.");
+            return $this->redirectToRoute('admin_gestion-utilisateur');
         }
+        $inscriptions = $inscriptionRepository->findBy([
+            'participant' => $utilisateur,
+        ]);
+
+        foreach ($inscriptions as $inscription) {
+            $entityManager->remove($inscription);
+        }
+
+        $sortiesOrganisees = $sortieRepository->findBy([
+            'organisateur' => $utilisateur,
+        ]);
+
+        foreach ($sortiesOrganisees as $sortie) {
+            $entityManager->remove($sortie);
+        }
+
+        $entityManager->remove($utilisateur);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            "L'utilisateur et ses sorties organisées ont bien été supprimés."
+        );
 
         return $this->redirectToRoute('admin_gestion-utilisateur');
     }
