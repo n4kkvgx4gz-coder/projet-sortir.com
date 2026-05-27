@@ -122,11 +122,10 @@
                 <article class="activity-card">
 
                     <div class="card-image">
-                        {% if sortie.urlPhoto %}
-                            <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
-                        {% else %}
-                            <img src="{{ asset('images/default.jpg') }}" alt="image par défaut">
-                        {% endif %}
+                        <img
+                            src="{{ asset('images/' ~ (sortie.urlPhoto ?: 'default.png')) }}"
+                            alt="{{ sortie.nom }}"
+                        >
                     </div>
 
                     <div class="card-content">
