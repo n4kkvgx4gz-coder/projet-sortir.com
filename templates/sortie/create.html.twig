@@ -58,7 +58,10 @@
 
             {{ form_row(sortieForm.image) }}
 
-            <button class="btn-primary">
+            <button
+                type="submit"
+                class="btn-primary"
+            >
                 Enregistrer
             </button>
 
@@ -298,5 +301,26 @@
                 lieuModal.classList.add('hidden');
             });
         }
+    </script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        window.addEventListener('load', () => {
+            const lieuSelect = document.querySelector('[name="sortie[lieu]"]');
+
+            if (lieuSelect && typeof TomSelect !== 'undefined' && !lieuSelect.tomselect) {
+                new TomSelect(lieuSelect, {
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    },
+                    placeholder: 'Rechercher un lieu...'
+                });
+            }
+        });
     </script>
 {% endblock %}
