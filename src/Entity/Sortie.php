@@ -33,6 +33,7 @@ class Sortie
 
     #[ORM\Column]
     #[Assert\NotBlank(message: "La sortie doit avoir un nombre d'inscription maximum")]
+    #[Assert\Positive(message: "Le nombre d'inscription maximum doit être positif")]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 255)]
@@ -44,6 +45,7 @@ class Sortie
     private ?bool $etat = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Image]
     private ?string $urlPhoto = null;
 
     #[ORM\OneToMany(
