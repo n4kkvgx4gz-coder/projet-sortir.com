@@ -1,0 +1,51 @@
+{# templates/admin/creer_utilisateur.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un utilisateur{% endblock %}
+
+{% block body %}
+    <h1>Créer un utilisateur</h1>
+
+        <form method="post" action="{{ path('admin_creer_utilisateur') }}">
+
+        <label>Nom</label>
+        <input type="text" name="nom" required>
+
+        <label>Prénom</label>
+        <input type="text" name="prenom" required>
+
+        <label>Pseudo</label>
+        <input type="text" name="pseudo" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Téléphone</label>
+        <input type="text" name="telephone">
+
+        <label>Campus</label>
+        <select name="campus" required>
+            <option value="">Choisir un campus</option>
+            {% for campus in campusList %}
+                <option value="{{ campus.id }}">{{ campus.nomCampus }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Rôle</label>
+        <select name="role" required>
+            <option value='["ROLE_USER"]'>Utilisateur</option>
+            <option value='["ROLE_ADMIN"]'>Administrateur</option>
+        </select>
+
+        <label>Mot de passe</label>
+        <input type="password" name="password" required>
+
+        <label>
+            <input type="checkbox" name="actif" value="1" checked>
+            Actif
+        </label>
+
+        <button type="submit">Créer</button>
+    </form>
+{% endblock %}
