@@ -20,9 +20,10 @@
 
 {% include 'shared/footer.html.twig' %}
 
-<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js?v=2"></script>
-{{ importmap('app') }}
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js?v=4"></script>
 
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+    {{ importmap('app') }}
+{% endblock %}
 </body>
 </html>

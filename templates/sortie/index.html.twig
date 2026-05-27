@@ -25,16 +25,18 @@
                 placeholder="Rechercher une sortie, une ville, un lieu..."
                 value="{{ q|default('') }}"
             >
-
+            <label for="dateMin">Date minimum</label>
             <input
                 type="date"
                 name="dateMin"
+                id="dateMin"
                 value="{{ dateMin|default('') }}"
             >
-
+            <label for="dateMax">Date maximum</label>
             <input
                 type="date"
                 name="dateMax"
+                id="dateMax"
                 value="{{ dateMax|default('') }}"
             >
 
@@ -120,11 +122,10 @@
                 <article class="activity-card">
 
                     <div class="card-image">
-                        {% if sortie.urlPhoto %}
-                            <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
-                        {% else %}
-                            <img src="{{ asset('images/default.jpg') }}" alt="image par défaut">
-                        {% endif %}
+                        <img
+                            src="{{ asset('images/' ~ (sortie.urlPhoto ?: 'default.png')) }}"
+                            alt="{{ sortie.nom }}"
+                        >
                     </div>
 
                     <div class="card-content">
