@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/profil', name: 'profil_')]
 class ProfilController extends AbstractController
@@ -28,7 +29,7 @@ class ProfilController extends AbstractController
     }
 #[Route('/modifier', name: 'modifier', methods: ['GET', 'POST'])]
 #[IsGranted('ROLE_USER')]
-public function gererProfil(Request $request, EntityManagerInterface $entityManager) : Response {
+public function gererProfil(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator) : Response {
     $user = $this->getUser();
     $profilForm = $this-> createForm(GererProfilType::class, $user,['action' => $this->generateUrl('profil_modifier'),'method' => 'POST']);
     $profilForm->handleRequest($request);
@@ -65,7 +66,7 @@ public function gererProfil(Request $request, EntityManagerInterface $entityMana
             $this->addFlash('danger', $exception->getMessage());
         }
     }
-    return $this->render('user/gererProfil.html.twig', ["user"=> $user, "GererProfilType"=> $profilForm]);
+    return $this->render('user/gererProfil.html.twig', ["user"=> $user, "form"=> $profilForm]);
 }
 
     #[Route('/supprimer', name: 'supprimer', methods: ['GET', 'POST'])]

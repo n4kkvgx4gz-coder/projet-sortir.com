@@ -38,15 +38,22 @@ final class SortieController extends AbstractController
         $inscrit = $request->query->get('inscrit');
         $disponible = $request->query->get('disponible');
         $passees = $request->query->get('passees');
-
+        $user = $this->getUser();
         $sorties = $sortieRepository->findWithFilters(
             $q,
             $dateMin,
             $dateMax,
             $departement,
-            $categorieId
+            $categorieId,
+            $user,
+            $organisateur,
+            $inscrit,
+            $disponible,
+            $passees
         );
 
+
+        // test 123
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
             'categories' => $categorieRepository->findAll(),
@@ -77,47 +84,16 @@ final class SortieController extends AbstractController
 
         if (!$user) {
             $this->addFlash('danger', 'Vous devez être connecté pour créer une sortie.');
+
             return $this->redirectToRoute('app_login');
         }
 
         $sortie->setOrganisateur($user);
 
-        $sortie = new Sortie();
-        $sortie->setEtat(true);
-        $sortie->setOrganisateur($this->getUser());
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $nomVille = $form->get('ville')->getData();
-            $codePostal = $form->get('codePostal')->getData();
-
-            $ville = $villeRepository->findOneBy([
-                'nom_ville' => $nomVille,
-                'code_postal' => $codePostal,
-            ]);
-
-            if (!$ville) {
-                $ville = new Ville();
-                $ville->setNomVille($nomVille);
-                $ville->setCodePostal($codePostal);
-                $entityManager->persist($ville);
-            }
-
-            $lieu = new Lieu();
-
-            $lieu->setNomLieu(
-                $form->get('nomLieu')->getData()
-            );
-
-            $lieu->setRue(
-                $form->get('rue')->getData()
-            );
-
-            $lieu->setVille($ville);
-
-            $entityManager->persist($lieu);
-            $sortie->setLieu($lieu);
 
             $file = $form->get('image')->getData();
 
@@ -126,25 +102,14 @@ final class SortieController extends AbstractController
                 $newFileName = rand(1, 99999) . '.' . $extension;
 
                 try {
-
-                    $file->move(
-                        'images/',
-                        $newFileName
-                    );
-
+                    $file->move('images/', $newFileName);
                     $sortie->setUrlPhoto($newFileName);
-
                 } catch (FileException $e) {
-
-                    $this->addFlash(
-                        'danger',
-                        $e->getMessage()
-                    );
+                    $this->addFlash('danger', $e->getMessage());
                 }
             }
 
             $entityManager->persist($sortie);
-
             $entityManager->flush();
 
             return $this->redirectToRoute('app_sortie');
