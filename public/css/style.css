@@ -1196,7 +1196,7 @@ input[type="file"] {
 /* TABLES */
 
 table {
-    width: 95%;
+    width: 100%;
     border-collapse: separate;
     border-spacing: 0;
     background: white;
@@ -1227,7 +1227,20 @@ tbody tr:hover {
     font-size: 15px;
     background: linear-gradient(135deg, var(--pink), var(--orange));
 }
+/* TABLEAU RESPONSIVE */
 
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Tableau */
+.table-responsive table {
+    width: 100%;
+    min-width: 700px; /* largeur minimale avant scroll */
+    border-collapse: collapse;
+}
 /* LOGIN */
 
 .login-page {
@@ -1359,6 +1372,8 @@ tbody tr:hover {
         text-align: center;
     }
 }
+
+
 
 
 
