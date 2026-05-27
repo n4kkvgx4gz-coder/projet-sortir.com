@@ -157,45 +157,51 @@
                         <div class="card-meta">
                             📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}
                         </div>
-
                         <div class="sortie-actions">
 
-                            <a href="{{ path('sortie_detail', {'id': sortie.id}) }}"
-                               class="btn-detail">
-                                Voir détail
-                            </a>
+                            {% if sortie.etat == 0 %}
 
-                            {% if sortie.etat != 0
-                                and app.user
-                                and sortie.organisateur
-                                and app.user.id == sortie.organisateur.id
-                            %}
+                                <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn-detail">
+                                    Voir détail
+                                </a>
 
-                                <form
-                                    method="post"
-                                    action="{{ path('sortie_annuler', {'id': sortie.id}) }}"
-                                    class="annulation-form"
-                                >
+                                <div class="sortie-annulee-box">
+                                    <p>Cette sortie est annulée.</p>
 
-                                    <div class="actions-inline">
-                                        <button
-                                            type="submit"
-                                            class="btn-danger"
-                                            onclick="return confirm('Voulez-vous annuler cette sortie ?')"
-                                        >
+                                    {% if sortie.motifAnnulation %}
+                                        <p><strong>Motif :</strong> {{ sortie.motifAnnulation }}</p>
+                                    {% endif %}
+                                </div>
+
+                            {% else %}
+
+                                <div class="actions-buttons">
+                                    <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn-detail">
+                                        Voir détail
+                                    </a>
+
+                                    {% if app.user and sortie.organisateur and app.user.id == sortie.organisateur.id %}
+                                        <button type="submit" form="annuler-{{ sortie.id }}" class="btn-danger">
                                             Annuler
                                         </button>
-                                    </div>
+                                    {% endif %}
+                                </div>
 
-                                    <input
-                                        type="text"
-                                        name="motif"
-                                        placeholder="Motif d’annulation"
-                                        required
-                                        class="motif-input"
-                                    >
+                                {% if app.user and sortie.organisateur and app.user.id == sortie.organisateur.id %}
+                                    <form method="post"
+                                          action="{{ path('sortie_annuler', {'id': sortie.id}) }}"
+                                          id="annuler-{{ sortie.id }}"
+                                          class="annulation-form">
 
-                                </form>
+                                        <input
+                                            type="text"
+                                            name="motif"
+                                            placeholder="Motif d’annulation"
+                                            required
+                                            class="motif-input"
+                                        >
+                                    </form>
+                                {% endif %}
 
                             {% endif %}
 

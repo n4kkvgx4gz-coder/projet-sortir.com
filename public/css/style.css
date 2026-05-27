@@ -821,6 +821,7 @@ input[type="checkbox"] {
 .btn-user:hover,
 .btn-primary:hover,
 .btn-create:hover,
+.btn-danger:hover,
 .btn-detail:hover,
 .btn-login:hover,
 .btn-add-lieu:hover {
@@ -833,6 +834,8 @@ input[type="checkbox"] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    font-size: 16px;
+    font-family:Arial, Helvetica, sans-serif ;
     padding: 12px 22px;
     border-radius: 999px;
     border: none;
@@ -841,7 +844,7 @@ input[type="checkbox"] {
     font-weight: 900;
     color: white;
     background: linear-gradient(135deg, var(--pink), var(--orange));
-    box-shadow: 0 10px 24px rgba(239,71,111,0.25);
+    box-shadow: 0 10px 22px rgba(239,71,111,0.25);
 }
 
 /* FORMULAIRES */
@@ -1146,7 +1149,10 @@ input[type="file"] {
     width: fit-content;
     margin: 20px auto 0;
 }
-
+.btn-danger {
+    width: fit-content;
+    margin: 20px auto 0;
+}
 /* PROFIL */
 
 #profil {
@@ -1246,6 +1252,7 @@ tbody tr:hover {
     gap: 8px;
 }
 
+
 /* FOOTER */
 
 .main-footer {
@@ -1255,6 +1262,51 @@ tbody tr:hover {
     color: var(--muted);
     background: rgba(255,255,255,0.8);
     border-top: 1px solid var(--border);
+}
+/* Essaie*/
+.sortie-actions {
+    margin-top: 24px;
+    width: 100%;
+}
+
+.annulation-form {
+    width: 100%;
+}
+
+.actions-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    align-items: center;
+    width: 100%;
+}
+
+.actions-buttons .btn-detail,
+.actions-buttons .btn-danger {
+    width: 100%;
+    text-align: center;
+}
+
+.motif-input {
+    margin-top: 12px;
+    width: 100%;
+    height: 48px;
+    border-radius: 14px;
+    border: 1px solid #dbe7ef;
+    padding: 0 16px;
+}
+
+.sortie-annulee-box {
+    margin-top: 12px;
+    width: 100%;
+    border: 1px solid #dbe7ef;
+    border-radius: 14px;
+    padding: 14px 16px;
+    background: white;
+}
+
+.sortie-annulee-box p {
+    margin: 4px 0;
 }
 
 /* RESPONSIVE */
