@@ -10,10 +10,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Inscription;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email'], message: 'Un compte existe déjà avec cette adresse e-mail')]
+#[UniqueEntity(fields: ['pseudo'], message: 'Ce pseudo existe déjà sur l\'application ! Veuillez en choisir un autre')]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -22,6 +24,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\Email]
     private ?string $email = null;
 
     /**
@@ -43,7 +46,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $prenom = null;
 
     #[ORM\Column(length: 15, nullable: true)]
-    private ?string $telephone = null;
+   private ?string $telephone = null;
 
 
     #[ORM\Column]
@@ -59,6 +62,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $sorties;
 
     #[ORM\Column(length: 30, unique: true)]
+    #[Assert\NotBlank(message: "le pseudo ne peut pas être vide")]
+    #[Assert\Length(min: 3, max: 30, minMessage: "le pseudo doit au moins contenir 3 caractère", maxMessage: "le pseudo ne pas avoir plus de 30 caractères")]
     private ?string $pseudo = null;
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
