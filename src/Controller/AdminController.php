@@ -105,6 +105,11 @@ class AdminController extends AbstractController
         ]);
     }
 
+    #[Route("/gestion-utilisateur/creerUtilisateursCSV", name: 'creer-utilisateurs-CSV', methods: ['GET', 'POST'])]
+    public function creerUserCSV(){
+
+    }
+
     // Modifier un utilisateur par un administrateur
     #[Route('/gestion-utilisateur/modifier/{id}', name: 'gestion-utilisateur-modifier', methods: ['GET', 'POST'])]
     public function modifierUSer(

@@ -775,14 +775,7 @@ input[type="checkbox"] {
 
 /* BOUTONS */
 
-.btn-user,
-.btn-primary,
-.btn-create,
-.btn-detail,
-.btn-login {
-    border-radius: 999px;
-    padding: 12px 22px;
-}
+
 
 .btn-add-lieu {
     width: 52px;
@@ -812,7 +805,19 @@ input[type="checkbox"] {
 .btn-login {
     border-radius: 999px;
     padding: 12px 22px;
-}
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 900;
+        color: white;
+        background: linear-gradient(135deg, var(--blue), var(--green));
+        box-shadow: 0 10px 22px rgba(0,168,198,0.25);
+        transition: 0.2s ease;
+    }
+
 
 .btn-add-lieu {
     width: 52px;
