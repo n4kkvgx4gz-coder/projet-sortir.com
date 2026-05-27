@@ -29,11 +29,13 @@
                 Du {{ sortie.dateDebut|date('d/m/Y H:i') }}
             </p>
 
+                {# petite modif pour eviter les erreirs d'id "organisateur" lorsqu'on supprime un utilisateur dans la BDD #}
             <p>
                 Organisateur :
-                {% if sortie.organisateur %}
-                    <a href="{{ path('profil_voir', {'id': sortie.organisateur.id}) }}">
-                        {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}
+
+                {% if organisateur %}
+                    <a href="{{ path('profil_voir', {'id': organisateur.id}) }}">
+                        {{ organisateur.prenom }} {{ organisateur.nom }}
                     </a>
                 {% else %}
                     <span>Organisateur inconnu</span>
