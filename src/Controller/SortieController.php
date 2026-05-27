@@ -52,6 +52,8 @@ final class SortieController extends AbstractController
             $passees
         );
 
+
+        // test 123
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
             'categories' => $categorieRepository->findAll(),
