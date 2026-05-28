@@ -17,7 +17,7 @@ class Inscription
     private ?\DateTime $dateInscription = null;
 
     #[ORM\ManyToOne(inversedBy: 'inscriptions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Sortie $sortie = null;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'inscriptions')]

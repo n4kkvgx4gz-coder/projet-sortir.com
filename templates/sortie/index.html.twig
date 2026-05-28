@@ -121,10 +121,55 @@
                         <div class="card-meta">
                             📅 {{ sortie.dateDebut|date('d/m/Y H:i') }}
                         </div>
+                        <div class="sortie-actions">
 
-                        <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn-detail">
-                            Voir détail
-                        </a>
+                            {% if sortie.etat == 0 %}
+
+                                <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn-detail">
+                                    Voir détail
+                                </a>
+
+                                <div class="sortie-annulee-box">
+                                    <p>Cette sortie est annulée.</p>
+
+                                    {% if sortie.motifAnnulation %}
+                                        <p><strong>Motif :</strong> {{ sortie.motifAnnulation }}</p>
+                                    {% endif %}
+                                </div>
+
+                            {% else %}
+
+                                <div class="actions-buttons">
+                                    <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn-detail">
+                                        Voir détail
+                                    </a>
+
+                                    {% if app.user and sortie.organisateur and app.user.id == sortie.organisateur.id %}
+                                        <button type="submit" form="annuler-{{ sortie.id }}" class="btn-danger">
+                                            Annuler
+                                        </button>
+                                    {% endif %}
+                                </div>
+
+                                {% if app.user and sortie.organisateur and app.user.id == sortie.organisateur.id %}
+                                    <form method="post"
+                                          action="{{ path('sortie_annuler', {'id': sortie.id}) }}"
+                                          id="annuler-{{ sortie.id }}"
+                                          class="annulation-form">
+
+                                        <input
+                                            type="text"
+                                            name="motif"
+                                            placeholder="Motif d’annulation"
+                                            required
+                                            class="motif-input"
+                                        >
+                                    </form>
+                                {% endif %}
+
+                            {% endif %}
+
+                        </div>
 
                     </div>
 
@@ -135,7 +180,6 @@
             {% endfor %}
 
         </div>
-
     </section>
 
 {% endblock %}
