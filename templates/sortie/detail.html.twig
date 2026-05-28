@@ -11,7 +11,10 @@
                 {% if sortie.urlPhoto %}
                     <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
                 {% else %}
-                    <img src="{{ asset('images/default.jpg') }}" alt="image par défaut">
+                    <img
+                        src="{{ asset('images/' ~ (sortie.urlPhoto ?: 'default.png')) }}"
+                        alt="{{ sortie.nom }}"
+                    >
                 {% endif %}
 
                 <span class="badge">{{ sortie.lieu.nomLieu }}</span>
