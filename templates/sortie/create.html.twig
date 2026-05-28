@@ -1,37 +1,58 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer une sortie{% endblock %}
+{% block title %}
+    Créer une sortie
+{% endblock %}
 
 {% block body %}
 
     <div class="page">
+
         <div class="card form-card">
 
             <h1>Créer une sortie</h1>
 
-            {{ form_start(sortieForm) }}
-            {{ form_errors(sortieForm) }}
+            {{ form_start(sortieForm, {'attr': {'data-turbo': 'false'}}) }}
+
             {{ form_row(sortieForm.nom) }}
+
             {{ form_row(sortieForm.dateDebut) }}
+
             {{ form_row(sortieForm.dateCloture) }}
+
             {{ form_row(sortieForm.nbInscriptionsMax) }}
+
             {{ form_row(sortieForm.description) }}
+
             {{ form_row(sortieForm.categorie) }}
+
             {{ form_row(sortieForm.campus) }}
 
-            <div class="lieu-row">
+            <div class="form-group">
 
-                <div class="lieu-select">
-                    {{ form_row(sortieForm.lieu) }}
+                <label>
+                    Lieu
+                </label>
+
+                <div class="lieu-row">
+
+                    <div class="lieu-select">
+                        {{ form_widget(sortieForm.lieu) }}
+                    </div>
+
+                    <button
+                        type="button"
+                        id="openLieuModal"
+                        class="btn-add-lieu"
+                    >
+                        +
+                    </button>
+
                 </div>
 
-                <button
-                    type="button"
-                    id="openLieuModal"
-                    class="btn-add-lieu"
-                >
-                    +
-                </button>
+                <small class="form-help">
+                    Recherchez un lieu existant ou ajoutez-en un nouveau.
+                </small>
 
             </div>
 
@@ -47,117 +68,169 @@
             {{ form_end(sortieForm) }}
 
         </div>
+
     </div>
 
+    {# =========================
+       POPUP AJOUT LIEU
+    ========================= #}
+
     <div id="lieuModal" class="custom-modal hidden">
+
         <div class="custom-modal-content">
 
-            <h2>Ajouter un lieu</h2>
-
+            <h2>
+                Ajouter un lieu
+            </h2>
+<section>
+    <label for="Nom du lieu">Nom du lieu</label>
             <input
                 type="text"
                 id="nomLieu"
-                placeholder="Ex : Mairie annexe de Kerfeunteun, Restaurant Burger King"
+                placeholder=""
             >
-            <small class="form-help">
-                Indiquez le type + le nom du lieu pour faciliter la recherche.
-            </small>
-            <input type="text" id="rueLieu" placeholder="Adresse">
+</section>
 
+<section>
+    <label for="adresse">Adresse du lieu</label>
+            <input
+                type="text"
+                id="rueLieu"
+                placeholder=""
+
+            >
+</section>
+
+<section>
+
+    <label for="ville">Ville du lieu</label>
             <select id="villeSelect">
+
                 {% for ville in villes %}
+
                     <option value="{{ ville.id }}">
                         {{ ville.nomVille }} - {{ ville.codePostal }}
                     </option>
-                {% endfor %}
-            </select>
 
-            <button type="button" id="openVilleModal" class="btn-user">
+                {% endfor %}
+
+            </select>
+</section>
+
+            <button
+                type="button"
+                id="openVilleModal"
+                class="btn-user"
+            >
                 + Ajouter une ville
             </button>
 
             <div class="modal-actions">
-                <button type="button" id="saveLieu" class="btn-primary">
+
+                <button
+                    type="button"
+                    id="closeLieuModal"
+                    class="btn-danger"
+                >
+                    Fermer
+                </button>
+
+                <button
+                    type="button"
+                    id="saveLieu"
+                    class="btn-primary"
+                >
                     Enregistrer le lieu
                 </button>
 
-                <button type="button" id="closeLieuModal" class="btn-danger">
-                    Fermer
-                </button>
+
+
             </div>
 
         </div>
+
     </div>
 
+    {# =========================
+       POPUP AJOUT VILLE
+    ========================= #}
+
     <div id="villeModal" class="custom-modal hidden">
+
         <div class="custom-modal-content">
 
-            <h2>Ajouter une ville</h2>
+            <h2>
+                Ajouter une ville
+            </h2>
 
-            <input type="text" id="nomVille" placeholder="Nom de la ville">
-            <input type="text" id="codePostal" placeholder="Code postal">
+            <input
+                type="text"
+                id="nomVille"
+                placeholder="Ville"
+            >
+
+            <input
+                type="text"
+                id="codePostal"
+                placeholder="Code postal"
+            >
 
             <div class="modal-actions">
-                <button type="button" id="saveVille" class="btn-primary">
+
+                <button
+                    type="button"
+                    id="closeVilleModal"
+                    class="btn-danger"
+                >
+                    Fermer
+                </button>
+
+                <button
+                    type="button"
+                    id="saveVille"
+                    class="btn-primary"
+                >
                     Ajouter la ville
                 </button>
 
-                <button type="button" id="closeVilleModal" class="btn-danger">
-                    Fermer
-                </button>
             </div>
 
         </div>
+
     </div>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
     <script>
-        window.addEventListener('load', () => {
-            const lieuModal = document.getElementById('lieuModal');
-            const villeModal = document.getElementById('villeModal');
+        document.addEventListener('DOMContentLoaded', initCreateSortie);
+        document.addEventListener('turbo:load', initCreateSortie);
 
-            const openLieuModal = document.getElementById('openLieuModal');
-            const closeLieuModal = document.getElementById('closeLieuModal');
-            const openVilleModal = document.getElementById('openVilleModal');
-            const closeVilleModal = document.getElementById('closeVilleModal');
-
-            const saveVille = document.getElementById('saveVille');
-            const saveLieu = document.getElementById('saveLieu');
-
-            const villeSelect = document.getElementById('villeSelect');
+        function initCreateSortie() {
             const lieuSelect = document.querySelector('[name="sortie[lieu]"]');
 
-            let tomLieu = null;
-
-            if (typeof TomSelect !== 'undefined' && lieuSelect) {
-                tomLieu = new TomSelect(lieuSelect, {
+            if (lieuSelect && typeof TomSelect !== 'undefined' && !lieuSelect.tomselect) {
+                new TomSelect(lieuSelect, {
                     create: false,
-                    sortField: {
-                        field: "text",
-                        direction: "asc"
-                    },
-                    placeholder: 'Rechercher un lieu...'
+                    placeholder: 'Rechercher un lieu...',
+                    sortField: { field: 'text', direction: 'asc' }
                 });
             }
 
-            openLieuModal.addEventListener('click', () => {
-                lieuModal.classList.remove('hidden');
-            });
+            const lieuModal = document.getElementById('lieuModal');
+            const villeModal = document.getElementById('villeModal');
 
-            closeLieuModal.addEventListener('click', () => {
-                lieuModal.classList.add('hidden');
-            });
+            document.getElementById('openLieuModal')?.addEventListener('click', () => lieuModal.classList.remove('hidden'));
+            document.getElementById('closeLieuModal')?.addEventListener('click', () => lieuModal.classList.add('hidden'));
+            document.getElementById('openVilleModal')?.addEventListener('click', () => villeModal.classList.remove('hidden'));
+            document.getElementById('closeVilleModal')?.addEventListener('click', () => villeModal.classList.add('hidden'));
 
-            openVilleModal.addEventListener('click', () => {
-                villeModal.classList.remove('hidden');
-            });
-
-            closeVilleModal.addEventListener('click', () => {
-                villeModal.classList.add('hidden');
-            });
-
-            saveVille.addEventListener('click', async () => {
+            document.getElementById('saveVille')?.addEventListener('click', async () => {
                 const nomVille = document.getElementById('nomVille').value.trim();
                 const codePostal = document.getElementById('codePostal').value.trim();
+                const villeSelect = document.getElementById('villeSelect');
 
                 if (!nomVille || !codePostal) {
                     alert('Merci de renseigner la ville et le code postal.');
@@ -166,13 +239,8 @@
 
                 const response = await fetch('{{ path('ville_ajax_create') }}', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        nomVille: nomVille,
-                        codePostal: codePostal
-                    })
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams({ nomVille, codePostal })
                 });
 
                 if (!response.ok) {
@@ -182,26 +250,24 @@
 
                 const ville = await response.json();
 
-                const option = new Option(
+                villeSelect.add(new Option(
                     ville.nom + ' - ' + ville.codePostal,
                     ville.id,
                     true,
                     true
-                );
+                ));
 
-                villeSelect.add(option);
                 villeSelect.value = ville.id;
 
                 document.getElementById('nomVille').value = '';
                 document.getElementById('codePostal').value = '';
-
                 villeModal.classList.add('hidden');
             });
 
-            saveLieu.addEventListener('click', async () => {
+            document.getElementById('saveLieu')?.addEventListener('click', async () => {
                 const nomLieu = document.getElementById('nomLieu').value.trim();
                 const rue = document.getElementById('rueLieu').value.trim();
-                const villeId = villeSelect.value;
+                const villeId = document.getElementById('villeSelect').value;
 
                 if (!nomLieu || !villeId) {
                     alert('Merci de renseigner le nom du lieu et la ville.');
@@ -210,14 +276,8 @@
 
                 const response = await fetch('{{ path('lieu_ajax_create') }}', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        nomLieu: nomLieu,
-                        rue: rue,
-                        villeId: villeId
-                    })
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams({ nomLieu, rue, villeId })
                 });
 
                 if (!response.ok) {
@@ -226,30 +286,22 @@
                 }
 
                 const lieu = await response.json();
-
                 const label = lieu.nom + ' - ' + lieu.ville + ' - ' + lieu.departement;
 
-                if (tomLieu) {
-                    tomLieu.addOption({
-                        value: lieu.id,
-                        text: label
-                    });
-                    tomLieu.addItem(lieu.id);
-                    tomLieu.setValue(lieu.id);
+                if (lieuSelect.tomselect) {
+                    lieuSelect.tomselect.addOption({ value: lieu.id, text: label });
+                    lieuSelect.tomselect.setValue(lieu.id);
                 } else {
-                    const option = new Option(label, lieu.id, true, true);
-                    lieuSelect.add(option);
+                    lieuSelect.add(new Option(label, lieu.id, true, true));
                     lieuSelect.value = lieu.id;
                 }
 
                 document.getElementById('nomLieu').value = '';
                 document.getElementById('rueLieu').value = '';
-
                 lieuModal.classList.add('hidden');
             });
-        });
+        }
     </script>
-
 {% endblock %}
 
 {% block javascripts %}

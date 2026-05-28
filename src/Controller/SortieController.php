@@ -11,6 +11,7 @@ use App\Form\SortieType;
 use App\Repository\CategorieRepository;
 use App\Repository\InscriptionRepository;
 use App\Repository\SortieRepository;
+use App\Repository\UtilisateurRepository;
 use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -138,36 +139,46 @@ final class SortieController extends AbstractController
     #[Route('/sortie/{id}', name: 'sortie_detail', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function detail(
         Sortie $sortie,
-        InscriptionRepository $inscriptionRepository
+        InscriptionRepository $inscriptionRepository,
+        UtilisateurRepository $utilisateurRepository
     ): Response {
-
-        $dateLimiteConsultation =
-            (new \DateTime())->modify('-1 month');
+        $dateLimiteConsultation = (new \DateTime())->modify('-1 month');
 
         if ($sortie->getDateDebut() < $dateLimiteConsultation) {
             $this->addFlash('danger', 'Cette sortie n’est plus consultable.');
-
-
             return $this->redirectToRoute('app_sortie');
         }
 
-        /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         $dejaInscrit = null;
 
         if ($user) {
+            $dejaInscrit = $inscriptionRepository->findOneBy([
+                'sortie' => $sortie,
+                'participant' => $user,
+            ]);
+        }
 
-            $dejaInscrit =
-                $inscriptionRepository->findOneBy([
-                    'sortie' => $sortie,
-                    'participant' => $user,
-                ]);
+        $dateLimiteInscriptionDepassee = $sortie->getDateCloture() < new \DateTime();
+
+        $organisateur = null;
+
+        try {
+            $organisateurProxy = $sortie->getOrganisateur();
+
+            if ($organisateurProxy && $organisateurProxy->getId()) {
+                $organisateur = $utilisateurRepository->find($organisateurProxy->getId());
+            }
+        } catch (\Exception $e) {
+            $organisateur = null;
         }
 
         return $this->render('sortie/detail.html.twig', [
             'sortie' => $sortie,
             'dejaInscrit' => $dejaInscrit,
+            'organisateur' => $organisateur,
+            'dateLimiteInscriptionDepassee' => $dateLimiteInscriptionDepassee,
         ]);
     }
 
