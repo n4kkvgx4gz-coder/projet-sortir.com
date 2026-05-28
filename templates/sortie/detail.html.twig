@@ -24,10 +24,6 @@
 
                 <h1>{{ sortie.nom }}</h1>
 
-                <p class="detail-description">
-                    Du {{ sortie.dateDebut|date('d/m/Y H:i') }}
-                </p>
-
                 <p>
                     <strong>Organisateur :</strong>
 
@@ -47,7 +43,7 @@
                     <p><strong>Heure :</strong> {{ sortie.dateDebut|date('H:i') }}</p>
                 </div>
 
-                <h3>Pensez à reserver:  </h3>
+                <h3>Pensez à réserver:  </h3>
 
                 <div class="detail-infos infos-sortie">
                     <p><strong>Places disponibles :</strong> {{ sortie.nbInscriptionsMax - sortie.inscriptions|length }}</p>
@@ -132,8 +128,8 @@
 
                 </div>
 
+                <h2>À propos</h2>
                 <div class="description">
-                    <h2>À propos</h2>
                     <p>{{ sortie.description }}</p>
                 </div>
 
