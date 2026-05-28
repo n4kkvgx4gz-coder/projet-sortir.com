@@ -1405,6 +1405,23 @@ tbody tr:hover {
     border: 1px solid #ffd1d1;
 }
 
+    /* Petite modif pour le bouton annuler et s'inscrire*/
+.actions-inline{
+     display:flex;
+     gap:16px;
+     align-items:flex-start;
+     flex-wrap:wrap;
+ }
+
+.actions-inline form{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+.annulation-form{
+    margin-top: 24px;
+}
+
 /* RESPONSIVE */
 
 @media (max-width: 1100px) {
