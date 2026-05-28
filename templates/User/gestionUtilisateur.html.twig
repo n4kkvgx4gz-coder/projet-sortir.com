@@ -72,7 +72,7 @@
 
     <script>
         function fromCSV(){
-            document.getElementById('formCSV').innerHTML = "<form methode='post' action='{{ path('admin_creer-utilisateurs-CSV') }}'> <input type='file' id='file' accept='text/csv\'/> <input class='btn-create' type='submit'> ajouter la liste/> </from> ";
+            document.getElementById('formCSV').innerHTML = "<form methode='post' action='{{ path('admin_creer-utilisateurs-CSV') }}'> <input type='file' id='file' accept='text/csv\'/> <input class='btn-create' type='submit' value='ajouter la liste'/> </from> ";
         }
     </script>
 {% endblock %}
