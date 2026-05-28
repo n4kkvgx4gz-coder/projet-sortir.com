@@ -766,9 +766,6 @@ input[type="checkbox"] {
 }
 
 /* BOUTONS */
-
-
-
 .btn-add-lieu {
     width: 52px;
     height: 52px;
@@ -821,6 +818,7 @@ input[type="checkbox"] {
 .btn-user:hover,
 .btn-primary:hover,
 .btn-create:hover,
+    /* Petite modif pour le bouton annuler*/
 .btn-danger:hover,
 .btn-detail:hover,
 .btn-login:hover,
@@ -834,6 +832,7 @@ input[type="checkbox"] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    /* Petite modif pour le bouton annuler*/
     font-size: 16px;
     font-family:Arial, Helvetica, sans-serif ;
     padding: 12px 22px;
@@ -1118,6 +1117,11 @@ input[type="file"] {
     background: rgba(0,168,198,0.12);
     color: var(--blue-dark);
 }
+/* Pour avoir une marge dans la page detail*/
+.badge {
+    margin-top: 16px;
+    margin-left: 16px;
+}
 
 .category-badge {
     background: var(--category-color);
@@ -1149,6 +1153,7 @@ input[type="file"] {
     width: fit-content;
     margin: 20px auto 0;
 }
+/* Petite modif pour le bouton annuler*/
 .btn-danger {
     width: fit-content;
     margin: 20px auto 0;
@@ -1460,7 +1465,3 @@ tbody tr:hover {
         text-align: center;
     }
 }
-
-
-
-
