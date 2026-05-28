@@ -10,6 +10,7 @@ use App\Repository\InscriptionRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use SplFileObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/admin', name: 'admin_')]
 #[IsGranted('ROLE_ADMIN')]
@@ -106,8 +109,59 @@ class AdminController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws ExceptionInterface
+     */
     #[Route("/gestion-utilisateur/creerUtilisateursCSV", name: 'creer-utilisateurs-CSV', methods: ['GET', 'POST'])]
-    public function creerUserCSV(){
+    public function creerUserCSV(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager){
+        if ($request->isMethod('POST')) {
+
+            $csvfile = $request->files->get('file');
+
+            $file = new SplFileObject($csvfile);
+            $file->setFlags(SplFileObject::READ_CSV);
+
+            $idx = 0;
+            $columns = [];
+
+            foreach ($file as $fields) {
+                // get properties' names
+                if (++$idx === 1) {
+                    /** @var array<int|string> $columns */
+                    $columns = $fields;
+
+                    continue;
+                }
+
+                /** @var array<string, string> $fields */
+                if (!(\count(array_filter($fields)) > 0)) { // ignore last empty line
+                    continue;
+                }
+
+                $entityArray = array_combine($columns, $fields);
+                // prepare data before denormalization (this could be done in a custom denormalizer)
+                $entityArray['active'] = (bool) $entityArray['active'];
+
+
+                $entity = $this->serializer->denormalize($entityArray, Utilisateur::class);
+
+                $user = new Utilisateur();
+                $user->setNom($entityArray['nom']);
+                $user->setPrenom($entityArray['prenom']);
+                $user->setPseudo($entityArray['pseudo']);
+                $user->setEmail($entityArray['email']);
+                $user->setTelephone($entityArray['telephone']);
+                $user->setRoles($entityArray['roles']);
+                $user->setCampus($entityArray['campus']);
+                $user->setActif($entityArray['actif']);
+                $entityManager->persist($user);
+                $entityManager->flush();
+            }
+
+
+        }
+
+
 
     }
 
