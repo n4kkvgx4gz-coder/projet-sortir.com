@@ -146,18 +146,22 @@ final class SortieController extends AbstractController
 
         if ($sortie->getDateDebut() < $dateLimiteConsultation) {
             $this->addFlash('danger', 'Cette sortie n’est plus consultable.');
+
             return $this->redirectToRoute('app_sortie');
         }
 
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         $dejaInscrit = null;
 
         if ($user) {
-            $dejaInscrit = $inscriptionRepository->findOneBy([
-                'sortie' => $sortie,
-                'participant' => $user,
-            ]);
+
+            $dejaInscrit =
+                $inscriptionRepository->findOneBy([
+                    'sortie' => $sortie,
+                    'participant' => $user,
+                ]);
         }
 
         $dateLimiteInscriptionDepassee = $sortie->getDateCloture() < new \DateTime();

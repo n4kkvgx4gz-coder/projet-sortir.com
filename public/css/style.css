@@ -51,7 +51,7 @@ body {
     background: rgba(255,255,255,0.92);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-
+}
 /* =========================
    HEADER COMPACT PASTILLES
 
@@ -121,7 +121,6 @@ body {
     justify-content: center;
     gap: 12px;
     flex-wrap: nowrap;
-    gap: 14px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -647,14 +646,6 @@ input[type="checkbox"] {
         border-radius: 20px;
         box-shadow: var(--shadow);
         z-index: 1001;
-        top: 86px;
-        right: 20px;
-        width: 270px;
-        background: rgba(255,255,255,0.96);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        box-shadow: var(--shadow);
-        z-index: 1001;
         padding: 18px;
     }
 
@@ -882,6 +873,7 @@ label {
     color: var(--text);
     font-weight: 900;
 }
+
 
 input,
 select,
@@ -1300,7 +1292,6 @@ tbody tr:hover {
     gap: 8px;
 }
 
-
 /* FOOTER */
 
 .main-footer {
@@ -1412,6 +1403,23 @@ tbody tr:hover {
 .annule-box {
     margin-top: 24px;
     border: 1px solid #ffd1d1;
+}
+
+    /* Petite modif pour le bouton annuler et s'inscrire*/
+.actions-inline{
+     display:flex;
+     gap:16px;
+     align-items:flex-start;
+     flex-wrap:wrap;
+ }
+
+.actions-inline form{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+.annulation-form{
+    margin-top: 24px;
 }
 
 /* RESPONSIVE */
