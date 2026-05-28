@@ -34,6 +34,7 @@ class SortieRepository extends ServiceEntityRepository
             ->leftJoin('l.ville', 'v')
             ->leftJoin('s.categorie', 'c')
             ->addSelect('l', 'v', 'c')
+            ->andWhere('s.etat = 1')
             ->orderBy('s.dateDebut', 'ASC');
 
         if (!empty($q)) {
