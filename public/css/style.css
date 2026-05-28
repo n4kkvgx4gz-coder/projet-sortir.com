@@ -301,108 +301,6 @@ input[type="checkbox"] {
         width: 100%;
     }
 }
-/* =========================
-   RESPONSIVE HEADER
-
-@media (max-width: 1200px) {
-    .main-header {
-        padding: 12px 18px;
-        gap: 14px;
-    }
-
-    .main-nav ul {
-        gap: 8px;
-    }
-
-    .main-nav a {
-        padding: 8px 11px;
-        font-size: 0.8rem;
-    }
-
-    .brand-title {
-        font-size: 1.15rem;
-    }
-
-    .user-badge {
-        padding: 8px 10px;
-        font-size: 0.8rem;
-    }
-}
-
-@media (max-width: 900px) {
-    .burger-btn {
-        display: flex;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-height: 44px;
-    padding: 10px 18px;
-
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 900;
-    font-size: 0.95rem;
-    white-space: nowrap;
-
-    transition: 0.2s ease;
-}
-
-.main-nav li:nth-child(1) a {
-    background: rgba(0,168,198,0.14);
-    color: #006D77;
-}
-
-.main-nav li:nth-child(2) a {
-    background: rgba(6,214,160,0.15);
-    color: #2D6A4F;
-}
-
-.main-nav li:nth-child(3) a {
-    background: rgba(144,190,109,0.18);
-    color: #588157;
-}
-
-.main-nav li:nth-child(4) a {
-    background: rgba(255,209,102,0.28);
-    color: #B08900;
-}
-
-.main-nav li:nth-child(5) a {
-    background: rgba(244,162,97,0.20);
-    color: #BC6C25;
-}
-
-.main-nav li:nth-child(6) a {
-    background: rgba(231,111,81,0.18);
-    color: #C44536;
-}
-
-.main-nav li:nth-child(7) a {
-    background: rgba(231,111,81,0.18);
-    color: #C44536;
-}
-
-.user-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-.user-badge {
-    background: #eef8fb;
-}
-
-.main-nav li:nth-child(1) a {
-    background: rgba(0,168,198,0.14);
-    color: var(--blue-dark);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 10px 16px;
-    font-weight: 900;
-    white-space: nowrap;
-}
 
 /* version tablette : menu sur 2 lignes proprement */
 @media (max-width: 1100px) {
@@ -794,18 +692,18 @@ input[type="checkbox"] {
 .btn-login {
     border-radius: 999px;
     padding: 12px 22px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        cursor: pointer;
-        text-decoration: none;
-        font-weight: 900;
-        color: white;
-        background: linear-gradient(135deg, var(--blue), var(--green));
-        box-shadow: 0 10px 22px rgba(0,168,198,0.25);
-        transition: 0.2s ease;
-    }
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 900;
+    color: white;
+    background: linear-gradient(135deg, var(--blue), var(--green));
+    box-shadow: 0 10px 22px rgba(0,168,198,0.25);
+    transition: 0.2s ease;
+}
 
 
 .btn-add-lieu {
