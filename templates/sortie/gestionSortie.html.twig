@@ -40,10 +40,12 @@
                 <td>{{ sortie.lieu.getNomLieu() }}</td>
                 <td>{{ sortie.categorie.nom }}</td>
                 <td>
-                    {% if  sortie.etat  == 1  %}
-                        en ligne
-                    {% else %}
+                    {% if sortie.etat  == 0    %}
                         archivé
+                    {% elseif sortie.motifAnnulation != null  %}
+                        annulé
+                    {% elseif sortie.etat  == 1 %}
+                        en ligne
                     {% endif %}
 
                 </td>

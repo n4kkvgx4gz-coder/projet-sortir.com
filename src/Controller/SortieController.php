@@ -27,8 +27,20 @@ final class SortieController extends AbstractController
     public function index(
         Request $request,
         SortieRepository $sortieRepository,
-        CategorieRepository $categorieRepository
+        CategorieRepository $categorieRepository,
+        EntityManagerInterface $manager,
     ): Response {
+//      cherche toutes les sorties dispo en bdd et si la sortie est fini il y a plus d'un mois passe son état à faux = archivé
+        $allSorties = $sortieRepository->findAll();
+        $dateLimiteConsultation = (new \DateTime())->modify('-1 month');
+        foreach ($allSorties as $sortie) {
+            if ($sortie->getDateCloture() < $dateLimiteConsultation) {
+                $sortie->setEtat(false);
+                $manager->persist($sortie);
+                $manager->flush();
+            }
+        }
+
         $q = $request->query->get('q');
         $dateMin = $request->query->get('dateMin');
         $dateMax = $request->query->get('dateMax');
@@ -137,6 +149,7 @@ final class SortieController extends AbstractController
             return $this->redirectToRoute('app_sortie');
         }
 
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         $dejaInscrit = null;
@@ -335,7 +348,6 @@ final class SortieController extends AbstractController
 
             $motif = $request->request->get('motif');
 
-            $sortie->setEtat(false);
             $sortie->setMotifAnnulation($motif);
 
             $entityManager->flush();
