@@ -19,97 +19,61 @@
 
         <form method="get" class="filters-card">
 
-            <input
-                type="text"
-                name="q"
-                placeholder="Rechercher une sortie, une ville, un lieu..."
-                value="{{ q|default('') }}"
-            >
-            <label for="dateMin">Date minimum</label>
-            <input
-                type="date"
-                name="dateMin"
-                id="dateMin"
-                value="{{ dateMin|default('') }}"
-            >
-            <label for="dateMax">Date maximum</label>
-            <input
-                type="date"
-                name="dateMax"
-                id="dateMax"
-                value="{{ dateMax|default('') }}"
-            >
-
-            <select name="categorie">
-
-                <option value="">
-                    Toutes les catégories
-                </option>
-
-                {% for categorie in categories %}
-
-                    <option
-                        value="{{ categorie.id }}"
-                        {{ categorieId == categorie.id ? 'selected' : '' }}
-                    >
-                        {{ categorie.nom }}
-                    </option>
-
-                {% endfor %}
-
-            </select>
-
-            <select name="departement">
-                <option value="">Tous les campus</option>
-                <option value="29" {{ departement == '29' ? 'selected' : '' }}>Quimper / Finistère</option>
-                <option value="44" {{ departement == '44' ? 'selected' : '' }}>Nantes / Loire-Atlantique</option>
-                <option value="35" {{ departement == '35' ? 'selected' : '' }}>Rennes / Ille-et-Vilaine</option>
-                <option value="79" {{ departement == '79' ? 'selected' : '' }}>Niort / Deux-Sèvres</option>
-            </select>
-            <div class="filters-checks">
-                <label class="filter-check">
-                    <input
-                        type="checkbox"
-                        name="organisateur"
-                        value="1"
-                        {{ organisateur ? 'checked' : '' }}
-                    >
-                    Sorties créées
-                </label>
-
-                <label class="filter-check">
-                    <input
-                        type="checkbox"
-                        name="inscrit"
-                        value="1"
-                        {{ inscrit ? 'checked' : '' }}
-                    >
-                    Mes inscriptions
-                </label>
-
-                <label class="filter-check">
-                    <input
-                        type="checkbox"
-                        name="disponible"
-                        value="1"
-                        {{ disponible ? 'checked' : '' }}
-                    >
-                    Sorties disponibles
-                </label>
-
-                <label class="filter-check">
-                    <input
-                        type="checkbox"
-                        name="passees"
-                        value="1"
-                        {{ passees ? 'checked' : '' }}
-                    >
-                    Sorties passées
-                </label>
+            <div class="filter-field filter-search">
+                <label for="q">Recherche</label>
+                <input
+                    type="text"
+                    id="q"
+                    name="q"
+                    placeholder="Nom, ville, lieu..."
+                    value="{{ q|default('') }}"
+                >
             </div>
-            <button class="btn-primary">
-                Filtrer
-            </button>
+
+            <div class="filter-field">
+                <label for="dateMin">Début</label>
+                <input type="date" name="dateMin" id="dateMin" value="{{ dateMin|default('') }}">
+            </div>
+
+            <div class="filter-field">
+                <label for="dateMax">Fin</label>
+                <input type="date" name="dateMax" id="dateMax" value="{{ dateMax|default('') }}">
+            </div>
+
+            <div class="filter-field">
+                <label for="categorie">Catégorie</label>
+                <select name="categorie" id="categorie">
+                    <option value="">Toutes les catégories</option>
+                    {% for categorie in categories %}
+                        <option value="{{ categorie.id }}" {{ categorieId == categorie.id ? 'selected' : '' }}>
+                            {{ categorie.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-field">
+                <label for="departement">Campus</label>
+                <select name="departement" id="departement">
+                    <option value="">Tous les campus</option>
+                    <option value="29" {{ departement == '29' ? 'selected' : '' }}>Quimper / Finistère</option>
+                    <option value="44" {{ departement == '44' ? 'selected' : '' }}>Nantes / Loire-Atlantique</option>
+                    <option value="35" {{ departement == '35' ? 'selected' : '' }}>Rennes / Ille-et-Vilaine</option>
+                    <option value="79" {{ departement == '79' ? 'selected' : '' }}>Niort / Deux-Sèvres</option>
+                </select>
+            </div>
+
+            <div class="filters-checks">
+                <label class="filter-check"><input type="checkbox" name="organisateur" value="1" {{ organisateur ? 'checked' : '' }}> Sorties créées</label>
+                <label class="filter-check"><input type="checkbox" name="inscrit" value="1" {{ inscrit ? 'checked' : '' }}> Mes inscriptions</label>
+                <label class="filter-check"><input type="checkbox" name="disponible" value="1" {{ disponible ? 'checked' : '' }}> Disponibles</label>
+                <label class="filter-check"><input type="checkbox" name="passees" value="1" {{ passees ? 'checked' : '' }}> Passées</label>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn-primary" type="submit">Filtrer</button>
+                <a href="{{ path('app_sortie') }}" class="btn-user">Réinitialiser</a>
+            </div>
 
         </form>
 
