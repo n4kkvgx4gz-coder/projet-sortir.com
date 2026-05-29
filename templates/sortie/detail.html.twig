@@ -95,11 +95,11 @@
                 </div>
 
                 <div class="actions-sortie">
-                    {% if sortie.etat == 0 %}
+                    {% if sortie.motifAnnulation != null %}
                         <div class="annule-box">
                             <p><strong>Cette sortie est annulée.</strong></p>
 
-                            {% if sortie.motifAnnulation %}
+                            {% if sortie.motifAnnulation%}
                                 <p><strong>Motif :</strong> {{ sortie.motifAnnulation }}</p>
                             {% endif %}
                         </div>
