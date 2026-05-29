@@ -11,7 +11,10 @@
                 {% if sortie.urlPhoto %}
                     <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
                 {% else %}
-                    <img src="{{ asset('images/default.jpg') }}" alt="image par défaut">
+                    <img
+                        src="{{ asset('images/' ~ (sortie.urlPhoto ?: 'default.png')) }}"
+                        alt="{{ sortie.nom }}"
+                    >
                 {% endif %}
 
                 <span class="badge">{{ sortie.lieu.nomLieu }}</span>
@@ -92,11 +95,11 @@
                 </div>
 
                 <div class="actions-sortie">
-                    {% if sortie.etat == 0 %}
+                    {% if sortie.motifAnnulation != null %}
                         <div class="annule-box">
                             <p><strong>Cette sortie est annulée.</strong></p>
 
-                            {% if sortie.motifAnnulation %}
+                            {% if sortie.motifAnnulation%}
                                 <p><strong>Motif :</strong> {{ sortie.motifAnnulation }}</p>
                             {% endif %}
                         </div>

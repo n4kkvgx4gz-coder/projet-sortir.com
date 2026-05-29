@@ -9,6 +9,7 @@
     <a href="{{ path('admin_creer_utilisateur') }}" class="btn-create"> Ajouter un utilisateur manuellement </a>
     <a class="btn-create" onclick="fromCSV()" > Ajouter une liste d'utilisateur via fichier CSV</a>
     <div id="formCSV"></div>
+<div class="table-responsive">
     <h3> Liste des utilisateurs </h3>
 
 <table>
@@ -69,6 +70,7 @@
     {% endfor %}
     </tbody>
 </table>
+</div>
 
     <script>
         function fromCSV(){

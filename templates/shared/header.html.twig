@@ -16,12 +16,6 @@
         </a>
     </div>
 
-    <button id="burger-btn" class="burger-btn" aria-label="Ouvrir le menu">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-
     <nav class="main-nav" id="nav-links">
         <ul>
             {% if app.user %}
@@ -68,6 +62,40 @@
         </ul>
     </nav>
 
+    <div class="user-actions">
+
+        {% if app.user %}
+
+            <span class="user-badge">
+            👤 {{ app.user.userIdentifier }}
+        </span>
+
+            <a href="{{ path('app_logout') }}"
+               class="btn-user logout">
+                Déconnexion
+            </a>
+
+        {% else %}
+
+            <a href="{{ path('app_login') }}"
+               class="btn-user">
+                Connexion
+            </a>
+
+            <a class="btn-user" href="{{ path("app_register") }}">
+                Créer un compte
+            </a>
+
+        {% endif %}
+
+        <!-- Burger placé après les boutons -->
+        <button id="burger-btn" class="burger-btn" aria-label="Ouvrir le menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </div>
     <script>
 
         const burgerBtn = document.getElementById('burger-btn');
@@ -79,34 +107,4 @@
         });
 
     </script>
-
-    <div class="user-actions">
-
-        {% if app.user %}
-
-            <span class="user-badge">
-                👤 {{ app.user.userIdentifier }}
-            </span>
-
-            <a href="{{ path('app_logout') }}"
-               class="btn-user logout">
-                Déconnexion
-            </a>
-
-        {% else %}
-
-
-
-
-
-        <a href="{{ path('app_login') }}"
-               class="btn-user">
-                Connexion
-            </a>
-            <a class="btn-user" href="{{ path("app_register") }}">Créer un compte</a>
-
-        {% endif %}
-
-    </div>
-
 </header>
