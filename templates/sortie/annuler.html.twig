@@ -18,6 +18,7 @@
         </p>
 
         <form method="post" class="cancel-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('sortie_annuler_' ~ sortie.id) }}">
 
             <label for="motif">
                 Motif d’annulation
