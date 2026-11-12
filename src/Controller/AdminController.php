@@ -233,11 +233,19 @@ class AdminController extends AbstractController
     #[Route('/gestion-utilisateur/supprimer/{id}', name: 'gestion-utilisateur-supprimer', methods: ['POST'])]
     public function supprimerUSer(
         int $id,
+        Request $request,
         UtilisateurRepository $utilisateurRepository,
         SortieRepository $sortieRepository,
         InscriptionRepository $inscriptionRepository,
         EntityManagerInterface $entityManager
     ): Response {
+        if (!$this->isCsrfTokenValid('admin_delete_user_' . $id, $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+        if ($this->getUser()?->getId() === $id) {
+            $this->addFlash('danger', 'Vous ne pouvez pas supprimer votre propre compte administrateur.');
+            return $this->redirectToRoute('admin_gestion-utilisateur');
+        }
         $utilisateur = $utilisateurRepository->find($id);
 
         if (!$utilisateur) {
@@ -272,12 +280,20 @@ class AdminController extends AbstractController
     }
 
     //Désactiver un utilisateur
-    #[Route('/gestion-utilisateur/desactiver/{id}', name: 'gestion-utilisateur-desactiver', methods: ['GET'])]
+    #[Route('/gestion-utilisateur/desactiver/{id}', name: 'gestion-utilisateur-desactiver', methods: ['POST'])]
     public function desactiverUSer(
         int $id,
+        Request $request,
         UtilisateurRepository $utilisateurRepository,
         EntityManagerInterface $entityManager
     ): Response {
+        if (!$this->isCsrfTokenValid('admin_toggle_user_' . $id, $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+        if ($this->getUser()?->getId() === $id) {
+            $this->addFlash('danger', 'Vous ne pouvez pas désactiver votre propre compte administrateur.');
+            return $this->redirectToRoute('admin_gestion-utilisateur');
+        }
         try {
             $utilisateur = $utilisateurRepository->find($id);
 
