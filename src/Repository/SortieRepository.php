@@ -40,8 +40,8 @@ class SortieRepository extends ServiceEntityRepository
             $qb->andWhere(
                 's.nom LIKE :q
             OR s.description LIKE :q
-            OR l.nomLieu LIKE :q
-            OR v.nomVille LIKE :q'
+            OR l.nom_lieu LIKE :q
+            OR v.nom_ville LIKE :q'
             )
                 ->setParameter('q', '%' . $q . '%');
         }
@@ -57,7 +57,7 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         if (!empty($departement)) {
-            $qb->andWhere('v.codePostal LIKE :departement')
+            $qb->andWhere('v.code_postal LIKE :departement')
                 ->setParameter('departement', $departement . '%');
         }
 
