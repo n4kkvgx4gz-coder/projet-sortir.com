@@ -110,59 +110,138 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @throws ExceptionInterface
+     * Importe les comptes depuis un CSV UTF-8 avec en-têtes.
+     * Le fichier est entièrement vérifié avant toute insertion (pas d'import partiel).
+     * Colonnes : nom, prenom, pseudo, email, telephone, campus, roles, actif, password.
+     * campus : identifiant numérique ou nom exact du campus existant.
+     * roles : ROLE_USER ou ROLE_ADMIN ; password : mot de passe temporaire en clair,
+     * haché avant stockage. Ne jamais importer une empreinte de mot de passe.
      */
-    #[Route("/gestion-utilisateur/creerUtilisateursCSV", name: 'creer-utilisateurs-CSV', methods: ['GET', 'POST'])]
-    public function creerUserCSV(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager){
-        if ($request->isMethod('POST')) {
-
-            $csvfile = $request->files->get('file');
-
-            $file = new SplFileObject($csvfile);
-            $file->setFlags(SplFileObject::READ_CSV);
-
-            $idx = 0;
-            $columns = [];
-
-            foreach ($file as $fields) {
-                // get properties' names
-                if (++$idx === 1) {
-                    /** @var array<int|string> $columns */
-                    $columns = $fields;
-
-                    continue;
-                }
-
-                /** @var array<string, string> $fields */
-                if (!(\count(array_filter($fields)) > 0)) { // ignore last empty line
-                    continue;
-                }
-
-                $entityArray = array_combine($columns, $fields);
-                // prepare data before denormalization (this could be done in a custom denormalizer)
-                $entityArray['active'] = (bool) $entityArray['active'];
-
-
-                $entity = $this->serializer->denormalize($entityArray, Utilisateur::class);
-
-                $user = new Utilisateur();
-                $user->setNom($entityArray['nom']);
-                $user->setPrenom($entityArray['prenom']);
-                $user->setPseudo($entityArray['pseudo']);
-                $user->setEmail($entityArray['email']);
-                $user->setTelephone($entityArray['telephone']);
-                $user->setRoles($entityArray['roles']);
-                $user->setCampus($entityArray['campus']);
-                $user->setActif($entityArray['actif']);
-                $entityManager->persist($user);
-                $entityManager->flush();
-            }
-
-
+    #[Route('/gestion-utilisateur/creerUtilisateursCSV', name: 'creer-utilisateurs-CSV', methods: ['POST'])]
+    public function creerUserCSV(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        CampusRepository $campusRepository,
+        UtilisateurRepository $utilisateurRepository,
+        UserPasswordHasherInterface $passwordHasher
+    ): Response {
+        if (!$this->isCsrfTokenValid('admin_import_csv', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
+        $upload = $request->files->get('file');
+        if (!$upload || !$upload->isValid() || $upload->getSize() > 2 * 1024 * 1024) {
+            $this->addFlash('danger', 'Choisissez un fichier CSV valide de 2 Mo maximum.');
+            return $this->redirectToRoute('admin_gestion-utilisateur');
+        }
 
+        $handle = fopen($upload->getPathname(), 'rb');
+        if ($handle === false) {
+            $this->addFlash('danger', 'Impossible de lire le fichier CSV.');
+            return $this->redirectToRoute('admin_gestion-utilisateur');
+        }
 
+        try {
+            $firstLine = fgets($handle);
+            if ($firstLine === false) {
+                throw new \\RuntimeException('Le fichier CSV est vide.');
+            }
+            $firstLine = preg_replace('/^\\xEF\\xBB\\xBF/', '', $firstLine);
+            $separator = substr_count($firstLine, ';') > substr_count($firstLine, ',') ? ';' : ',';
+            rewind($handle);
+            $headers = fgetcsv($handle, 0, $separator, '"', '');
+            if (!$headers) {
+                throw new \\RuntimeException('En-têtes CSV manquants.');
+            }
+            $headers[0] = preg_replace('/^\\xEF\\xBB\\xBF/', '', $headers[0]);
+            $headers = array_map(static fn ($value) => strtolower(trim((string) $value)), $headers);
+            $required = ['nom', 'prenom', 'pseudo', 'email', 'campus', 'password'];
+            if (count(array_diff($required, $headers)) || count($headers) !== count(array_unique($headers))) {
+                throw new \\RuntimeException('En-têtes CSV invalides : nom, prenom, pseudo, email, campus et password sont obligatoires.');
+            }
+
+            $campuses = $campusRepository->findAll();
+            $pending = [];
+            $emails = [];
+            $pseudos = [];
+            $line = 1;
+            while (($values = fgetcsv($handle, 0, $separator, '"', '')) !== false) {
+                ++$line;
+                if (count($values) === 1 && trim((string) $values[0]) === '') {
+                    continue;
+                }
+                if ($line > 1001 || count($values) !== count($headers)) {
+                    throw new \\RuntimeException('Ligne ' . $line . ' : format incorrect ou limite de 1000 comptes dépassée.');
+                }
+                $data = array_combine($headers, array_map('trim', $values));
+                foreach ($required as $field) {
+                    if ($data[$field] === '') {
+                        throw new \\RuntimeException('Ligne ' . $line . ' : champ obligatoire manquant (' . $field . ').');
+                    }
+                }
+                $email = strtolower($data['email']);
+                $pseudo = $data['pseudo'];
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 180 ||
+                    mb_strlen($pseudo) < 3 || mb_strlen($pseudo) > 30 ||
+                    mb_strlen($data['nom']) > 30 || mb_strlen($data['prenom']) > 30 ||
+                    mb_strlen($data['telephone'] ?? '') > 15 ||
+                    strlen($data['password']) < 8) {
+                    throw new \\RuntimeException('Ligne ' . $line . ' : email, longueur de champ ou mot de passe invalide (8 caractères minimum).');
+                }
+                if (isset($emails[$email]) || isset($pseudos[$pseudo]) ||
+                    $utilisateurRepository->findOneBy(['email' => $email]) ||
+                    $utilisateurRepository->findOneBy(['pseudo' => $pseudo])) {
+                    throw new \\RuntimeException('Ligne ' . $line . ' : email ou pseudo déjà utilisé.');
+                }
+                $emails[$email] = true;
+                $pseudos[$pseudo] = true;
+                $campus = null;
+                foreach ($campuses as $candidate) {
+                    if ((string) $candidate->getId() === $data['campus'] ||
+                        mb_strtolower((string) $candidate->getNomCampus()) === mb_strtolower($data['campus'])) {
+                        $campus = $candidate;
+                        break;
+                    }
+                }
+                if (!$campus) {
+                    throw new \\RuntimeException('Ligne ' . $line . ' : campus inconnu.');
+                }
+                $role = strtoupper($data['roles'] ?? 'ROLE_USER');
+                if (!in_array($role, ['ROLE_USER', 'ROLE_ADMIN'], true)) {
+                    throw new \\RuntimeException('Ligne ' . $line . ' : rôle non reconnu.');
+                }
+                $actif = strtolower($data['actif'] ?? '1');
+                if (!in_array($actif, ['1', '0', 'true', 'false', 'oui', 'non'], true)) {
+                    throw new \\RuntimeException('Ligne ' . $line . ' : statut actif invalide.');
+                }
+                $user = new Utilisateur();
+                $user->setNom($data['nom']);
+                $user->setPrenom($data['prenom']);
+                $user->setPseudo($pseudo);
+                $user->setEmail($email);
+                $user->setTelephone(($data['telephone'] ?? '') !== '' ? $data['telephone'] : null);
+                $user->setCampus($campus);
+                $user->setRoles([$role]);
+                $user->setAdministrateur($role === 'ROLE_ADMIN');
+                $user->setActif(in_array($actif, ['1', 'true', 'oui'], true));
+                $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
+                $user->setUrlPhoto('default.png');
+                $pending[] = $user;
+            }
+            if (!$pending) {
+                throw new \\RuntimeException('Aucun utilisateur à importer.');
+            }
+            foreach ($pending as $user) {
+                $entityManager->persist($user);
+            }
+            $entityManager->flush();
+            $this->addFlash('success', count($pending) . ' utilisateur(s) importé(s).');
+        } catch (\\Throwable $exception) {
+            $this->addFlash('danger', 'Import CSV refusé : ' . $exception->getMessage());
+        } finally {
+            fclose($handle);
+        }
+        return $this->redirectToRoute('admin_gestion-utilisateur');
     }
 
     // Modifier un utilisateur par un administrateur
