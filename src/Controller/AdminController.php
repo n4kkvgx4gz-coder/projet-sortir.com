@@ -47,6 +47,9 @@ class AdminController extends AbstractController
         $campusList = $campusRepository->findAll();
 
         if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('admin_create_user', $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+            }
             $email = trim($request->request->get('email'));
             $pseudo = trim($request->request->get('pseudo'));
 
@@ -68,6 +71,10 @@ class AdminController extends AbstractController
             $utilisateur->setEmail($email);
             $utilisateur->setTelephone($request->request->get('telephone'));
             $role = $request->request->get('role', 'ROLE_USER');
+            if (!in_array($role, ['ROLE_USER', 'ROLE_ADMIN'], true)) {
+                $this->addFlash('danger', 'Rôle invalide.');
+                return $this->redirectToRoute('admin_creer_utilisateur');
+            }
             $utilisateur->setRoles([$role]);
             if ($role === 'ROLE_ADMIN') {
                 $utilisateur->setAdministrateur(true);
@@ -85,12 +92,17 @@ class AdminController extends AbstractController
                 }
             }
 
+            if (!$utilisateur->getCampus()) {
+                $this->addFlash('danger', 'Sélectionnez un campus existant.');
+                return $this->redirectToRoute('admin_creer_utilisateur');
+            }
             $utilisateur->setActif($request->request->getBoolean('actif'));
 
-            $role = $request->request->get('role', 'ROLE_USER');
-            $utilisateur->setRoles([$role]);
-
-            $password = $request->request->get('password');
+            $password = (string) $request->request->get('password');
+            if (strlen($password) < 8) {
+                $this->addFlash('danger', 'Le mot de passe doit comporter au moins 8 caractères.');
+                return $this->redirectToRoute('admin_creer_utilisateur');
+            }
             $hashedPassword = $passwordHasher->hashPassword($utilisateur, $password);
             $utilisateur->setPassword($hashedPassword);
 
@@ -250,7 +262,8 @@ class AdminController extends AbstractController
         int $id,
         Request $request,
         UtilisateurRepository $utilisateurRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher
     ): Response {
         $utilisateur = $utilisateurRepository->find($id);
 
@@ -273,7 +286,7 @@ class AdminController extends AbstractController
                     $newFileName = uniqid('profil_', true) . '.' . $extension;
 
                     try {
-                        $file->move('images/', $newFileName);
+                        $file->move($this->getParameter('kernel.project_dir') . '/public/images', $newFileName);
                         $utilisateur->setUrlPhoto($newFileName);
                     } catch (FileException $e) {
                         $this->addFlash('danger', "Erreur lors de l'envoi de l'image.");
@@ -292,6 +305,14 @@ class AdminController extends AbstractController
                     $utilisateur->setAdministrateur($role === 'ROLE_ADMIN');
                 }
 
+                $newPassword = $form->get('password')->getData();
+                if ($newPassword !== null && $newPassword !== '') {
+                    if (strlen($newPassword) < 8) {
+                        $this->addFlash('danger', 'Le nouveau mot de passe doit comporter au moins 8 caractères.');
+                        return $this->redirectToRoute('admin_gestion-utilisateur-modifier', ['id' => $id]);
+                    }
+                    $utilisateur->setPassword($passwordHasher->hashPassword($utilisateur, $newPassword));
+                }
                 $entityManager->flush();
 
                 $this->addFlash('success', "L'utilisateur a bien été modifié.");
