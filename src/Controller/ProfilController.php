@@ -19,6 +19,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ProfilController extends AbstractController
 {
     #[Route('', name: 'detail', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function list(UtilisateurRepository $utilisateurRepository): Response
     {
         $utilisateur = $this->getUser();
