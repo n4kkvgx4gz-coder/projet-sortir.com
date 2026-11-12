@@ -45,7 +45,7 @@ class Sortie
     private ?bool $etat = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Image]
+    // Stocke un nom de fichier, et non un objet UploadedFile.
     private ?string $urlPhoto = null;
 
     #[ORM\OneToMany(
