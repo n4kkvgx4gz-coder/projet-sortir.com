@@ -1,78 +1,67 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}
-    Gérer les utilisateurs
-{% endblock %}
-
+{% block title %}Gestion des utilisateurs · Sortir.com{% endblock %}
 {% block body %}
-    <h1>Gestion des utilisateurs</h1>
-    <a href="{{ path('admin_creer_utilisateur') }}" class="btn-create"> Ajouter un utilisateur manuellement </a>
-    <a class="btn-create" onclick="fromCSV()" > Ajouter une liste d'utilisateur via fichier CSV</a>
-    <div id="formCSV"></div>
-    <h3> Liste des utilisateurs </h3>
-
-<table>
-    <thead>
-        <tr>
-            <th>Pseudo</th>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Email</th>
-            <th>Rôle</th>
-            <th>mot de passe</th>
-            <th>téléphone</th>
-            <th>campus</th>
-            <th>url photo</th>
-            <th>profil actif</th>
-            <th>action</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for user in utilisateurs %}
-
-        <tr>
-            <td>{{ user.pseudo }}</td>
-            <td>{{ user.nom }}</td>
-            <td>{{ user.prenom }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.roles|join(', ')}}</td>
-            <td>{{ user.password }}</td>
-            <td>{{ user.telephone }}</td>
-            <td>{{ user.getCampus().getNomCampus() }}</td>
-            <td>{{ user.getUrlPhoto }}</td>
-            <td>
-                {% if  user.actif  == 1  %}
-                 oui
+<main class="admin-users-page">
+    <div class="admin-users-heading">
+        <div>
+            <p class="admin-eyebrow">Administration</p>
+            <h1>Gestion des utilisateurs</h1>
+            <p class="admin-users-intro">Consultez les comptes, leurs droits et leur statut. Les informations sensibles ne sont pas affichées.</p>
+        </div>
+        <a href="{{ path('admin_creer_utilisateur') }}" class="btn-primary">+ Ajouter un utilisateur</a>
+    </div>
+    <section class="admin-users-panel" aria-labelledby="users-heading">
+        <div class="admin-users-panel-heading">
+            <div>
+                <h2 id="users-heading">Comptes utilisateurs</h2>
+                <p>{{ utilisateurs|length }} compte{{ utilisateurs|length > 1 ? 's' : '' }}</p>
+            </div>
+        </div>
+        <div class="admin-users-table-scroll">
+            <table class="admin-users-table">
+                <thead><tr>
+                    <th scope="col">Utilisateur</th>
+                    <th scope="col">Contact</th>
+                    <th scope="col">Campus</th>
+                    <th scope="col">Rôle</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col">Actions</th>
+                </tr></thead>
+                <tbody>
+                {% for user in utilisateurs %}
+                    <tr>
+                        <td>
+                            <strong>{{ user.prenom }} {{ user.nom }}</strong>
+                            <span class="admin-secondary">@{{ user.pseudo }}</span>
+                        </td>
+                        <td>
+                            <span>{{ user.email }}</span>
+                            {% if user.telephone %}<span class="admin-secondary">{{ user.telephone }}</span>{% endif %}
+                        </td>
+                        <td>{{ user.campus ? user.campus.nomCampus : 'Non renseigné' }}</td>
+                        <td><span class="admin-role">{{ 'ROLE_ADMIN' in user.roles ? 'Administrateur' : 'Utilisateur' }}</span></td>
+                        <td><span class="admin-status {{ user.actif ? 'is-active' : 'is-inactive' }}">{{ user.actif ? 'Actif' : 'Inactif' }}</span></td>
+                        <td>
+                            <div class="admin-row-actions">
+                                <a class="admin-action-link" href="{{ path('admin_gestion-utilisateur-modifier', {'id': user.id}) }}">Modifier</a>
+                                <form method="post" action="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('admin_toggle_user_' ~ user.id) }}">
+                                    <button class="admin-action-link" type="submit">{{ user.actif ? 'Désactiver' : 'Activer' }}</button>
+                                </form>
+                                <form method="post" action="{{ path('admin_gestion-utilisateur-supprimer', {'id': user.id}) }}" onsubmit="return confirm('Supprimer définitivement ce compte et ses sorties organisées ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('admin_delete_user_' ~ user.id) }}">
+                                    <button class="admin-action-link admin-action-danger" type="submit">Supprimer</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
                 {% else %}
-                    non
-                {% endif %}
-
-            </td>
-            <td>
-
-                <form method="post"
-                      action="{{ path('admin_gestion-utilisateur-supprimer', {'id': user.id}) }}"
-                      style="display:inline;"
-                      onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
-                    <button type="submit" class="btn-create tableaubtn">
-                        Supprimer
-                    </button>
-                </form>
-                <a href="{{ path('admin_gestion-utilisateur-modifier', {'id': user.id}) }}" class="btn-create tableaubtn">modifier</a>
-                {% if user.actif === true %}
-                    <a href="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}" class="btn-create tableaubtn">désactiver</a>
-                {% else %}
-                    <a href="{{ path('admin_gestion-utilisateur-desactiver', {'id': user.id}) }}" class="btn-create tableaubtn">activer</a>
-                {% endif %}
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-    <script>
-        function fromCSV(){
-            document.getElementById('formCSV').innerHTML = "<form methode='post' action='{{ path('admin_creer-utilisateurs-CSV') }}'> <input type='file' id='file' accept='text/csv\'/> <input class='btn-create' type='submit'> ajouter la liste/> </from> ";
-        }
-    </script>
+                    <tr><td colspan="6" class="admin-empty">Aucun utilisateur trouvé.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <p class="admin-users-note">L'import CSV est temporairement indisponible : son traitement actuel doit être sécurisé et validé avant réactivation.</p>
+</main>
 {% endblock %}
