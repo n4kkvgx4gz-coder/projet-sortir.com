@@ -28,7 +28,6 @@ final class SortieController extends AbstractController
         Request $request,
         SortieRepository $sortieRepository,
         CategorieRepository $categorieRepository,
-        EntityManagerInterface $manager,
     ): Response {
 
         $q = $request->query->get('q');
@@ -56,7 +55,6 @@ final class SortieController extends AbstractController
         );
 
 
-        // test 123
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
             'categories' => $categorieRepository->findAll(),
@@ -124,8 +122,7 @@ final class SortieController extends AbstractController
         ]);
     }
 
-    // detail de l'inscription
-    /** * si la date de début de la sortie est plus ancienne que aujourd’hui - 1 mois, Symfony redirige et empêche la consultation de la sortie. * * Exemple : aujourd’hui 20/05/2026, une sortie du 10/04/2026 ne sera plus consultable. * */
+    /** Affiche également les sorties passées, sans modifier leur état en base. */
     #[Route('/sortie/{id}', name: 'sortie_detail', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function detail(
         Sortie $sortie,
@@ -172,7 +169,8 @@ final class SortieController extends AbstractController
     public function inscription(
         Sortie $sortie,
         EntityManagerInterface $entityManager,
-        InscriptionRepository $inscriptionRepository
+        InscriptionRepository $inscriptionRepository,
+        Request $request
     ): Response {
 
         /** @var Utilisateur|null $user */
@@ -186,6 +184,10 @@ final class SortieController extends AbstractController
             );
 
             return $this->redirectToRoute('app_login');
+        }
+
+        if (!$this->isCsrfTokenValid('sortie_inscription_' . $sortie->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
         if (!$sortie->isEtat()) {
@@ -224,8 +226,6 @@ final class SortieController extends AbstractController
         ]);
 
         if ($dejaInscrit) {
-            $this->addFlash('warning', 'Vous êtes déjà inscrit à cette sortie.');
-
             $this->addFlash(
                 'warning',
                 'Vous êtes déjà inscrit.'
@@ -266,6 +266,10 @@ final class SortieController extends AbstractController
         if (!$user) {
             $this->addFlash('danger', 'Vous devez être connecté.');
             return $this->redirectToRoute('app_login');
+        }
+
+        if (!$this->isCsrfTokenValid('sortie_desistement_' . $sortie->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
         if ($sortie->getDateDebut() <= new \DateTime()) {
@@ -331,7 +335,15 @@ final class SortieController extends AbstractController
         // validation du formulaire
         if ($request->isMethod('POST')) {
 
-            $motif = $request->request->get('motif');
+            if (!$this->isCsrfTokenValid('sortie_annuler_' . $sortie->getId(), $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+            }
+
+            $motif = trim((string) $request->request->get('motif'));
+            if ($motif === '' || mb_strlen($motif) > 255) {
+                $this->addFlash('danger', 'Le motif est obligatoire et limité à 255 caractères.');
+                return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+            }
 
             $sortie->setMotifAnnulation($motif);
             $sortie->setEtat(false);
