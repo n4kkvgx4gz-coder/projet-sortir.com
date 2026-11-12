@@ -7,7 +7,7 @@
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
 
-    <h1>Modifier le profil de : {{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+    <main class="page"><section class="card form-card"><h1>Modifier le profil de {{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
 
     {{ form_errors(form) }}
 
@@ -38,5 +38,5 @@
 
     {{ form_end(form) }}
 
-    <a href="{{ path('admin_gestion-utilisateur') }}">Retour</a>
+    <a href="{{ path('admin_gestion-utilisateur') }}" class="btn-user">Retour</a></section></main>
 {% endblock %}
