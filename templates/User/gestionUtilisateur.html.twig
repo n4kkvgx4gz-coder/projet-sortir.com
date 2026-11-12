@@ -8,8 +8,9 @@
             <h1>Gestion des utilisateurs</h1>
             <p class="admin-users-intro">Consultez les comptes, leurs droits et leur statut. Les informations sensibles ne sont pas affichées.</p>
         </div>
-        <a href="{{ path('admin_creer_utilisateur') }}" class="btn-primary">+ Ajouter un utilisateur</a>
+        <div class="admin-heading-actions"><a href="{{ path('admin_creer_utilisateur') }}" class="btn-primary">+ Ajouter un utilisateur</a><button type="button" class="btn-user" onclick="document.getElementById('csv-import-panel').hidden = !document.getElementById('csv-import-panel').hidden">Importer un CSV</button></div>
     </div>
+    <section id="csv-import-panel" class="admin-users-panel admin-import-panel" hidden aria-label="Importer des utilisateurs par CSV"><div class="admin-users-panel-heading"><h2>Importer une liste d’utilisateurs</h2><p>CSV UTF-8 séparé par des virgules ou des points-virgules. Colonnes obligatoires : nom, prenom, pseudo, email, campus, password. Colonnes facultatives : telephone, roles, actif. Le campus doit correspondre à un campus existant ; le mot de passe temporaire doit comporter au moins 8 caractères.</p></div><form method="post" enctype="multipart/form-data" action="{{ path('admin_creer-utilisateurs-CSV') }}" class="admin-import-form"><input type="hidden" name="_token" value="{{ csrf_token('admin_import_csv') }}"><label for="csv-file">Fichier CSV</label><input type="file" id="csv-file" name="file" accept=".csv,text/csv" required><button type="submit" class="btn-primary">Importer les utilisateurs</button></form></section>
     <section class="admin-users-panel" aria-labelledby="users-heading">
         <div class="admin-users-panel-heading">
             <div>
@@ -62,6 +63,6 @@
             </table>
         </div>
     </section>
-    <p class="admin-users-note">L'import CSV est temporairement indisponible : son traitement actuel doit être sécurisé et validé avant réactivation.</p>
+    <p class="admin-users-note">Les mots de passe temporaires sont hachés avant enregistrement. Conservez les fichiers CSV contenant des mots de passe dans un emplacement sécurisé et supprimez-les après usage.</p>
 </main>
 {% endblock %}
