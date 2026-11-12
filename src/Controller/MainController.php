@@ -11,11 +11,15 @@ final class MainController extends AbstractController
     #[Route('/', name: 'app_main')]
     public function index(SortieRepository $sortieRepository): Response
     {
-        $sorties = $sortieRepository->findBy(
-            ['etat' => true],
-            ['dateDebut' => 'ASC'],
-            6
-        );
+        $sorties = $sortieRepository->createQueryBuilder('s')
+            ->andWhere('s.etat = :active')
+            ->andWhere('s.dateDebut >= :now')
+            ->setParameter('active', true)
+            ->setParameter('now', new \DateTime())
+            ->orderBy('s.dateDebut', 'ASC')
+            ->setMaxResults(6)
+            ->getQuery()
+            ->getResult();
 
         return $this->render('main/index.html.twig', [
             'sorties' => $sorties,
