@@ -1,27 +1,20 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Mes groupes privés{% endblock %}
-
+{% block title %}Mes groupes privés · Sortir.com{% endblock %}
 {% block body %}
-    <h1>Mes groupes privés</h1>
-
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
-
-    <a href="{{ path('groupe_prive_creer') }}">Créer un groupe privé</a>
-
-    {% if groupes is empty %}
-        <p>Vous n'avez créé aucun groupe privé.</p>
-    {% else %}
-        <ul>
-            {% for groupe in groupes %}
-                <li>
-                    <a href="{{ path('groupe_prive_detail', {'id': groupe.id}) }}">
-                        {{ groupe.nom }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+<main class="page">
+  <div class="section-header">
+    <div><p class="admin-eyebrow">Communauté</p><h1>Mes groupes privés</h1><p class="section-subtitle">Retrouvez vos groupes et leurs activités.</p></div>
+    <a class="btn-primary" href="{{ path('groupe_prive_creer') }}">+ Créer un groupe privé</a>
+  </div>
+  {% for message in app.flashes('success') %}<div class="alert alert-success" role="status">{{ message }}</div>{% endfor %}
+  {% if groupes is empty %}
+    <div class="empty-state" role="status"><h2>Aucun groupe privé</h2><p>Créez un groupe pour organiser des activités entre membres.</p></div>
+  {% else %}
+    <ul class="entity-list">
+      {% for groupe in groupes %}
+        <li class="entity-list-item"><div><strong>{{ groupe.nom }}</strong></div><a class="btn-detail" href="{{ path('groupe_prive_detail', {'id': groupe.id}) }}">Voir le groupe</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</main>
 {% endblock %}
