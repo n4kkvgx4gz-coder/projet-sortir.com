@@ -8,6 +8,7 @@
     <h1>Créer un utilisateur</h1>
 
         <form method="post" action="{{ path('admin_creer_utilisateur') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('admin_create_user') }}">
 
         <label>Nom</label>
         <input type="text" name="nom" required>
@@ -34,12 +35,12 @@
 
         <label>Rôle</label>
         <select name="role" required>
-            <option value='["ROLE_USER"]'>Utilisateur</option>
-            <option value='["ROLE_ADMIN"]'>Administrateur</option>
+            <option value="ROLE_USER">Utilisateur</option>
+            <option value="ROLE_ADMIN">Administrateur</option>
         </select>
 
         <label>Mot de passe</label>
-        <input type="password" name="password" required>
+        <input type="password" name="password" minlength="8" required>
 
         <label>
             <input type="checkbox" name="actif" value="1" checked>
