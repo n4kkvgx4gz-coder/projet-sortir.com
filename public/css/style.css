@@ -1454,3 +1454,55 @@ tbody tr:hover {
 .admin-import-form label { font-weight: 700; }
 .admin-import-form input[type=file] { flex: 1 1 260px; max-width: 100%; }
 .admin-import-panel[hidden] { display: none; }
+
+/* Composants de formulaire partagés : mêmes dimensions, états et rayons. */
+:root { --control-height: 46px; --control-radius: 12px; --control-gap: 14px; }
+button, input, select, textarea { font: inherit; }
+.btn-primary, .btn-create, .btn-user, .btn-login, .btn-detail, .btn-danger,
+.btn-add-lieu, .filter-actions button, .filter-actions a,
+.form-actions button, .form-actions a, .modal-actions button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: var(--control-height); padding: 11px 18px;
+  border-radius: var(--control-radius); border: 1px solid transparent;
+  font-size: .9rem; font-weight: 700; line-height: 1.2;
+  text-align: center; text-decoration: none; cursor: pointer;
+  transition: background-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.btn-add-lieu { width: 46px; min-width: 46px; height: 46px; padding: 0; font-size: 1.35rem; }
+.form-actions, .modal-actions, .filter-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.form-card input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=file]),
+.form-card select, .form-card textarea,
+.filters-card input:not([type=checkbox]), .filters-card select,
+.login-card input:not([type=checkbox]):not([type=hidden]),
+.custom-modal input, .custom-modal select,
+.admin-import-form input[type=file] {
+  width: 100%; min-height: var(--control-height); padding: 10px 13px;
+  border: 1px solid #c9d9e3; border-radius: var(--control-radius);
+  background: #fff; color: var(--text); line-height: 1.4;
+}
+.form-card textarea { min-height: 120px; resize: vertical; }
+.form-card label, .login-card label, .filter-field label, .custom-modal label {
+  display: block; margin-bottom: 6px; font-size: .9rem; font-weight: 700;
+}
+.form-card .checkbox-row label, .login-card .checkbox-row label,
+.form-card label:has(input[type=checkbox]), .filter-check {
+  display: inline-flex; align-items: center; gap: 10px; margin-bottom: 0;
+}
+input[type=checkbox], input[type=radio] {
+  width: 18px !important; height: 18px !important; min-height: 18px !important;
+  flex: 0 0 18px; margin: 0; padding: 0; accent-color: var(--blue-dark);
+}
+.form-card input:focus-visible, .form-card select:focus-visible,
+.form-card textarea:focus-visible, .filters-card input:focus-visible,
+.filters-card select:focus-visible, .login-card input:focus-visible {
+  border-color: var(--blue-dark); outline: 3px solid rgba(0,125,149,.22); outline-offset: 1px;
+}
+.form-card .form-error, .form-card .invalid-feedback { color: #a3293b; font-size: .85rem; }
+.form-card form > div { margin-bottom: var(--control-gap); }
+.form-card .form-actions { margin-top: 20px; }
+.admin-status:not(.is-active):not(.is-inactive) { background: #edf4fb; color: #385875; }
+@media (max-width: 600px) {
+  .form-actions > *, .modal-actions > *, .filter-actions > * { flex: 1 1 160px; }
+  .admin-heading-actions { width: 100%; }
+  .admin-heading-actions > * { flex: 1 1 180px; }
+}
