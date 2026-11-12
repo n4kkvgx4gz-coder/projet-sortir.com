@@ -40,7 +40,7 @@
             <div>
                 <h1>Sorties à la une</h1>
                 <p class="section-subtitle">
-                    Les prochaines activités populaires.
+                    Les prochaines activités programmées.
                 </p>
             </div>
         </div>
@@ -111,6 +111,12 @@
 
                 </article>
 
+            {% else %}
+                <div class="empty-state" role="status">
+                    <h2>Aucune sortie à venir pour le moment</h2>
+                    <p>Les sorties précédentes restent consultables dans le catalogue.</p>
+                    <a href="{{ path('app_sortie') }}" class="btn-primary">Consulter toutes les sorties</a>
+                </div>
             {% endfor %}
 
         </div>
