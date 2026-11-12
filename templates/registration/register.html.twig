@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Créer un compte · Sortir.com{% endblock %}
 
 {% block body %}
     {% for flash_error in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
 
-    <h1>Inscription à Sortir.com</h1>
+    <main class="page"><section class="card form-card"><h1>Créer un compte</h1>
 
 
 
@@ -40,6 +40,6 @@
 
     {{ form_row(registrationForm.agreeTerms) }}
 
-        <button type="submit" class="btn-create">S'enregister</button>
-    {{ form_end(registrationForm) }}
+        <button type="submit" class="btn-create">Créer mon compte</button>
+    {{ form_end(registrationForm) }}</section></main>
 {% endblock %}
