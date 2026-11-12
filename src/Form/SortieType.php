@@ -17,7 +17,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class SortieType extends AbstractType
 {
 
-    // test 123
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -28,7 +27,7 @@ class SortieType extends AbstractType
                 'label' => 'Début',
             ])
             ->add('dateCloture', null, [
-                'label' => 'Fin',
+                'label' => 'Clôture des inscriptions',
             ])
             ->add('nbInscriptionsMax', null, [
                 'label' => 'Nombre de places',
