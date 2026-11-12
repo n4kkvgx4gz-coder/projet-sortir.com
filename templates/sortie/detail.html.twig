@@ -11,7 +11,7 @@
                 {% if sortie.urlPhoto %}
                     <img src="{{ asset('images/' ~ sortie.urlPhoto) }}" alt="{{ sortie.nom }}">
                 {% else %}
-                    <img src="{{ asset('images/default.jpg') }}" alt="image par défaut">
+                    <img src="{{ asset('images/default.png') }}" alt="image par défaut">
                 {% endif %}
 
                 <span class="badge">{{ sortie.lieu.nomLieu }}</span>
@@ -73,12 +73,14 @@
                             <div class="participation-actions">
                                 {% if dejaInscrit %}
                                     <form method="post" action="{{ path('sortie_desistement', {'id': sortie.id}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('sortie_desistement_' ~ sortie.id) }}">
                                         <button type="submit" class="btn-primary">
                                             Se désister
                                         </button>
                                     </form>
                                 {% else %}
                                     <form method="post" action="{{ path('sortie_inscription', {'id': sortie.id}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('sortie_inscription_' ~ sortie.id) }}">
                                         <button type="submit" class="btn-primary">
                                             S'inscrire
                                         </button>
@@ -104,6 +106,7 @@
 
                         {% if app.user and organisateur and app.user.id == organisateur.id %}
                             <form method="post" action="{{ path('sortie_annuler', {'id': sortie.id}) }}" class="annulation-form">
+                                <input type="hidden" name="_token" value="{{ csrf_token('sortie_annuler_' ~ sortie.id) }}">
                                 <input
                                     type="text"
                                     name="motif"
