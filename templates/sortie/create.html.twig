@@ -83,7 +83,7 @@
                 Ajouter un lieu
             </h2>
 <section>
-    <label for="Nom du lieu">Nom du lieu</label>
+    <label for="nomLieu">Nom du lieu</label>
             <input
                 type="text"
                 id="nomLieu"
@@ -92,7 +92,7 @@
 </section>
 
 <section>
-    <label for="adresse">Adresse du lieu</label>
+    <label for="rueLieu">Adresse du lieu</label>
             <input
                 type="text"
                 id="rueLieu"
@@ -103,7 +103,7 @@
 
 <section>
 
-    <label for="ville">Ville du lieu</label>
+    <label for="villeSelect">Ville du lieu</label>
             <select id="villeSelect">
 
                 {% for ville in villes %}
@@ -130,7 +130,7 @@
                 <button
                     type="button"
                     id="closeLieuModal"
-                    class="btn-danger"
+                    class="btn-user"
                 >
                     Fermer
                 </button>
@@ -180,7 +180,7 @@
                 <button
                     type="button"
                     id="closeVilleModal"
-                    class="btn-danger"
+                    class="btn-user"
                 >
                     Fermer
                 </button>
