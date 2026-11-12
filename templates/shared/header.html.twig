@@ -16,7 +16,7 @@
         </a>
     </div>
 
-    <button id="burger-btn" class="burger-btn" aria-label="Ouvrir le menu">
+    <button id="burger-btn" class="burger-btn" aria-label="Ouvrir le menu" aria-controls="nav-links" aria-expanded="false" type="button">
         <span></span>
         <span></span>
         <span></span>
@@ -76,6 +76,7 @@
         burgerBtn.addEventListener('click', () => {
             navLinks.classList.toggle('active');
             burgerBtn.classList.toggle('open');
+            burgerBtn.setAttribute('aria-expanded', navLinks.classList.contains('active') ? 'true' : 'false');
         });
 
     </script>
