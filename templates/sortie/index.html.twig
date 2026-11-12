@@ -11,10 +11,10 @@
         <div class="section-header">
             <h1>Toutes les sorties</h1>
 
-            <a href="{{ path('sortie_create') }}"
+            {% if app.user %}<a href="{{ path('sortie_create') }}"
                class="btn-create">
                 + Créer une sortie
-            </a>
+            </a>{% endif %}
         </div>
 
         <form method="get" class="filters-card">
@@ -77,7 +77,6 @@
 
         </form>
 
-        <br>
 
         <div class="activities-grid">
 
@@ -96,7 +95,7 @@
 
                         <div class="card-tags">
                     <span class="location-badge">
-                        {{ sortie.lieu.nomLieu }}
+                        {{ sortie.lieu ? sortie.lieu.nomLieu : 'Lieu non renseigné' }}
                     </span>
 
                             {% if sortie.categorie %}
@@ -109,7 +108,7 @@
                             {% endif %}
                         </div>
 
-                        <h2>{{ sortie.nom }} à {{ sortie.lieu.ville.nomVille }}</h2>
+                        <h2>{{ sortie.nom }}{% if sortie.lieu and sortie.lieu.ville %} à {{ sortie.lieu.ville.nomVille }}{% endif %}</h2>
 
                         <p class="description">
                             {{ sortie.description|length > 90
@@ -123,14 +122,14 @@
                         </div>
                         <div class="sortie-actions">
 
-                            {% if sortie.etat == 0 %}
+                            {% if not sortie.etat %}
 
                                 <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn-detail">
                                     Voir détail
                                 </a>
 
                                 <div class="sortie-annulee-box">
-                                    <p>Cette sortie est annulée.</p>
+                                    <p>{{ sortie.motifAnnulation ? 'Cette sortie est annulée.' : 'Cette sortie est inactive.' }}</p>
 
                                     {% if sortie.motifAnnulation %}
                                         <p><strong>Motif :</strong> {{ sortie.motifAnnulation }}</p>
@@ -177,7 +176,7 @@
                 </article>
 
             {% else %}
-                <p>Aucune sortie disponible.</p>
+                <div class="empty-state" role="status"><h2>Aucune sortie trouvée</h2><p>Modifiez vos filtres ou consultez l’ensemble des sorties.</p><a class="btn-user" href="{{ path('app_sortie') }}">Réinitialiser les filtres</a></div>
             {% endfor %}
 
         </div>
