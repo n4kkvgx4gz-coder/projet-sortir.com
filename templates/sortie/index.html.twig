@@ -156,6 +156,7 @@
                                           action="{{ path('sortie_annuler', {'id': sortie.id}) }}"
                                           id="annuler-{{ sortie.id }}"
                                           class="annulation-form">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('sortie_annuler_' ~ sortie.id) }}">
 
                                         <input
                                             type="text"
