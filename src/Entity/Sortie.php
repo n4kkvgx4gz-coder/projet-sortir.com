@@ -28,7 +28,7 @@ class Sortie
 
     #[ORM\Column]
     #[Assert\NotBlank(message: "La sortie doit avoir une date de fin")]
-    #[Assert\GreaterThanOrEqual(propertyPath : 'dateDebut', message: "la date de fin doit être programmé après la date de début")]
+    #[Assert\LessThan(propertyPath: 'dateDebut', message: "La clôture des inscriptions doit précéder le début de la sortie")]
     private ?\DateTime $dateCloture = null;
 
     #[ORM\Column]
