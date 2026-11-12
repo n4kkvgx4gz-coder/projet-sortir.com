@@ -257,7 +257,8 @@ final class SortieController extends AbstractController
     public function desistement(
         Sortie $sortie,
         EntityManagerInterface $entityManager,
-        InscriptionRepository $inscriptionRepository
+        InscriptionRepository $inscriptionRepository,
+        Request $request
     ): Response {
 
         /** @var Utilisateur|null $user */
