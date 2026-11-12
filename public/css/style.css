@@ -1506,3 +1506,31 @@ input[type=checkbox], input[type=radio] {
   .admin-heading-actions { width: 100%; }
   .admin-heading-actions > * { flex: 1 1 180px; }
 }
+
+/* Listes : composants communs aux sorties, groupes et tableaux administratifs. */
+.entity-list { list-style: none; margin: 24px 0; padding: 0; display: grid; gap: 14px; }
+.entity-list-item { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 20px 24px; background: var(--card); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 6px 20px rgba(16,42,67,.05); }
+.entity-list-item strong { display: block; font-size: 1.05rem; }
+.activities-grid > .empty-state { width: 100%; }
+.admin-users-table-scroll { width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.admin-users-table { table-layout: auto; }
+.admin-users-table td { overflow-wrap: anywhere; }
+.admin-users-table th:last-child, .admin-users-table td:last-child { text-align: left; }
+.admin-users-table tbody tr:hover { background: #f7fbfd; }
+.admin-row-actions { min-width: 175px; }
+.admin-action-link { min-height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; }
+.filters-checks { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 18px; }
+.filter-check { display: inline-flex; align-items: center; gap: 9px; min-height: 40px; width: auto; padding: 7px 11px; border-radius: 10px; cursor: pointer; }
+.filter-check:has(input:checked) { background: #e8f7f8; color: #006d77; }
+.activities-grid { align-items: stretch; }
+.activity-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+.card-content { display: flex; flex: 1; flex-direction: column; }
+.card-content .sortie-actions, .card-content > .btn-detail { margin-top: auto; }
+.card-image img { display: block; width: 100%; object-fit: cover; }
+@media (max-width: 700px) {
+ .entity-list-item { align-items: stretch; padding: 18px; }
+ .entity-list-item > .btn-detail { width: 100%; }
+ .admin-users-table { min-width: 760px; }
+ .filters-checks { gap: 8px; }
+ .filter-check { width: auto; }
+}
