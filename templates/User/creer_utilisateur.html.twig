@@ -5,48 +5,48 @@
 {% block title %}Créer un utilisateur{% endblock %}
 
 {% block body %}
-    <h1>Créer un utilisateur</h1>
+    <main class="page"><section class="card form-card"><h1>Créer un utilisateur</h1>
 
         <form method="post" action="{{ path('admin_creer_utilisateur') }}">
         <input type="hidden" name="_token" value="{{ csrf_token('admin_create_user') }}">
 
-        <label>Nom</label>
-        <input type="text" name="nom" required>
+        <label for="admin-user-nom">Nom</label>
+        <input type="text" id="admin-user-nom" name="nom" required>
 
-        <label>Prénom</label>
-        <input type="text" name="prenom" required>
+        <label for="admin-user-prenom">Prénom</label>
+        <input type="text" id="admin-user-prenom" name="prenom" required>
 
-        <label>Pseudo</label>
-        <input type="text" name="pseudo" required>
+        <label for="admin-user-pseudo">Pseudo</label>
+        <input type="text" id="admin-user-pseudo" name="pseudo" required>
 
-        <label>Email</label>
-        <input type="email" name="email" required>
+        <label for="admin-user-email">Email</label>
+        <input type="email" id="admin-user-email" name="email" required>
 
-        <label>Téléphone</label>
-        <input type="text" name="telephone">
+        <label for="admin-user-phone">Téléphone</label>
+        <input type="text" id="admin-user-phone" name="telephone">
 
-        <label>Campus</label>
-        <select name="campus" required>
+        <label for="admin-user-campus">Campus</label>
+        <select id="admin-user-campus" name="campus" required>
             <option value="">Choisir un campus</option>
             {% for campus in campusList %}
                 <option value="{{ campus.id }}">{{ campus.nomCampus }}</option>
             {% endfor %}
         </select>
 
-        <label>Rôle</label>
-        <select name="role" required>
+        <label for="admin-user-role">Rôle</label>
+        <select id="admin-user-role" name="role" required>
             <option value="ROLE_USER">Utilisateur</option>
             <option value="ROLE_ADMIN">Administrateur</option>
         </select>
 
-        <label>Mot de passe</label>
-        <input type="password" name="password" minlength="8" required>
+        <label for="admin-user-password">Mot de passe</label>
+        <input type="password" id="admin-user-password" name="password" autocomplete="new-password" minlength="8" required>
 
         <label>
             <input type="checkbox" name="actif" value="1" checked>
             Actif
         </label>
 
-        <button type="submit">Créer</button>
-    </form>
+        <div class="form-actions"><button type="submit" class="btn-primary">Créer l’utilisateur</button><a href="{{ path('admin_gestion-utilisateur') }}" class="btn-user">Annuler</a></div>
+    </form></section></main>
 {% endblock %}
