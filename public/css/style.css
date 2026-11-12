@@ -31,8 +31,7 @@ body {
         linear-gradient(180deg, #f9fcff, var(--bg));
 }
 
-/* =====================================================
-   CORRECTIONS HEADER + CHECKBOX + LIEU
+/* Corrections de l'en-tête, des filtres et du sélecteur de lieu. */
 
 /* HEADER DESKTOP : logo gauche, menu centré, user à droite */
 .main-header {
@@ -52,8 +51,7 @@ body {
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
 }
-/* =========================
-   HEADER COMPACT PASTILLES
+/* En-tête compact et navigation en pastilles. */
 
 .main-header {
     position: sticky;
@@ -301,109 +299,6 @@ input[type="checkbox"] {
         width: 100%;
     }
 }
-/* =========================
-   RESPONSIVE HEADER
-
-@media (max-width: 1200px) {
-    .main-header {
-        padding: 12px 18px;
-        gap: 14px;
-    }
-
-    .main-nav ul {
-        gap: 8px;
-    }
-
-    .main-nav a {
-        padding: 8px 11px;
-        font-size: 0.8rem;
-    }
-
-    .brand-title {
-        font-size: 1.15rem;
-    }
-
-    .user-badge {
-        padding: 8px 10px;
-        font-size: 0.8rem;
-    }
-}
-
-@media (max-width: 900px) {
-    .burger-btn {
-        display: flex;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-height: 44px;
-    padding: 10px 18px;
-
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 900;
-    font-size: 0.95rem;
-    white-space: nowrap;
-
-    transition: 0.2s ease;
-}
-
-.main-nav li:nth-child(1) a {
-    background: rgba(0,168,198,0.14);
-    color: #006D77;
-}
-
-.main-nav li:nth-child(2) a {
-    background: rgba(6,214,160,0.15);
-    color: #2D6A4F;
-}
-
-.main-nav li:nth-child(3) a {
-    background: rgba(144,190,109,0.18);
-    color: #588157;
-}
-
-.main-nav li:nth-child(4) a {
-    background: rgba(255,209,102,0.28);
-    color: #B08900;
-}
-
-.main-nav li:nth-child(5) a {
-    background: rgba(244,162,97,0.20);
-    color: #BC6C25;
-}
-
-.main-nav li:nth-child(6) a {
-    background: rgba(231,111,81,0.18);
-    color: #C44536;
-}
-
-.main-nav li:nth-child(7) a {
-    background: rgba(231,111,81,0.18);
-    color: #C44536;
-}
-
-.user-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-.user-badge {
-    background: #eef8fb;
-}
-
-.main-nav li:nth-child(1) a {
-    background: rgba(0,168,198,0.14);
-    color: var(--blue-dark);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 10px 16px;
-    font-weight: 900;
-    white-space: nowrap;
-}
-
 /* version tablette : menu sur 2 lignes proprement */
 @media (max-width: 1100px) {
     .main-header {
@@ -1517,26 +1412,38 @@ tbody tr:hover {
     }
 }
 
-/* =========================
-   FOOTER SITE
-
-.main-footer {
-    margin-top: 80px;
-    padding: 28px 20px;
-
-    background: rgba(255,255,255,0.92);
-    border-top: 1px solid #dbe7ef;
-
-    text-align: center;
-
-    color: #486581;
-    font-size: 0.95rem;
-    font-weight: 700;
-
-    backdrop-filter: blur(10px);
-}
-
-.main-footer p {
-    margin: 0;
-}
-
+/* Administration : tableau lisible, actions secondaires et mise en page adaptative. */
+.admin-users-page { max-width: 1320px; margin: 0 auto; padding: 44px 24px 72px; }
+.admin-users-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 28px; }
+.admin-users-heading h1 { margin: 6px 0 10px; font-size: clamp(1.7rem, 3vw, 2.4rem); }
+.admin-eyebrow { margin: 0; text-transform: uppercase; letter-spacing: .12em; color: var(--blue-dark); font-size: .75rem; font-weight: 800; }
+.admin-users-intro, .admin-users-panel-heading p, .admin-users-note { color: var(--muted); line-height: 1.5; }
+.admin-users-panel { background: white; border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); overflow: hidden; }
+.admin-users-panel-heading { padding: 26px 28px 12px; }
+.admin-users-panel-heading h2 { margin: 0; font-size: 1.25rem; }
+.admin-users-panel-heading p { margin: 7px 0 0; }
+.admin-users-table-scroll { overflow-x: auto; }
+.admin-users-table { width: 100%; min-width: 900px; margin: 0; border: 0; border-radius: 0; box-shadow: none; border-collapse: collapse; }
+.admin-users-table thead { background: #eef7fa; color: var(--text); }
+.admin-users-table th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+.admin-users-table th, .admin-users-table td { padding: 18px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.admin-users-table tbody tr:last-child td { border-bottom: 0; }
+.admin-users-table td { font-size: .9rem; }
+.admin-secondary { display: block; margin-top: 5px; color: var(--muted); font-size: .8rem; }
+.admin-role { display: inline-block; border-radius: 8px; padding: 6px 10px; background: #edf4fb; font-size: .8rem; }
+.admin-status { display: inline-block; border-radius: 99px; padding: 6px 11px; font-size: .8rem; font-weight: 700; }
+.admin-status.is-active { background: #dff8ed; color: #116448; }
+.admin-status.is-inactive { background: #f5e9e9; color: #8e3434; }
+.admin-row-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.admin-row-actions form { margin: 0; }
+.admin-action-link { background: none; border: 0; padding: 4px 0; color: var(--blue-dark); font: inherit; font-size: .85rem; font-weight: 700; text-decoration: none; cursor: pointer; }
+.admin-action-link:hover { text-decoration: underline; }
+.admin-action-danger { color: #ae3444; }
+.admin-users-note { font-size: .85rem; margin-top: 18px; }
+.admin-empty { text-align: center; color: var(--muted); }
+:focus-visible { outline: 3px solid var(--blue-dark); outline-offset: 3px; }
+.empty-state { grid-column: 1 / -1; text-align: center; padding: 44px 24px; border: 1px dashed var(--border); border-radius: var(--radius); background: var(--card); }
+.empty-state p { color: var(--muted); margin-bottom: 24px; }
+@media (max-width: 900px) { .admin-users-heading { flex-direction: column; align-items: flex-start; } .main-nav { max-width: calc(100vw - 32px); } }
+@media (max-width: 600px) { .admin-users-page { padding: 26px 12px; } .detail-sortie-page { padding: 16px; } .detail-content { padding: 20px; } .detail-infos { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } }
