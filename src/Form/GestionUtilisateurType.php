@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,18 +18,15 @@ class GestionUtilisateurType extends AbstractType
     {
         $builder
             ->add('email')
-            ->add('roles',EntityType::class, [
-                'class' => Campus::class,
-                'choices' => [
-                    'Administrateur' => '[ROLE_ADMIN]',
-                    'Utilisateur' => '[ROLE_USER]'
-                ]
-            ] )
-            ->add('password')
+            ->add('password', PasswordType::class, [
+                'label' => 'Nouveau mot de passe (laisser vide pour conserver l’actuel)',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['autocomplete' => 'new-password'],
+            ])
             ->add('nom')
             ->add('prenom')
             ->add('telephone')
-            ->add('administrateur')
             ->add('actif', ChoiceType::class, ['choices'  => [
                 'Yes' => 1,
                 'No' => 0,
@@ -52,7 +50,7 @@ class GestionUtilisateurType extends AbstractType
             ])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                'choice_label' => 'nom_campus',
+                'choice_label' => 'nomCampus',
                 'label' => 'Campus de rattachement',
                 'required' => true
             ])
